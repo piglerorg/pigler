@@ -2,7 +2,7 @@
 
 //NONSHARABLE_CLASS(PiglerPlugin) : public CAknIndicatorPlugin
 class PiglerPlugin : public CAknIndicatorPlugin
-	{
+{
 public:
 	~PiglerPlugin();
 	static PiglerPlugin* NewL();
@@ -14,4 +14,4 @@ public:
 private:
 	PiglerPlugin();
 	void ConstructL();
-	};
+};
