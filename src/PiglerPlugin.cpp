@@ -43,6 +43,7 @@ void PiglerPlugin::ConstructL()
 
 void PiglerPlugin::NewItem(TPiglerNotification request)
 {
+	iAdded++;
 	iNextItem = request;
 }
 
@@ -84,7 +85,8 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 	TInt idx = getItemIdx(aUid); 
 	if (idx != -1) {
 		return iItemsMap->At(idx).iItem.text.AllocL();
-	} else {
+	} else if(iAdded > 0) {
+		iAdded--;
 		TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(aUid, iNextItem)));
 		return iNextItem.text.AllocL();
 	}

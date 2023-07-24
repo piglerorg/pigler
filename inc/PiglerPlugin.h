@@ -22,6 +22,7 @@ private:
     TPiglerNotification iNextItem;
     TInt getItemIdx( TInt uid );
     CArrayFixFlat<TUidNotificationMap> *iItemsMap;
+    TInt iAdded;
 	PiglerPlugin();
 	void ConstructL();
 };
