@@ -8,7 +8,7 @@ PiglerSession::PiglerSession(PiglerPlugin* plugin) : CSession2(), plugin(plugin)
 void PiglerSession::ServiceL(const RMessage2& message)
 {
     switch(message.Function()) {
-    case EPostItem: {
+    case 1: {
         TPiglerNotification request;
         TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
@@ -21,7 +21,7 @@ void PiglerSession::ServiceL(const RMessage2& message)
         message.Complete(code);
     }
     break;
-    case ERemoveItem: {
+    case 2: {
         TPiglerNotification request;
         TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
@@ -30,7 +30,7 @@ void PiglerSession::ServiceL(const RMessage2& message)
         message.Complete(0);
     }
     break;
-    case EUpdateItem: {
+    case 3: {
         TPiglerNotification request;
         TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
@@ -44,11 +44,11 @@ void PiglerSession::ServiceL(const RMessage2& message)
         message.Complete(-1);
     }
     }
-    /*
-    TPiglerRequest request;
-    TPckg<TPiglerRequest> data(request);
-    message.ReadL(0, data);
-    plugin->iText = request.text;
+	/*
+	TPiglerNotification request;
+	TPckg<TPiglerNotification> data(request);
+	message.ReadL(0, data);
+	//plugin->NewItem(request);
     TInt code;
     TRAP(code, code = plugin->AddStatusPanelItemL());
     message.Complete(code);

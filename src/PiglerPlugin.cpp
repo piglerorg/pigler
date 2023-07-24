@@ -6,20 +6,19 @@
 
 class TUidNotificationMap {
 public:
-	TUidNotificationMap(const TInt uid, const TPiglerNotification notification) : iUid(uid), iItem(notification) {}
+	TUidNotificationMap(const TInt uid, TPiglerNotification item) : iUid(uid), iItem(item) {}
     const TInt iUid;
-    const TPiglerNotification iItem;
+    TPiglerNotification iItem;
 };
 
 PiglerPlugin::PiglerPlugin()
 {
-	iItemsMap = new (ELeave) CArrayFixFlat<TUidNotificationMap>(5);
 }
 
 PiglerPlugin::~PiglerPlugin()
 {
-	delete iItemsMap;
-	iItemsMap = NULL;
+	//delete iItemsMap;
+	//iItemsMap = NULL;
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
@@ -33,6 +32,7 @@ PiglerPlugin* PiglerPlugin::NewL()
 
 void PiglerPlugin::ConstructL()
 {
+	iItemsMap = new (ELeave) CArrayFixFlat<TUidNotificationMap>(5);
 	PiglerServer* server = new (ELeave) PiglerServer(this);
 	CleanupStack::PushL(server);
 	_LIT(KServerName, "PiglerServer");
@@ -43,7 +43,7 @@ void PiglerPlugin::ConstructL()
 
 void PiglerPlugin::NewItem(TPiglerNotification request)
 {
-	*iNextItem = request;
+	iNextItem = request;
 }
 
 void PiglerPlugin::UpdateItem(TPiglerNotification request)
@@ -65,7 +65,7 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 
 }
 
-TInt PiglerPlugin::getItemIdx(const TInt uid) {
+TInt PiglerPlugin::getItemIdx(TInt uid) {
 	for(TInt i = 0; i < iItemsMap->Count(); i++) {
 		TUidNotificationMap map = iItemsMap->At(i);
 		if(map.iUid == uid) {
@@ -78,14 +78,15 @@ TInt PiglerPlugin::getItemIdx(const TInt uid) {
 HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 {
     aTextType = EAknIndicatorPluginLinkText;
+    if(iItemsMap == NULL) {
+    	iItemsMap = new CArrayFixFlat<TUidNotificationMap>(5);
+    }
 	TInt idx = getItemIdx(aUid); 
 	if (idx != -1) {
 		return iItemsMap->At(idx).iItem.text.AllocL();
-	} else if(iNextItem != 0) {
-		TPiglerNotification *item = iNextItem;
-		TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(aUid, *item)));
-		iNextItem = NULL;
-		return item->text.AllocL();
+	} else {
+		TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(aUid, iNextItem)));
+		return iNextItem.text.AllocL();
 	}
 	_LIT(KSomeText, "Error");
 	return KSomeText().AllocL();

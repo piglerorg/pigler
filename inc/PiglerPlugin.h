@@ -19,8 +19,8 @@ public:
     void RemoveItem( TPiglerNotification request );
 	
 private:
-    TPiglerNotification* iNextItem;
-    TInt getItemIdx( const TInt uid );
+    TPiglerNotification iNextItem;
+    TInt getItemIdx( TInt uid );
     CArrayFixFlat<TUidNotificationMap> *iItemsMap;
 	PiglerPlugin();
 	void ConstructL();

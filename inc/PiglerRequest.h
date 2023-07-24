@@ -6,10 +6,4 @@ struct TPiglerNotification
     TInt uid;
     TBuf<128> text;
 };
-enum TPiglerRequestFunction
-{
-    EPostItem,
-    ERemoveItem,
-    EUpdateItem
-};
 #endif
