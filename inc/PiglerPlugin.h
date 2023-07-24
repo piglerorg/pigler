@@ -1,6 +1,8 @@
 #include <AknIndicatorPlugin.h>
 #include "PiglerRequest.h"
 
+class TUidNotificationMap;
+
 //NONSHARABLE_CLASS(PiglerPlugin) : public CAknIndicatorPlugin
 class PiglerPlugin : public CAknIndicatorPlugin
 {
@@ -17,6 +19,9 @@ public:
     void RemoveItem( TPiglerNotification request );
 	
 private:
+    TPiglerNotification* iNextItem;
+    TInt getItemIdx( const TInt uid );
+    CArrayFixFlat<TUidNotificationMap> *iItemsMap;
 	PiglerPlugin();
 	void ConstructL();
 };
