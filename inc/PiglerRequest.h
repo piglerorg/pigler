@@ -1,13 +1,15 @@
+#ifndef PIGLERREQUEST_H
+#define PIGLERREQUEST_H
 #include <e32base.h>
-class PiglerRequest
+struct TPiglerNotification
 {
-public:
     TInt uid;
-    HBufC* text;
+    TBuf<128> text;
 };
 enum TPiglerRequestFunction
 {
     EPostItem,
     ERemoveItem,
-    EUpdate
+    EUpdateItem
 };
+#endif

@@ -9,3 +9,4 @@
 
 "$(EPOCROOT)\epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"		  -"C:\sys\bin\piglerplugin.dll"
 "$(EPOCROOT)\epoc32\data\z\resource\plugins\piglerplugin.rsc"		  -"C:\resource\plugins\piglerplugin.rsc"
+"$(EPOCROOT)\epoc32\data\z\resource\apps\piglerplugin.mbm"		  -"C:\resource\apps\piglerplugin.mbm"

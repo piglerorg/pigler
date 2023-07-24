@@ -1,15 +1,17 @@
 #include "PiglerPlugin.h"
 #include <mw/gulicon.h>
 #include "PiglerServer.h"
+#include <PiglerPlugin.mbg>
+#include <eikenv.h>
 
 PiglerPlugin::PiglerPlugin()
 {
-	
+
 }
 
 PiglerPlugin::~PiglerPlugin()
 {
-	
+
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
@@ -31,18 +33,35 @@ void PiglerPlugin::ConstructL()
 	CleanupStack::PopAndDestroy(server);
 }
 
-void PiglerPlugin::HandleIndicatorTapL( const TInt aUid )
+void PiglerPlugin::NewItem(TPiglerNotification request)
+{
+
+}
+
+void PiglerPlugin::UpdateItem(TPiglerNotification request)
+{
+
+}
+
+void PiglerPlugin::RemoveItem(TPiglerNotification request)
+{
+
+}
+
+void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 {
 }
 
-HBufC* PiglerPlugin::TextL( const TInt aUid, TInt& aTextType )
+HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 {
-    aTextType = EAknIndicatorPluginLinkText;
-	return iText;
+	aTextType = EAknIndicatorPluginLinkText;
+	_LIT(KSomeText, "Some text\ndsa");
+	return KSomeText().AllocL();
 }
 
-const CGulIcon* PiglerPlugin::IconL( const TInt aUid )
+const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 {
-	//return CGulIcon::NewL();
-	return 0;
+	_LIT(KMBMFile, "c:\\resource\\apps\\piglerplugin.mbm");
+	return CEikonEnv::Static()->CreateIconL(KMBMFile, EMbmPiglerpluginIcon,
+		EMbmPiglerpluginIcon_mask);
 }

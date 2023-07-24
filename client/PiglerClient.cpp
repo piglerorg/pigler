@@ -7,27 +7,21 @@ TInt PiglerClient::Connect()
     return CreateSession(KServerName, TVersion(1, 0, 0));
 }
 
-TInt PiglerClient::Post(HBufC* text) {
-    PiglerRequest request;
-    request.text = text;
-    return this->SendStruct(EPostItem, request);
+TInt PiglerClient::Post(TPiglerNotification& notification) {
+    return this->SendStruct(EPostItem, notification);
 }
 
-TInt PiglerClient::Remove(const TInt uid) {
-    PiglerRequest request;
-    request.uid = uid;
-    return this->SendStruct(ERemoveItem, request);
+TInt PiglerClient::Remove(TPiglerNotification notification) {
+    return this->SendStruct(ERemoveItem, notification);
 }
 
-TInt PiglerClient::Update(const TInt uid) {
-    PiglerRequest request;
-    request.uid = uid;
-    return this->SendStruct(EUpdate, request);
+TInt PiglerClient::Update(TPiglerNotification notification) {
+    return this->SendStruct(EUpdateItem, notification);
 }
 
-TInt PiglerClient::SendStruct(const TInt function, const PiglerRequest request)
+TInt PiglerClient::SendStruct(const TInt function, TPiglerNotification& notification)
 {
-    TPckg<PiglerRequest> data(request);
+    TPckg<TPiglerNotification> data(notification);
     TIpcArgs args(&data);
     return SendReceive(function, args);
 }

@@ -14,10 +14,20 @@ LIBRARY		 euser.lib
 LIBRARY 	 avkon.lib
 LIBRARY		 egul.lib
 LIBRARY	     ecom.lib
+LIBRARY	     fbscli.lib
+LIBRARY	     eikcore.lib
+LIBRARY	     cone.lib
 
 SOURCEPATH ..\src
 SOURCE PiglerPlugin.cpp dllmain.cpp PiglerServer.cpp PiglerSession.cpp
 SOURCEPATH ..\rss
 START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
+END
+
+START BITMAP piglerplugin.mbm
+	HEADER
+	TARGETPATH \resource\apps
+	SOURCEPATH ..\gfx
+	SOURCE c8,1 icon.bmp icon_mask.bmp
 END

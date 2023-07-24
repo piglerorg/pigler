@@ -9,34 +9,50 @@ void PiglerSession::ServiceL(const RMessage2& message)
 {
     switch(message.Function()) {
     case EPostItem: {
-        PiglerRequest request;
-        TPckg<PiglerRequest> data(request);
+        TPiglerNotification request;
+        TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
-        plugin->iText = request.text;
+        plugin->NewItem(request);
         TInt code;
-        TRAP(code, code = plugin->AddStatusPanelItemL());
+        TRAP(code, request.uid = code = plugin->AddStatusPanelItemL());
+        // отправить обратно
+        TPckg<TPiglerNotification> data2(request);
+        message.WriteL(0, data2);
         message.Complete(code);
-        break;
     }
+    break;
     case ERemoveItem: {
-        PiglerRequest request;
-        TPckg<PiglerRequest> data(request);
+        TPiglerNotification request;
+        TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
+        plugin->RemoveItem(request);
         plugin->RemoveStatusPanelItem(request.uid);
         message.Complete(0);
-        break;
     }
-    case EUpdate: {
-        PiglerRequest request;
-        TPckg<PiglerRequest> data(request);
+    break;
+    case EUpdateItem: {
+        TPiglerNotification request;
+        TPckg<TPiglerNotification> data(request);
         message.ReadL(0, data);
+        plugin->UpdateItem(request);
         TInt code;
         TRAP(code, plugin->UpdateL(request.uid));
         message.Complete(code);
-        break;
+    }
+    break;
+    default: { // типо еррор
+        message.Complete(-1);
     }
     }
-    message.Complete(-1);
+    /*
+    TPiglerRequest request;
+    TPckg<TPiglerRequest> data(request);
+    message.ReadL(0, data);
+    plugin->iText = request.text;
+    TInt code;
+    TRAP(code, code = plugin->AddStatusPanelItemL());
+    message.Complete(code);
+    */
 }
 
 void PiglerSession::ServiceError(const RMessage2& message, TInt error)

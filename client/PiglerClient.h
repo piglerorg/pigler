@@ -1,3 +1,5 @@
+#ifndef PIGLERCLIENT_H
+#define PIGLERCLIENT_H
 #include <e32base.h>
 #include "PiglerRequest.h"
 
@@ -5,10 +7,10 @@ class PiglerClient : public RSessionBase
 {
 public:
     TInt Connect();
-    TInt Post(HBufC* text);
-    TInt Remove(const TInt uid);
-    TInt Update(const TInt uid);
+    TInt Post(TPiglerNotification& notification);
+    TInt Remove(TPiglerNotification notification);
+    TInt Update(TPiglerNotification notification);
 private:
-    TInt Send();
-    TInt SendStruct(const TInt function, const PiglerRequest request);
+    TInt SendStruct(const TInt function, TPiglerNotification& notification);
 };
+#endif
