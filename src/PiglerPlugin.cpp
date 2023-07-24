@@ -33,14 +33,12 @@ void PiglerPlugin::ConstructL()
 
 void PiglerPlugin::HandleIndicatorTapL( const TInt aUid )
 {
-	
 }
-
-_LIT(KTest, "Test Notification");
 
 HBufC* PiglerPlugin::TextL( const TInt aUid, TInt& aTextType )
 {
-	return KTest().AllocL();
+    aTextType = EAknIndicatorPluginLinkText;
+	return iText;
 }
 
 const CGulIcon* PiglerPlugin::IconL( const TInt aUid )

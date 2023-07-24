@@ -10,7 +10,8 @@ public:
 	void HandleIndicatorTapL( const TInt aUid );
 	HBufC* TextL( const TInt aUid, TInt& aTextType );
 	const CGulIcon* IconL( const TInt aUid );
-
+	
+	HBufC* iText;
 private:
 	PiglerPlugin();
 	void ConstructL();

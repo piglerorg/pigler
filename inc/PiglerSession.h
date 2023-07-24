@@ -1,13 +1,5 @@
 #include <e32base.h>
-
-class PiglerRequest
-{
-public:
-	TInt op;
-	TInt id;
-	TPtrC name;
-	TPtrC icon;
-};
+#include "PiglerRequest.h"
 
 class PiglerPlugin;
 
