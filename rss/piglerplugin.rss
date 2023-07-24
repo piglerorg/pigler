@@ -1,0 +1,26 @@
+#include "ecom\registryinfo.rh"
+RESOURCE REGISTRY_INFO
+ {
+ // UID3 ECom плагина, см. mmp файл
+ dll_uid = 0x20029B61;
+ // Список реализованных интерфейсов
+ interfaces =
+ {
+ INTERFACE_INFO
+ {
+ // UID интерфейса.
+ interface_uid = 0x10275092;
+ implementations =
+ {
+ IMPLEMENTATION_INFO
+ {
+ // UID реализации
+ implementation_uid = 0x20029B61;
+ // Данные для выбора
+ default_data = "Default";
+ opaque_data = "";
+ }
+ };
+ }
+ };
+ }

@@ -1,0 +1,38 @@
+/*
+============================================================================
+ Name		: pigler.mmp
+ Author	  : 
+ Copyright   : Your copyright notice
+ Description : This is the project specification file for pigler.
+============================================================================
+*/
+
+TARGET		  piglerplugin.dll
+TARGETTYPE	  plugin
+UID			 0x10009D8D 0x20029B61
+PAGED
+CAPABILITY All -Tcb
+USERINCLUDE	 ..\inc
+APP_LAYER_SYSTEMINCLUDE
+
+nostrictdef
+/* DEFFILE piglerplugin.def */
+
+
+LIBRARY		 euser.lib
+LIBRARY 	 avkon.lib
+LIBRARY		 egul.lib
+LIBRARY	     ecom.lib
+
+#ifdef ENABLE_ABIV2_MODE
+DEBUGGABLE_UDEBONLY
+#endif
+
+SOURCEPATH ..\src
+SOURCE PiglerPlugin.cpp dllmain.cpp
+SOURCEPATH ..\rss
+START RESOURCE piglerplugin.rss
+	TARGETPATH \resource\plugins
+END
+SOURCEPATH ..\src
+SOURCE PiglerServer.cpp PiglerSession.cpp
