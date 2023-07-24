@@ -3,7 +3,7 @@
 #include <e32base.h>
 struct TPiglerNotification
 {
-    TInt uid;
-    TBuf<128> text;
+	TInt uid;
+	TBuf<128> text;
 };
 #endif

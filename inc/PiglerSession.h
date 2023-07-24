@@ -3,11 +3,11 @@
 
 class PiglerPlugin;
 
-class PiglerSession : public CSession2
+class PiglerSession: public CSession2
 {
 private:
 	PiglerPlugin* plugin;
-	
+
 public:
 	PiglerSession(PiglerPlugin* plugin);
 	virtual void ServiceL(const RMessage2& message);
