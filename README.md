@@ -2,7 +2,7 @@
 ### by [shinovon](https://github.com/shinovon) and [curoviyxru](https://github.com/curoviyxru)
 The indicator plugin implementation, currently avaliable for Symbian/Nokia Belle only, written in Symbian C++.
 The purpose of this plugin is to provide easy and open-source API that provides Symbian's notification features.
-![image](https://github.com/curoviyxru/pigler/assets/43963888/890e5e11-0d29-414b-8975-d5e3c1c74e87)
+![Scr000024](https://github.com/curoviyxru/pigler/assets/43963888/5eedd1a8-47fb-4cda-a155-85435bf1b3a0)
 
 # Planned things:
 * [ ] Research for workarounds for Symbian Anna and Symbian 9.4
