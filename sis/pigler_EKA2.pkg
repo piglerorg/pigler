@@ -1,4 +1,4 @@
-#{"pigler DLL"},(0xE15F70B1),1,0,0
+#{"Pigler"},(0xAE292000),1,0,0
 
 [0x1028315F], 0, 0, 0, {"S60 5th Edition devices"}
 [0x20022E6D], 0, 0, 0, {"Symbian^3 devices"}
@@ -7,6 +7,7 @@
 
 :"Vendor"
 
-"$(EPOCROOT)\epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"		  -"C:\sys\bin\piglerplugin.dll"
-"$(EPOCROOT)\epoc32\data\z\resource\plugins\piglerplugin.rsc"		  -"C:\resource\plugins\piglerplugin.rsc"
-"$(EPOCROOT)\epoc32\data\z\resource\apps\piglerplugin.mbm"		  -"C:\resource\apps\piglerplugin.mbm"
+"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"-"C:\sys\bin\piglerplugin.dll"
+"$(EPOCROOT)epoc32\data\z\resource\plugins\piglerplugin.rsc"-"C:\resource\plugins\piglerplugin.rsc"
+"$(EPOCROOT)epoc32\data\z\resource\apps\piglerplugin.mbm"-"C:\resource\apps\piglerplugin.mbm"
+

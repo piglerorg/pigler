@@ -1,0 +1,15 @@
+TARGET		  piglerapi.lib
+TARGETTYPE	  lib
+UID			 0
+
+USERINCLUDE ../inc
+USERINCLUDE ../api/inc
+USERINCLUDE ../client/inc
+APP_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH ../client/src
+SOURCE PiglerClient.cpp
+
+LIBRARY		 euser.lib
+
+SOURCE PiglerAPI.cpp

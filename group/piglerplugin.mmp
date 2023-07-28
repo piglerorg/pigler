@@ -1,14 +1,16 @@
+#include "../inc/PiglerUids.hrh"
+
 TARGET		  piglerplugin.dll
-TARGETTYPE	  plugin
-UID			 0x10009D8D 0x20029B69
+TARGETTYPE	  dll
+UID			 0x10009D8D KPiglerPluginUID
 PAGED
 CAPABILITY All -Tcb
 
 USERINCLUDE	 ..\inc
+USERINCLUDE	 ..\plugin\inc
 APP_LAYER_SYSTEMINCLUDE
 
 nostrictdef
-/* DEFFILE piglerplugin.def */
 
 LIBRARY		 euser.lib
 LIBRARY 	 avkon.lib
@@ -17,10 +19,11 @@ LIBRARY	     ecom.lib
 LIBRARY	     fbscli.lib
 LIBRARY	     eikcore.lib
 LIBRARY	     cone.lib
+LIBRARY	     apparc.lib
 
-SOURCEPATH ..\src
-SOURCE PiglerPlugin.cpp dllmain.cpp PiglerServer.cpp PiglerSession.cpp
-SOURCEPATH ..\rss
+SOURCEPATH ..\plugin\src
+SOURCE PiglerPlugin.cpp dllmain.cpp
+SOURCEPATH ..\plugin\rss
 START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
 END
@@ -31,3 +34,5 @@ START BITMAP piglerplugin.mbm
 	SOURCEPATH ..\gfx
 	SOURCE c8,1 icon.bmp icon_mask.bmp
 END
+SOURCEPATH ..\plugin\src
+SOURCE PiglerMsgQueue.cpp PiglerServer.cpp

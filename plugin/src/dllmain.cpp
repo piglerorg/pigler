@@ -1,9 +1,10 @@
 #include <ecom\implementationproxy.h>
-#include <PiglerPlugin.h>
+#include "PiglerPlugin.h"
+#include "PiglerUids.hrh"
 
 const TImplementationProxy ImplementationTable[] =
 {
-	IMPLEMENTATION_PROXY_ENTRY(0x20029B69, PiglerPlugin::NewL)
+	IMPLEMENTATION_PROXY_ENTRY(KPiglerPluginUID, PiglerPlugin::NewL)
 };
 
 EXPORT_C const TImplementationProxy* ImplementationGroupProxy(TInt& aTableCount)

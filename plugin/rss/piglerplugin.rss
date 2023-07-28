@@ -1,7 +1,7 @@
 #include "ecom\registryinfo.rh"
 RESOURCE REGISTRY_INFO
 {
-	dll_uid = 0x20029B69;
+	dll_uid = 0x2E292000;
 	interfaces =
 	{
 		INTERFACE_INFO
@@ -11,7 +11,7 @@ RESOURCE REGISTRY_INFO
 			{
 				IMPLEMENTATION_INFO
 				{
-					implementation_uid = 0x20029B69;
+					implementation_uid = 0x2E292000;
 					version_no = 1;
 					display_name = "";
 					default_data = "Default";
