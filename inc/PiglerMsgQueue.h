@@ -1,3 +1,4 @@
+/*
 #include <e32base.h>
 #include <e32msgqueue.h>
 
@@ -37,3 +38,4 @@ public:
 	void SendData();
 	void SendAllData();
 };
+*/

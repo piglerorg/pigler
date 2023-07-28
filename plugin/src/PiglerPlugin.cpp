@@ -25,7 +25,7 @@ PiglerPlugin::~PiglerPlugin()
 	iServer = NULL;
 	delete iItemsMap;
 	iItemsMap = NULL;
-	this->~CAknIndicatorPlugin();
+	//this->~CAknIndicatorPlugin();
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
