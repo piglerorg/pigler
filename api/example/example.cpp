@@ -3,11 +3,12 @@
 int main() 
 {
 	PiglerApi *api = new PiglerApi;
-	_LIT(KAppName, "Example");
-	_LIT(KText, "My test notification\nHello world!");
-	api->Init(KAppName);
-	TInt uid = api->SetNotification(0, KText, NULL);
-//	api->RemoveNotification(uid);
-//	api->RemoveAllNotifications();
-	api->Close();
+	TBuf<64> appName(_L("Example"));
+	TBuf<128> text(_L("My test notification\nHello world!"));
+	if(api->Init(appName) == KErrNone) {
+		TInt uid = api->SetNotification(0, text, NULL);
+//		api->RemoveNotification(uid);
+//		api->RemoveAllNotifications();
+		api->Close();
+	}
 }

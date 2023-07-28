@@ -24,7 +24,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPiglerMessage message;
 		TPckg<TPiglerMessage> data(message);
 		aMessage.ReadL(0, data);
-		iPlugin->NewApp(message.appName, aMessage.SecureId().iId);
+		iPlugin->InitApp(message);
 		aMessage.Complete(KErrNone);
 	}
 	break;
@@ -33,12 +33,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPiglerMessage message;
 		TPckg<TPiglerMessage> data(message);
 		aMessage.ReadL(0, data);
-		TInt uid = message.uid;
-		if(message.uid == 0) {
-			aMessage.Complete(iPlugin->NewItem(message.appName, message.text));
-		} else {
-			aMessage.Complete(iPlugin->UpdateItem(message.appName, uid, message.text));
-		}
+		aMessage.Complete(iPlugin->SetItem(message));
 	}
 	break;
 	case 3: // RemoveNotification
@@ -46,7 +41,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPiglerMessage message;
 		TPckg<TPiglerMessage> data(message);
 		aMessage.ReadL(0, data);
-		aMessage.Complete(iPlugin->RemoveItem(message.appName, message.uid));
+		aMessage.Complete(iPlugin->RemoveItem(message));
 	}
 	break;
 	case 4: // RemoveNotifications
@@ -54,7 +49,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPiglerMessage message;
 		TPckg<TPiglerMessage> data(message);
 		aMessage.ReadL(0, data);
-		aMessage.Complete(iPlugin->RemoveItems(message.appName));
+		aMessage.Complete(iPlugin->RemoveItems(message));
 	}
 	break;
 	default:

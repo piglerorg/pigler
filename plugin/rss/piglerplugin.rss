@@ -1,7 +1,8 @@
 #include "ecom\registryinfo.rh"
+#include "PiglerUids.hrh"
 RESOURCE REGISTRY_INFO
 {
-	dll_uid = 0x2E292000;
+	dll_uid = KPiglerPluginUID;
 	interfaces =
 	{
 		INTERFACE_INFO
@@ -11,7 +12,7 @@ RESOURCE REGISTRY_INFO
 			{
 				IMPLEMENTATION_INFO
 				{
-					implementation_uid = 0x2E292000;
+					implementation_uid = KPiglerPluginUID;
 					version_no = 1;
 					display_name = "";
 					default_data = "Default";

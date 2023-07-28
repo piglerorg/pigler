@@ -22,7 +22,7 @@ LIBRARY	     cone.lib
 LIBRARY	     apparc.lib
 
 SOURCEPATH ..\plugin\src
-SOURCE PiglerPlugin.cpp dllmain.cpp
+SOURCE PiglerPlugin.cpp dllmain.cpp PiglerServer.cpp
 SOURCEPATH ..\plugin\rss
 START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
@@ -34,5 +34,3 @@ START BITMAP piglerplugin.mbm
 	SOURCEPATH ..\gfx
 	SOURCE c8,1 icon.bmp icon_mask.bmp
 END
-SOURCEPATH ..\plugin\src
-SOURCE PiglerMsgQueue.cpp PiglerServer.cpp

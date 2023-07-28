@@ -12,7 +12,7 @@ public:
 	 * Returns error code
 	 * @param appName Application name
 	 */
-	TInt Init(TDesC appName);
+	TInt Init(TBuf<64> appName);
 	
 	/**
 	 * Adds or updates notification
@@ -22,7 +22,7 @@ public:
 	 * @param text Notification text
 	 * @param iconBitmap Notification icon bitmap
 	 */
-	TInt SetNotification(TInt uid, TDesC text, TInt iconBitmap); // здесь будет инт пока я не придумаю как отправлять иконки
+	TInt SetNotification(TInt uid, TBuf<128> text, TInt iconBitmap); // здесь будет инт пока я не придумаю как отправлять иконки
 	
 	/**
 	 * Removes notification by its UID

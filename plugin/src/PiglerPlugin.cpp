@@ -25,7 +25,6 @@ PiglerPlugin::~PiglerPlugin()
 	iServer = NULL;
 	delete iItemsMap;
 	iItemsMap = NULL;
-	//this->~CAknIndicatorPlugin();
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
@@ -46,41 +45,46 @@ void PiglerPlugin::ConstructL()
 	iServer->StartL(KRequestsServerName);
 }
 
-void PiglerPlugin::NewApp(TDesC aAppName, TInt aId)
+void PiglerPlugin::InitApp(TPiglerMessage aMessage)
 {
 }
 
 
-TInt PiglerPlugin::NewItem(TDesC aAppName, TDesC aText)
+TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 {
+	if(aMessage.uid != 0) {
+		TInt idx = getItemIdx(aMessage.uid);
+		if (idx != -1) {
+			TNotificationItem item = iItemsMap->At(idx).iItem;
+			if(item.appName.Compare(aMessage.appName) != 0) {
+				return KErrAccessDenied;
+			}
+			item.text = aMessage.text;
+			UpdateL(idx);
+			return KErrNone;
+		}
+		return KErrNotFound;
+	}
 	TNotificationItem item;
-	item.appName = aAppName;
-	item.text = aText;
+	item.appName = aMessage.appName;
+	item.text = aMessage.text;
 	iAdded++;
 	iNextItem = item;
-	return AddStatusPanelItemL();
-}
-
-TInt PiglerPlugin::UpdateItem(TDesC aAppName, TInt aUid, TDesC aText)
-{
-	TInt idx = getItemIdx(aUid);
-	if (idx != -1) {
-		TNotificationItem item = iItemsMap->At(idx).iItem;
-		if(item.appName.Compare(aAppName) != 0) {
-			return KErrAccessDenied;
-		}
-		item.text = aText;
-		UpdateL(idx);
-	    return KErrNone;
+	TInt uid;
+	TRAP(uid, uid = AddStatusPanelItemL());
+	if(uid < 0) {
+		return uid;
 	}
-	return KErrNotFound;
+	TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(uid, item)));
+	TRAP_IGNORE(UpdateL(uid));
+	return uid;
 }
 
-TInt PiglerPlugin::RemoveItem(TDesC aAppName, TInt aUid)
+TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 {
-	TInt idx = getItemIdx(aUid);
+	TInt idx = getItemIdx(aMessage.uid);
 	if (idx != -1) {
-		if (iItemsMap->At(idx).iItem.appName.Compare(aAppName) != 0) {
+		if (iItemsMap->At(idx).iItem.appName.Compare(aMessage.appName) != 0) {
 			return KErrAccessDenied;
 		}
 		RemoveStatusPanelItem(idx);
@@ -91,11 +95,11 @@ TInt PiglerPlugin::RemoveItem(TDesC aAppName, TInt aUid)
 	return KErrNotFound;
 }
 
-TInt PiglerPlugin::RemoveItems(TDesC aAppName)
+TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
 	for (TInt i = iItemsMap->Count()-1; i > 0; i--) {
 		TUidNotificationMap map = iItemsMap->At(i);
-		if (map.iItem.appName.Compare(aAppName) == 0) {
+		if (map.iItem.appName.Compare(aMessage.appName) == 0) {
 			iItemsMap->Delete(i);
 		}
 	}
@@ -121,18 +125,10 @@ TInt PiglerPlugin::getItemIdx(TInt uid)
 
 HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 {
-	if (iItemsMap == NULL) {
-		iItemsMap = new CArrayFixFlat<TUidNotificationMap> (5);
-	}
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
 	    aTextType = EAknIndicatorPluginLinkText;
 		return iItemsMap->At(idx).iItem.text.AllocL();
-	} else if (iAdded > 0) {
-	    aTextType = EAknIndicatorPluginLinkText;
-		iAdded--;
-		TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(aUid, iNextItem)));
-		return iNextItem.text.AllocL();
 	}
 	return NULL;
 }

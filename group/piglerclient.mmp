@@ -1,5 +1,6 @@
 TARGET		  piglerapi.lib
-TARGETTYPE	  lib
+TARGETTYPE	  STDLIB
+UID 0
 
 USERINCLUDE ../inc
 USERINCLUDE ../api/inc

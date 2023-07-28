@@ -5,12 +5,12 @@ struct TNotificationItem
 {
 	TInt uid;
 	TBuf<64> appName;
-	TBuf<256> text;
+	TBuf<128> text;
 };
 
 class TUidNotificationMap;
 
-NONSHARABLE_CLASS(PiglerPlugin) : public CAknIndicatorPlugin
+class PiglerPlugin : public CAknIndicatorPlugin
 {
 public:
 	~PiglerPlugin();
@@ -20,18 +20,17 @@ public:
 	HBufC* TextL(const TInt aUid, TInt& aTextType);
 	const CGulIcon* IconL(const TInt aUid);
 
-	void NewApp(TDesC aAppName, TInt aId);
-	TInt NewItem(TDesC aAppName, TDesC aText);
-	TInt UpdateItem(TDesC aAppName, TInt aUid, TDesC aText);
-	TInt RemoveItem(TDesC aAppName, TInt aUid);
-	TInt RemoveItems(TDesC aAppName);
+	void InitApp(TPiglerMessage aMessage);
+	TInt SetItem(TPiglerMessage aMessage);
+	TInt RemoveItem(TPiglerMessage aMessage);
+	TInt RemoveItems(TPiglerMessage aMessage);
 
 private:
 	TNotificationItem iNextItem;
 	TInt getItemIdx(TInt aUid);
 	CArrayFixFlat<TUidNotificationMap> *iItemsMap;
 	TInt iAdded;
-	CPiglerServer* iServer;
+	CPiglerServer *iServer;
 	PiglerPlugin();
 	void ConstructL();
 };
