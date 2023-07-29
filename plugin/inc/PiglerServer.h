@@ -12,7 +12,7 @@ public:
 
 private:
 	PiglerPlugin* iPlugin;
-	virtual CSession2* NewSessionL(const TVersion& version, const RMessage2& message) const;
+	CSession2* NewSessionL(const TVersion& version, const RMessage2& message) const;
 };
 
 NONSHARABLE_CLASS(CPiglerSession): public CSession2
@@ -22,7 +22,9 @@ private:
 
 public:
 	CPiglerSession(PiglerPlugin* plugin);
-	virtual void ServiceL(const RMessage2& message);
-	virtual void ServiceError(const RMessage2& message, TInt error);
+	void ServiceL(const RMessage2& message);
+	void ServiceError(const RMessage2& message, TInt error);
+private:
+	TPiglerMessage ReadMessage(const RMessage2& message);
 };
 #endif

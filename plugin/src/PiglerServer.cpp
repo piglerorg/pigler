@@ -19,37 +19,35 @@ CPiglerSession::CPiglerSession(PiglerPlugin* aPlugin) :
 void CPiglerSession::ServiceL(const RMessage2& aMessage)
 {
 	switch (aMessage.Function()) {
-	case 1: // Init
+	case EInitApp:
 	{
-		TPiglerMessage message;
-		TPckg<TPiglerMessage> data(message);
-		aMessage.ReadL(0, data);
-		iPlugin->InitApp(message);
+		iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId);
 		aMessage.Complete(KErrNone);
 	}
 	break;
-	case 2: // SetNotification
+	case ESetItem:
 	{
-		TPiglerMessage message;
-		TPckg<TPiglerMessage> data(message);
-		aMessage.ReadL(0, data);
-		aMessage.Complete(iPlugin->SetItem(message));
+		aMessage.Complete(iPlugin->SetItem(ReadMessage(aMessage)));
 	}
 	break;
-	case 3: // RemoveNotification
+	case ERemoveItem:
 	{
-		TPiglerMessage message;
-		TPckg<TPiglerMessage> data(message);
-		aMessage.ReadL(0, data);
-		aMessage.Complete(iPlugin->RemoveItem(message));
+		aMessage.Complete(iPlugin->RemoveItem(ReadMessage(aMessage)));
 	}
 	break;
-	case 4: // RemoveNotifications
+	case ERemoveAppItems:
 	{
-		TPiglerMessage message;
-		TPckg<TPiglerMessage> data(message);
-		aMessage.ReadL(0, data);
-		aMessage.Complete(iPlugin->RemoveItems(message));
+		aMessage.Complete(iPlugin->RemoveItems(ReadMessage(aMessage)));
+	}
+	break;
+	case EGetLastTappedAppItem:
+	{
+		aMessage.Complete(iPlugin->GetLastTappedAppItem(ReadMessage(aMessage)));
+	}
+	break;
+	case ESetRemoveItemOnTap:
+	{
+		aMessage.Complete(iPlugin->SetRemoveItemOnTap(ReadMessage(aMessage)));
 	}
 	break;
 	default:
@@ -57,6 +55,13 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(KErrNotFound);
 	}
 	}
+}
+
+TPiglerMessage CPiglerSession::ReadMessage(const RMessage2& aMessage) {
+	TPiglerMessage message;
+	TPckg<TPiglerMessage> data(message);
+	aMessage.ReadL(0, data);
+	return message;
 }
 
 void CPiglerSession::ServiceError(const RMessage2& aMessage, TInt aError)

@@ -5,25 +5,34 @@ TInt PiglerAPI::Init(TBuf<64> name)
 {
 	iClient = new PiglerClient;
 	TInt err = iClient->Connect();
-	if(err < 0) {
-		return err;
+	if (err == KErrNone) {
+		return iClient->InitApp(name);
 	}
-	return iClient->Init(name);
+	return err;
 }
 
-TInt PiglerAPI::SetNotification(TInt uid, TBuf<128> text, TInt iconBitmap)
+TInt PiglerAPI::SetNotification(TInt uid, TBuf<128> text)
 {
-	return iClient->SetNotification(uid, text);
+	return iClient->SetItem(uid, text);
 }
 
 TInt PiglerAPI::RemoveNotification(TInt uid)
 {
-	return iClient->RemoveNotification(uid);
+	return iClient->RemoveItem(uid);
 }
 
 TInt PiglerAPI::RemoveAllNotifications()
 {
-	return iClient->RemoveAllNotifications();
+	return iClient->RemoveAppItems();
+}
+
+TInt PiglerAPI::GetLastTappedNotification() {
+	return iClient->GetLastTappedAppItem();
+}
+
+TInt PiglerAPI::SetRemoveNotificationOnTap(TInt uid, TBool remove)
+{
+	return iClient->SetRemoveItemOnTap(uid, remove);
 }
 
 void PiglerAPI::Close()
