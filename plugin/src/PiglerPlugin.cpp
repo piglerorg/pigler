@@ -136,7 +136,6 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 {
 	// TODO: icon
-	//_LIT(KMBMFile, "c:\\resource\\apps\\piglerplugin.mbm");
-	//return CEikonEnv::Static()->CreateIconL(KMBMFile, EMbmPiglerpluginIcon, EMbmPiglerpluginIcon_mask);
-    return NULL;
+	_LIT(KMBMFile, "c:\\resource\\apps\\piglerplugin.mbm");
+	return CEikonEnv::Static()->CreateIconL(KMBMFile, EMbmPiglerpluginIcon, EMbmPiglerpluginMask);
 }

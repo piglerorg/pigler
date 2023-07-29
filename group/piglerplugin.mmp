@@ -32,5 +32,5 @@ START BITMAP piglerplugin.mbm
 	HEADER
 	TARGETPATH \resource\apps
 	SOURCEPATH ..\gfx
-	SOURCE c8,1 icon.bmp icon_mask.bmp
+	SOURCE 8,8 icon.bmp mask.bmp
 END
