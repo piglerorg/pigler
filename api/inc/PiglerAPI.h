@@ -71,3 +71,11 @@ public:
 private:
 	PiglerClient *iClient;
 };
+
+/**
+ * Pigler Notifications handler API
+ */
+class PiglerNotificationHandler {
+public:
+	virtual void HandleNotificationTap(TInt uid);
+};
