@@ -15,4 +15,4 @@ PRJ_EXPORTS
 
 PRJ_MMPFILES
 piglerplugin.mmp
-piglerclient.mmp
+piglerapi.mmp
