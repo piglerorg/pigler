@@ -1,12 +1,6 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2023-07-29T16:27:05
-#
-#-------------------------------------------------
-
 QT       -= core gui
 
-TARGET = piglerapi
+TARGET = piglerapi_qt
 TEMPLATE = lib
 CONFIG += staticlib
 

@@ -65,6 +65,17 @@ public:
 	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
 	
 	/**
+	 * Marks that notification needs to be removed on tap
+	 * 
+	 * Returns error code
+	 * 
+	 * KErrNotFound if there is no such item with that uid
+	 * KErrAccessDenied if item was created by another app
+	 * KErrUnderflow if icon or mask have the smaller size than 68x68
+	 */
+	TInt SetIcon(TInt uid, TPtrC8& icon, TPtrC8& mask);
+	
+	/**
 	 * Closes API connection
 	 */
 	void Close();

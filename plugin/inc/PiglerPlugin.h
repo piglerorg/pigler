@@ -6,6 +6,7 @@ struct TNotificationItem
 	TInt uid;
 	TBuf<64> appName;
 	TBuf<128> text;
+	CGulIcon *icon;
 	TBool removeOnTap;
 };
 
@@ -35,6 +36,7 @@ public:
 	TInt RemoveItems(TPiglerMessage aMessage);
 	TInt GetLastTappedAppItem(TPiglerMessage aMessage);
 	TInt SetRemoveItemOnTap(TPiglerMessage aMessage);
+	TInt SetIcon(TPiglerIconMessage aMessage);
 
 private:
 	TNotificationItem iNextItem;

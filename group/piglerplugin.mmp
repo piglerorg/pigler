@@ -28,9 +28,3 @@ START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
 END
 
-START BITMAP piglerplugin.mbm
-	HEADER
-	TARGETPATH \resource\apps
-	SOURCEPATH ..\gfx
-	SOURCE 8,8 icon.bmp mask.bmp
-END

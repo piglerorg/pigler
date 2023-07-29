@@ -1,6 +1,9 @@
 #include "PiglerAPI.h"
 #include "PiglerProtocol.h"
 
+//TODO: init app without appName (use random chars)
+
+//TODO: remove this, we don't need another wrapper
 class PiglerClient : public RSessionBase
 {
 public:
@@ -11,6 +14,7 @@ public:
     TInt RemoveAppItems();
     TInt GetLastTappedAppItem();
     TInt SetRemoveItemOnTap(const TInt aUid, const TBool aRemove);
+    TInt SetIcon(const TInt aUid, TPtrC8& aIcon, TPtrC8& aMask);
 private:
     TBuf<64> iAppName;
     TInt SendMessage(TInt function, const TPiglerMessage aMessage);
@@ -50,15 +54,19 @@ TInt PiglerAPI::SetRemoveNotificationOnTap(TInt uid, TBool remove)
 	return iClient->SetRemoveItemOnTap(uid, remove);
 }
 
+TInt PiglerAPI::SetIcon(TInt uid, TPtrC8& icon, TPtrC8& mask)
+{
+    return iClient->SetIcon(uid, icon, mask);
+}
+
 void PiglerAPI::Close()
 {
 	iClient->Close();
 }
 
-_LIT(KRequestsServerName, "PiglerServer");
 TInt PiglerClient::Connect()
 {
-    return CreateSession(KRequestsServerName, TVersion(1, 0, 0));
+    return CreateSession(_L("PiglerServer"), TVersion(1, 0, 0));
 }
 
 TInt PiglerClient::InitApp(TBuf<64> aAppName)
@@ -114,4 +122,14 @@ TInt PiglerClient::SendMessage(TInt function, const TPiglerMessage aMessage)
     TPckg<TPiglerMessage> data(aMessage);
     TIpcArgs args(&data);
     return SendReceive(function, args);
+}
+
+TInt PiglerClient::SetIcon(const TInt aUid, TPtrC8& aIcon, TPtrC8& aMask)
+{
+    TPiglerIconMessage message;
+    message.appName = iAppName;
+    message.uid = aUid;
+    TPckg<TPiglerIconMessage> data(message);
+    TIpcArgs args(&data, &aIcon, &aMask);
+    return SendReceive(ESetIcon, args);
 }

@@ -9,14 +9,24 @@ enum TPiglerCommands {
 	ERemoveAppItems,
 	EGetAppItems,
 	EGetLastTappedAppItem,
-	ESetRemoveItemOnTap
+	ESetRemoveItemOnTap,
+	ESetIcon
 };
 
 struct TPiglerMessage
 {
 	TInt uid;
+    TBuf<64> appName;
 	TBuf<128> text;
-	TBuf<64> appName;
 	TBool remove;
 };
+
+struct TPiglerIconMessage
+{
+    TInt uid;
+    TBuf<64> appName;
+    TPtrC8 icon;
+    TPtrC8 mask;
+};
+
 #endif
