@@ -11,3 +11,5 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [x] Find a workaround for missing indicators bug until any system indicator is shown on Symbian Belle
 * [ ] Implement tap handling/callbacking for indicators
 * [ ] Implement a plugin for status pane top indicators
+* [ ] Implement icon sending and resizing
+* [ ] Notifications saving to DB and load them on system start
