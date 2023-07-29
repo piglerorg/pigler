@@ -1,9 +1,10 @@
-#{"Pigler"},(0xAE292000),1,0,0
+#{"Pigler Notifications API"},(0x20292B69),1,0,0
 
-[0x1028315F], 0, 0, 0, {"S60 5th Edition devices"}
-[0x20022E6D], 0, 0, 0, {"Symbian^3 devices"}
+[0x1028315F], 0, 0, 0, {"S60ProductID"} ; S60v5
+[0x20022E6D], 0, 0, 0, {"S60ProductID"} ; Symbian^3
+[0x2003A678], 0, 0, 0, {"S60ProductID"} ; Belle
 
-%{"Vendor-EN"}
+%{"Vendor"}
 
 :"Vendor"
 
