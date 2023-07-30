@@ -1,4 +1,4 @@
-#include <AknIndicatorPlugin.h>
+#include "AknIndicatorPlugin.h"
 #include "PiglerServer.h"
 
 struct TNotificationItem
@@ -26,9 +26,9 @@ public:
 	~PiglerPlugin();
 	static PiglerPlugin* NewL();
 
-	void HandleIndicatorTapL(const TInt aUid);
-	HBufC* TextL(const TInt aUid, TInt& aTextType);
-	const CGulIcon* IconL(const TInt aUid);
+	virtual void HandleIndicatorTapL(const TInt aUid);
+	virtual HBufC* TextL(const TInt aUid, TInt& aTextType);
+	virtual const CGulIcon* IconL(const TInt aUid);
 
 	void InitApp(TPiglerMessage aMessage, const TInt secureId);
 	TInt SetItem(TPiglerMessage aMessage);

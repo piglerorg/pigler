@@ -1,5 +1,6 @@
 #include <e32base.h>
-#include "PiglerProtocol.h"
+
+class TPiglerMessage;
 
 /**
  * Pigler Notifications API
