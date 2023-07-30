@@ -1,11 +1,10 @@
 #include <e32base.h>
-
-class PiglerClient;
+#include "PiglerProtocol.h"
 
 /**
  * Pigler Notifications API
  */
-class PiglerAPI {
+class PiglerAPI: private RSessionBase {
 public:
 	/**
 	 * Initializes API connection
@@ -65,7 +64,7 @@ public:
 	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
 	
 	/**
-	 * Marks that notification needs to be removed on tap
+	 * Sets notification icon
 	 * 
 	 * Returns error code
 	 * 
@@ -73,14 +72,16 @@ public:
 	 * KErrAccessDenied if item was created by another app
 	 * KErrUnderflow if icon or mask have the smaller size than 68x68
 	 */
-	TInt SetIcon(TInt uid, TPtrC8& icon, TPtrC8& mask);
+	TInt SetNotificationIcon(TInt uid, TPtrC8& icon, TPtrC8& mask);
 	
 	/**
 	 * Closes API connection
 	 */
 	void Close();
 private:
-	PiglerClient *iClient;
+	TInt Connect();
+	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
+    TBuf<64> iAppName;
 };
 
 /**

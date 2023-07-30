@@ -50,9 +50,9 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->SetRemoveItemOnTap(ReadMessage(aMessage)));
 	}
 	break;
-	case ESetIcon:
+	case ESetItemIcon:
 	{
-	    aMessage.Complete(iPlugin->SetIcon(ReadIconMessage(aMessage)));
+		aMessage.Complete(iPlugin->SetItemIcon(ReadIconMessage(aMessage)));
 	}
 	break;
 	default:
@@ -63,25 +63,25 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 }
 
 TPiglerMessage CPiglerSession::ReadMessage(const RMessage2& aMessage) {
-    TPiglerMessage message;
-    TPckg<TPiglerMessage> data(message);
-    aMessage.ReadL(0, data);
-    return message;
+	TPiglerMessage message;
+	TPckg<TPiglerMessage> data(message);
+	aMessage.ReadL(0, data);
+	return message;
 }
 
 TPiglerIconMessage CPiglerSession::ReadIconMessage(const RMessage2& aMessage) {
-    TPiglerIconMessage message;
-    TPckg<TPiglerIconMessage> data(message);
-    aMessage.ReadL(0, data);
-    HBufC8* iconBuf = HBufC8::NewL(aMessage.GetDesLengthL(1));
-    TPtr8 iconPtr(iconBuf->Des());
-    aMessage.ReadL(1, iconPtr);
-    message.icon.Set(*iconBuf);
-    HBufC8* maskBuf = HBufC8::NewL(aMessage.GetDesLengthL(2));
-    TPtr8 maskPtr(maskBuf->Des());
-    aMessage.ReadL(2, maskPtr);
-    message.mask.Set(*maskBuf);
-    return message;
+	TPiglerIconMessage message;
+	TPckg<TPiglerIconMessage> data(message);
+	aMessage.ReadL(0, data);
+	HBufC8* iconBuf = HBufC8::NewL(aMessage.GetDesLengthL(1));
+	TPtr8 iconPtr(iconBuf->Des());
+	aMessage.ReadL(1, iconPtr);
+	message.icon.Set(*iconBuf);
+	HBufC8* maskBuf = HBufC8::NewL(aMessage.GetDesLengthL(2));
+	TPtr8 maskPtr(maskBuf->Des());
+	aMessage.ReadL(2, maskPtr);
+	message.mask.Set(*maskBuf);
+	return message;
 }
 
 void CPiglerSession::ServiceError(const RMessage2& aMessage, TInt aError)

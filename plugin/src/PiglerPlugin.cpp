@@ -88,7 +88,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.removeOnTap = aMessage.remove;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
-    TInt error;
+	TInt error;
 	TInt uid;
 	TRAP(error, uid = AddStatusPanelItemL());
 	if (error != KErrNone) {
@@ -97,7 +97,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	
 	item.uid = uid;
 	//TODO: remove it, ???
-    iNextItem = item;
+	iNextItem = item;
 	
 	TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(uid, item)));
 	TRAP_IGNORE(UpdateL(uid));
@@ -114,8 +114,8 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 		}
 		RemoveStatusPanelItem(aMessage.uid);
 		iItemsMap->Delete(idx);
-	    iItemsMap->Compress();
-	    return KErrNone;
+		iItemsMap->Compress();
+		return KErrNone;
 	}
 	return KErrNotFound;
 }
@@ -128,8 +128,8 @@ TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 			iItemsMap->Delete(i);
 		}
 	}
-    iItemsMap->Compress();
-    return KErrNone;
+	iItemsMap->Compress();
+	return KErrNone;
 }
 
 TInt PiglerPlugin::GetLastTappedAppItem(TPiglerMessage aMessage)
@@ -175,7 +175,7 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 		if (item.removeOnTap) {
 			RemoveStatusPanelItem(aUid);
 			iItemsMap->Delete(idx);
-		    iItemsMap->Compress();
+			iItemsMap->Compress();
 		}
 	} else {
 		// айтема нет в списке поэтому просто удаляем
@@ -185,10 +185,10 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 
 TInt PiglerPlugin::getItemIdx(const TInt aUid)
 {
-    if (aUid == 0) {
-        return -1;
-    }
-    
+	if (aUid == 0) {
+		return -1;
+	}
+	
 	for (TInt i = 0; i < iItemsMap->Count(); i++) {
 		TUidNotificationMap map = iItemsMap->At(i);
 		if (map.iUid == aUid) {
@@ -202,104 +202,104 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 {
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
-	    aTextType = EAknIndicatorPluginLinkText;
-	    //TODO: could it be a memory leak?
+		aTextType = EAknIndicatorPluginLinkText;
+		//TODO: could it be a memory leak?
 		return iItemsMap->At(idx).iItem.text.AllocL();
 	}
 	return NULL;
 }
 
-TInt PiglerPlugin::SetIcon(TPiglerIconMessage aMessage) 
+TInt PiglerPlugin::SetItemIcon(TPiglerIconMessage aMessage) 
 {
-    //TODO: memory leaks? 
-    //TODO: do not allocate CFbsBitmap if already exists
-    TInt idx = getItemIdx(aMessage.uid);
-    if (idx == KErrNotFound) {
-        return KErrNotFound;
-    }
-    TNotificationItem item = iItemsMap->At(idx).iItem;
-    // проверка на изменение уведомления из другой проги
-    if (item.appName.Compare(aMessage.appName) != 0) {
-        return KErrAccessDenied;
-    }
-    
-    TInt error;
-    
-    CFbsBitmap *icon = NULL;
-    TRAP(error, icon = new (ELeave) CFbsBitmap);
-    //EColor16M = BRG???
-    error = icon->Create(TSize(68, 68), EColor16MA);
-    
-    if (error != KErrNone) {
-        return error;
-    }
-    if (icon == NULL) {
-        return KErrGeneral;
-    }
-    
-    if (aMessage.icon.Length() < icon->DataSize()) {
-        return KErrUnderflow;
-    }
-    
-    if (aMessage.icon.Length() > icon->DataSize()) {
-        return KErrOverflow;
-    }
-    
-    icon->BeginDataAccess();
-    
-    TUint8* data = (TUint8*) icon->DataAddress();
-    const TUint8* from = aMessage.icon.Ptr();
-    TInt amount = aMessage.icon.Length();
-    
-    memcpy(data, from, amount);
+	//TODO: memory leaks? 
+	//TODO: do not allocate CFbsBitmap if already exists
+	TInt idx = getItemIdx(aMessage.uid);
+	if (idx == KErrNotFound) {
+		return KErrNotFound;
+	}
+	TNotificationItem item = iItemsMap->At(idx).iItem;
+	// проверка на изменение уведомления из другой проги
+	if (item.appName.Compare(aMessage.appName) != 0) {
+		return KErrAccessDenied;
+	}
+	
+	TInt error;
+	
+	CFbsBitmap *icon = NULL;
+	TRAP(error, icon = new (ELeave) CFbsBitmap);
+	//EColor16M = BRG???
+	error = icon->Create(TSize(68, 68), EColor16MA);
+	
+	if (error != KErrNone) {
+		return error;
+	}
+	if (icon == NULL) {
+		return KErrGeneral;
+	}
+	
+	if (aMessage.icon.Length() < icon->DataSize()) {
+		return KErrUnderflow;
+	}
+	
+	if (aMessage.icon.Length() > icon->DataSize()) {
+		return KErrOverflow;
+	}
+	
+	icon->BeginDataAccess();
+	
+	TUint8* data = (TUint8*) icon->DataAddress();
+	const TUint8* from = aMessage.icon.Ptr();
+	TInt amount = aMessage.icon.Length();
+	
+	memcpy(data, from, amount);
 
-    icon->EndDataAccess();
-    icon->Compress();
-    
-    //TODO: remove masks
-    
-//    CFbsBitmap *mask = NULL;
-//    TRAP(error, mask = new (ELeave) CFbsBitmap);
-//    error = mask->Create(TSize(68, 68), EGray256);
-//    
-//    if (error != KErrNone) {
-//        return error;
-//    }
-//    if (mask == NULL) {
-//        return KErrGeneral;
-//    }
-//    
-//    if (aMessage.mask.Length() < mask->DataSize()) {
-//        return KErrUnderflow;
-//    }
-//    
-//    if (aMessage.mask.Length() > mask->DataSize()) {
-//        return KErrOverflow;
-//    }
-//    
-//    mask->BeginDataAccess();
-//    
-//    data = (TUint8*) mask->DataAddress();
-//    from = aMessage.mask.Ptr();
-//    amount = aMessage.mask.Length();
-//    
-//    memcpy(data, from, amount);
+	icon->EndDataAccess();
+	icon->Compress();
+	
+	//TODO: remove masks
+	
+//	CFbsBitmap *mask = NULL;
+//	TRAP(error, mask = new (ELeave) CFbsBitmap);
+//	error = mask->Create(TSize(68, 68), EGray256);
+//	
+//	if (error != KErrNone) {
+//		return error;
+//	}
+//	if (mask == NULL) {
+//		return KErrGeneral;
+//	}
+//	
+//	if (aMessage.mask.Length() < mask->DataSize()) {
+//		return KErrUnderflow;
+//	}
+//	
+//	if (aMessage.mask.Length() > mask->DataSize()) {
+//		return KErrOverflow;
+//	}
+//	
+//	mask->BeginDataAccess();
+//	
+//	data = (TUint8*) mask->DataAddress();
+//	from = aMessage.mask.Ptr();
+//	amount = aMessage.mask.Length();
+//	
+//	memcpy(data, from, amount);
 //
-//    mask->EndDataAccess();
-//    mask->Compress();
-    
-    //TODO: free aMessage.icon and aMessage.mask
-    
-    CGulIcon* gulIcon = NULL;
-    TRAP(error, gulIcon = CGulIcon::NewL(icon)); //, mask
-    if (error != KErrNone) {
-        gulIcon = NULL;
-        return error;
-    }
-    
-    iItemsMap->At(idx).iItem.icon = gulIcon;
-    TRAP_IGNORE(UpdateL(item.uid));
-    return KErrNone;
+//	mask->EndDataAccess();
+//	mask->Compress();
+	
+	//TODO: free aMessage.icon and aMessage.mask
+	
+	CGulIcon* gulIcon = NULL;
+	TRAP(error, gulIcon = CGulIcon::NewL(icon)); //, mask
+	if (error != KErrNone) {
+		gulIcon = NULL;
+		return error;
+	}
+	
+	iItemsMap->At(idx).iItem.icon = gulIcon;
+	TRAP_IGNORE(UpdateL(item.uid));
+	return KErrNone;
 }
 
 const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
@@ -309,7 +309,7 @@ const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 	// TODO: сделать скейлинг или делать иконки меньшим размером (на клиенте)
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
-	    return iItemsMap->At(idx).iItem.icon;
+		return iItemsMap->At(idx).iItem.icon;
 	}
 	return NULL;
 }

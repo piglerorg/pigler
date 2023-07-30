@@ -25,7 +25,7 @@ public:
 	void ServiceL(const RMessage2& message);
 	void ServiceError(const RMessage2& message, TInt error);
 private:
-    TPiglerMessage ReadMessage(const RMessage2& message);
-    TPiglerIconMessage ReadIconMessage(const RMessage2& message);
+	TPiglerMessage ReadMessage(const RMessage2& message);
+	TPiglerIconMessage ReadIconMessage(const RMessage2& message);
 };
 #endif
