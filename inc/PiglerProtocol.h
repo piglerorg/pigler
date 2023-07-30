@@ -21,12 +21,4 @@ struct TPiglerMessage
 	TBool remove;
 };
 
-struct TPiglerIconMessage
-{
-	TInt uid;
-	TBuf<64> appName;
-	TPtrC8 icon;
-	TPtrC8 mask;
-};
-
 #endif

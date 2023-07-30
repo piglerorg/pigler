@@ -54,13 +54,13 @@ TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
     return this->SendMessage(ESetRemoveItemOnTap, message);
 }
 
-TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap, TPtrC8& aMaskBitmap)
+TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap)
 {
-    TPiglerIconMessage message;
+    TPiglerMessage message;
     message.appName = iAppName;
     message.uid = aUid;
-    TPckg<TPiglerIconMessage> data(message);
-    TIpcArgs args(&data, &aIconBitmap, &aMaskBitmap);
+    TPckg<TPiglerMessage> data(message);
+    TIpcArgs args(&data, &aIconBitmap);
     return SendReceive(ESetItemIcon, args);
 }
 
