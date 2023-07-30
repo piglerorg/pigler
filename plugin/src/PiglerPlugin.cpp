@@ -221,19 +221,19 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr)
 		return KErrGeneral;
 	}
 	
-	if (aIconBitmap.Length() < icon->DataSize()) {
+	if (aIconPtr.Length() < icon->DataSize()) {
 		return KErrUnderflow;
 	}
 	
-	if (aIconBitmap.Length() > icon->DataSize()) {
+	if (aIconPtr.Length() > icon->DataSize()) {
 		return KErrOverflow;
 	}
 	
 	icon->BeginDataAccess();
 	
 	TUint8* data = (TUint8*) icon->DataAddress();
-	const TUint8* from = aIconBitmap.Ptr();
-	TInt amount = aIconBitmap.Length();
+	const TUint8* from = aIconPtr.Ptr();
+	TInt amount = aIconPtr.Length();
 	
 	memcpy(data, from, amount);
 
