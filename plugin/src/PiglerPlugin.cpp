@@ -139,7 +139,7 @@ TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 	if (item.appName.Compare(aMessage.appName) != 0) {
 		return KErrAccessDenied;
 	}
-	items.removeOnTap = aMessage.remove;
+	item.removeOnTap = aMessage.remove;
 	return KErrNone;
 }
 
