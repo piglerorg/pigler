@@ -39,7 +39,6 @@ public:
 	TInt SetItemIcon(TPiglerIconMessage aMessage);
 
 private:
-	TNotificationItem iNextItem;
 	TInt getItemIdx(const TInt aUid);
 	CArrayFixFlat<TUidNotificationMap> *iItemsMap;
 	CArrayFixFlat<TNotificationApp> *iApps;
