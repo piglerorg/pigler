@@ -51,7 +51,7 @@ TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
 	message.appName = iAppName;
 	message.uid = aUid;
 	message.remove = aRemove;
-    return this->SendMessage(EGetLastTappedAppItem, message);
+    return this->SendMessage(ESetRemoveItemOnTap, message);
 }
 
 TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap, TPtrC8& aMaskBitmap)
