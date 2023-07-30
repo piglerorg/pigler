@@ -40,7 +40,7 @@ public:
 
 private:
 	TInt getItemIdx(const TInt aUid);
-	CArrayFixFlat<TUidNotificationMap> *iItemsMap;
+	CArrayFixFlat<TNotificationItem> *iItems;
 	CArrayFixFlat<TNotificationApp> *iApps;
 	CPiglerServer *iServer;
 	PiglerPlugin();

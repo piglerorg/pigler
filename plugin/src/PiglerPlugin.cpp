@@ -5,18 +5,6 @@
 
 //TODO: i will revork this today kek
 
-//TODO: remove it, what is this
-NONSHARABLE_CLASS(TUidNotificationMap)
-{
-public:
-	TUidNotificationMap(const TInt uid, TNotificationItem item) :
-		iUid(uid), iItem(item)
-	{
-	}
-	const TInt iUid;
-	TNotificationItem iItem;
-};
-
 PiglerPlugin::PiglerPlugin()
 {
 }
@@ -28,8 +16,8 @@ PiglerPlugin::~PiglerPlugin()
 	iServer = NULL;
 	delete iApps;
 	iApps = NULL;
-	delete iItemsMap;
-	iItemsMap = NULL;
+	delete iItems;
+	iItems = NULL;
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
@@ -43,7 +31,7 @@ PiglerPlugin* PiglerPlugin::NewL()
 
 void PiglerPlugin::ConstructL()
 {
-	iItemsMap = new (ELeave) CArrayFixFlat<TUidNotificationMap>(5);
+	iItems = new (ELeave) CArrayFixFlat<TNotificationItem>(5);
 	iApps = new (ELeave) CArrayFixFlat<TNotificationApp>(5);
 	iServer = new (ELeave) CPiglerServer(this);
 	iServer->StartL(_L("PiglerServer"));
@@ -69,12 +57,12 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	if (aMessage.uid != 0) {
 		TInt idx = getItemIdx(aMessage.uid);
 		if (idx != -1) {
-			TNotificationItem item = iItemsMap->At(idx).iItem;
+			TNotificationItem& item = iItems->At(idx);
 			// проверка на изменение уведомления из другой проги
 			if (item.appName.Compare(aMessage.appName) != 0) {
 				return KErrAccessDenied;
 			}
-			iItemsMap->At(idx).iItem.text = aMessage.text;
+			item.text = aMessage.text;
 			UpdateL(item.uid);
 			return KErrNone;
 		}
@@ -96,7 +84,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	
 	item.uid = uid;
 	
-	TRAP_IGNORE(iItemsMap->AppendL(TUidNotificationMap(uid, item)));
+	TRAP_IGNORE(iItems->AppendL(item));
 	TRAP_IGNORE(UpdateL(uid));
 	return uid;
 }
@@ -106,12 +94,12 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 	TInt idx = getItemIdx(aMessage.uid);
 	if (idx != -1) {
 		// проверка на изменение уведомления из другой проги
-		if (iItemsMap->At(idx).iItem.appName.Compare(aMessage.appName) != 0) {
+		if (iItems->At(idx).appName.Compare(aMessage.appName) != 0) {
 			return KErrAccessDenied;
 		}
 		RemoveStatusPanelItem(aMessage.uid);
-		iItemsMap->Delete(idx);
-		iItemsMap->Compress();
+		iItems->Delete(idx);
+		iItems->Compress();
 		return KErrNone;
 	}
 	return KErrNotFound;
@@ -119,13 +107,12 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 
 TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
-	for (TInt i = iItemsMap->Count()-1; i > 0; i--) {
-		TUidNotificationMap map = iItemsMap->At(i);
-		if (map.iItem.appName.Compare(aMessage.appName) == 0) {
-			iItemsMap->Delete(i);
+	for (TInt i = iItems->Count()-1; i > 0; i--) {
+		if (iItems->At(i).appName.Compare(aMessage.appName) == 0) {
+			iItems->Delete(i);
 		}
 	}
-	iItemsMap->Compress();
+	iItems->Compress();
 	return KErrNone;
 }
 
@@ -147,12 +134,12 @@ TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 	if (idx == KErrNotFound) {
 		return KErrNotFound;
 	}
-	TNotificationItem item = iItemsMap->At(idx).iItem;
+	TNotificationItem& item = iItems->At(idx);
 	// проверка на изменение уведомления из другой проги
 	if (item.appName.Compare(aMessage.appName) != 0) {
 		return KErrAccessDenied;
 	}
-	iItemsMap->At(idx).iItem.removeOnTap = aMessage.remove;
+	items.removeOnTap = aMessage.remove;
 	return KErrNone;
 }
 
@@ -161,9 +148,9 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 	// TODO: add tap handling
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
-		TNotificationItem item = iItemsMap->At(idx).iItem;
+		TNotificationItem item = iItems->At(idx);
 		for (TInt i = 0; i < iApps->Count(); i++) {
-			TNotificationApp app = iApps->At(i);
+			TNotificationApp& app = iApps->At(i);
 			if (app.appName.Compare(item.appName) == 0) {
 				app.lastTappedItem = aUid;
 				break;
@@ -171,8 +158,8 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 		}
 		if (item.removeOnTap) {
 			RemoveStatusPanelItem(aUid);
-			iItemsMap->Delete(idx);
-			iItemsMap->Compress();
+			iItems->Delete(idx);
+			iItems->Compress();
 		}
 	} else {
 		// айтема нет в списке поэтому просто удаляем
@@ -186,9 +173,9 @@ TInt PiglerPlugin::getItemIdx(const TInt aUid)
 		return -1;
 	}
 	
-	for (TInt i = 0; i < iItemsMap->Count(); i++) {
-		TUidNotificationMap map = iItemsMap->At(i);
-		if (map.iUid == aUid) {
+	for (TInt i = 0; i < iItems->Count(); i++) {
+		TNotificationItem item = iItems->At(i);
+		if (item.uid == aUid) {
 			return i;
 		}
 	}
@@ -201,7 +188,7 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 	if (idx != -1) {
 		aTextType = EAknIndicatorPluginLinkText;
 		//TODO: could it be a memory leak?
-		return iItemsMap->At(idx).iItem.text.AllocL();
+		return iItems->At(idx).text.AllocL();
 	}
 	return NULL;
 }
@@ -214,7 +201,7 @@ TInt PiglerPlugin::SetItemIcon(TPiglerIconMessage aMessage)
 	if (idx == KErrNotFound) {
 		return KErrNotFound;
 	}
-	TNotificationItem item = iItemsMap->At(idx).iItem;
+	TNotificationItem& item = iItems->At(idx);
 	// проверка на изменение уведомления из другой проги
 	if (item.appName.Compare(aMessage.appName) != 0) {
 		return KErrAccessDenied;
@@ -290,23 +277,22 @@ TInt PiglerPlugin::SetItemIcon(TPiglerIconMessage aMessage)
 	CGulIcon* gulIcon = NULL;
 	TRAP(error, gulIcon = CGulIcon::NewL(icon)); //, mask
 	if (error != KErrNone) {
-		gulIcon = NULL;
 		return error;
 	}
 	
-	iItemsMap->At(idx).iItem.icon = gulIcon;
+	item.icon = gulIcon;
 	TRAP_IGNORE(UpdateL(item.uid));
 	return KErrNone;
 }
 
 const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 {
-	// TODO: icon changing
 	// размер иконки разный на Belle Refresh и Belle FP1: ~54 и 68 (откуда инфа?)
+	// >>откуда инфа, сравнил
 	// TODO: сделать скейлинг или делать иконки меньшим размером (на клиенте)
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
-		return iItemsMap->At(idx).iItem.icon;
+		return iItems->At(idx).icon;
 	}
 	return NULL;
 }
