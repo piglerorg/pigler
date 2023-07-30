@@ -76,7 +76,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.removeOnTap = aMessage.remove;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
-	TInt uid;
+	TInt uid = 0;
 	TRAPD(error, uid = AddStatusPanelItemL());
 	if (error != KErrNone) {
 		return error;
