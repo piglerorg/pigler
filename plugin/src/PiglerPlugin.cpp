@@ -1,7 +1,6 @@
 #include <mw/gulicon.h>
 #include <eikenv.h>
 #include "PiglerPlugin.h"
-#include <PiglerPlugin.mbg>
 
 //TODO: i will revork this today kek
 
