@@ -1,27 +1,27 @@
 #include "../inc/PiglerUids.hrh"
 
-TARGET		  piglerplugin.dll
-TARGETTYPE	  dll
-UID			 0x10009D8D KPiglerPluginUID
+TARGET		piglerplugin.dll
+TARGETTYPE	dll
+UID			0x10009D8D KPiglerPluginUID
 PAGED
-CAPABILITY All -Tcb
+CAPABILITY 	All -Tcb
 
-USERINCLUDE	 ..\inc
+USERINCLUDE	..\inc
 APP_LAYER_SYSTEMINCLUDE
 
 nostrictdef
 
-LIBRARY		 euser.lib
-LIBRARY 	 avkon.lib
-LIBRARY		 egul.lib
-LIBRARY	     ecom.lib
-LIBRARY	     fbscli.lib
-LIBRARY	     eikcore.lib
-LIBRARY	     cone.lib
-LIBRARY	     apparc.lib
+LIBRARY	euser.lib
+LIBRARY	avkon.lib
+LIBRARY	egul.lib
+LIBRARY	ecom.lib
+LIBRARY	fbscli.lib
+LIBRARY	eikcore.lib
+LIBRARY	cone.lib
+LIBRARY	apparc.lib
 
 SOURCEPATH ..\src
-SOURCE PiglerPlugin.cpp dllmain.cpp PiglerServer.cpp
+SOURCE dllmain.cpp PiglerPlugin.cpp PiglerServer.cpp
 SOURCEPATH ..\rss
 START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
