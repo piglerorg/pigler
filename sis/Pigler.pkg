@@ -1,12 +1,10 @@
 #{"Pigler Notifications API"},(0x20292B69),1,0,0
 
-[0x1028315F], 0, 0, 0, {"S60ProductID"} ; S60v5
-[0x20022E6D], 0, 0, 0, {"S60ProductID"} ; Symbian^3
 [0x2003A678], 0, 0, 0, {"S60ProductID"} ; Belle
 
-%{"Vendor"}
+%{"curoviyxru & shinovon"}
 
-:"Vendor"
+:"curoviyxru & shinovon"
 
 "$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"-"C:\sys\bin\piglerplugin.dll"
 "$(EPOCROOT)epoc32\data\z\resource\plugins\piglerplugin.rsc"-"C:\resource\plugins\piglerplugin.rsc"
