@@ -1,12 +1,3 @@
 ﻿*.sis
 .cproject
-group/ABLD.BAT
-api/.make.cache
-api/ABLD.BAT
-api/bld.inf
-api/Makefile
-api/Makefile_piglerapi_lib.mk
-api/piglerapi.pro.user
-api/piglerapi_lib.mmp
-api/piglerapi_qt_lib.mmp
 .project

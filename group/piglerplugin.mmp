@@ -7,7 +7,6 @@ PAGED
 CAPABILITY All -Tcb
 
 USERINCLUDE	 ..\inc
-USERINCLUDE	 ..\plugin\inc
 APP_LAYER_SYSTEMINCLUDE
 
 nostrictdef
@@ -21,9 +20,9 @@ LIBRARY	     eikcore.lib
 LIBRARY	     cone.lib
 LIBRARY	     apparc.lib
 
-SOURCEPATH ..\plugin\src
+SOURCEPATH ..\src
 SOURCE PiglerPlugin.cpp dllmain.cpp PiglerServer.cpp
-SOURCEPATH ..\plugin\rss
+SOURCEPATH ..\rss
 START RESOURCE piglerplugin.rss
 	TARGETPATH \resource\plugins
 END
