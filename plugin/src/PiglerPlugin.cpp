@@ -107,15 +107,18 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 
 TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
-	for (TInt i = iItems->Count()-1; i > 0; i--) {
+	TInt removed = 0;
+	for (TInt i = iItems->Count()-1; i >= 0; i--) {
 		TNotificationItem item = iItems->At(i);
 		if (item.appName.Compare(aMessage.appName) == 0) {
 			RemoveStatusPanelItem(item.uid);
 			iItems->Delete(i);
+			removed++;
 		}
 	}
 	iItems->Compress();
-	return KErrNone;
+	// возвращать колво удаленных уведов
+	return removed;
 }
 
 TInt PiglerPlugin::GetLastTappedAppItem(TPiglerMessage aMessage)
