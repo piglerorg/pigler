@@ -41,6 +41,8 @@ public:
 	
 	/**
 	 * Removes all notifications created by this app
+	 * 
+	 * Returns removed items count
 	 */
 	TInt RemoveAllNotifications();
 	
@@ -61,6 +63,9 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * 
+	 * @param uid Notification UID
+	 * @param remove
 	 */
 	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
 	
@@ -72,8 +77,11 @@ public:
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
 	 * KErrUnderflow if icon or mask have the smaller size than 68x68
+	 * 
+	 * @param uid Notification UID
+	 * @param iconBitmap Icon bitmap in ARGB32 format
 	 */
-	TInt SetNotificationIcon(TInt uid, TPtrC8& icon, TPtrC8& mask);
+	TInt SetNotificationIcon(TInt uid, TPtrC8& iconBitmap);
 	
 	/**
 	 * Closes API connection
@@ -82,7 +90,7 @@ public:
 private:
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
-    TBuf<64> iAppName;
+	TBuf<64> iAppName;
 };
 
 /**

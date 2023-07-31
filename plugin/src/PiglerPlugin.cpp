@@ -1,7 +1,6 @@
 #include <mw/gulicon.h>
 #include <eikenv.h>
 #include "PiglerPlugin.h"
-#include <PiglerPlugin.mbg>
 
 //TODO: i will revork this today kek
 
@@ -107,15 +106,18 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 
 TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
-	for (TInt i = iItems->Count()-1; i > 0; i--) {
+	TInt removed = 0;
+	for (TInt i = iItems->Count()-1; i >= 0; i--) {
 		TNotificationItem item = iItems->At(i);
 		if (item.appName.Compare(aMessage.appName) == 0) {
 			RemoveStatusPanelItem(item.uid);
 			iItems->Delete(i);
+			removed++;
 		}
 	}
 	iItems->Compress();
-	return KErrNone;
+	// возвращать колво удаленных уведов
+	return removed;
 }
 
 TInt PiglerPlugin::GetLastTappedAppItem(TPiglerMessage aMessage)
@@ -195,7 +197,7 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 	return NULL;
 }
 
-TInt PiglerPlugin::SetItemIcon(TPiglerIconMessage aMessage) 
+TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr) 
 {
 	//TODO: memory leaks? 
 	//TODO: do not allocate CFbsBitmap if already exists
@@ -223,56 +225,24 @@ TInt PiglerPlugin::SetItemIcon(TPiglerIconMessage aMessage)
 		return KErrGeneral;
 	}
 	
-	if (aMessage.icon.Length() < icon->DataSize()) {
+	if (aIconPtr.Length() < icon->DataSize()) {
 		return KErrUnderflow;
 	}
 	
-	if (aMessage.icon.Length() > icon->DataSize()) {
+	if (aIconPtr.Length() > icon->DataSize()) {
 		return KErrOverflow;
 	}
 	
 	icon->BeginDataAccess();
 	
 	TUint8* data = (TUint8*) icon->DataAddress();
-	const TUint8* from = aMessage.icon.Ptr();
-	TInt amount = aMessage.icon.Length();
+	const TUint8* from = aIconPtr.Ptr();
+	TInt amount = aIconPtr.Length();
 	
 	memcpy(data, from, amount);
 
 	icon->EndDataAccess();
 	icon->Compress();
-	
-	//TODO: remove masks
-	
-//	CFbsBitmap *mask = NULL;
-//	TRAP(error, mask = new (ELeave) CFbsBitmap);
-//	error = mask->Create(TSize(68, 68), EGray256);
-//	
-//	if (error != KErrNone) {
-//		return error;
-//	}
-//	if (mask == NULL) {
-//		return KErrGeneral;
-//	}
-//	
-//	if (aMessage.mask.Length() < mask->DataSize()) {
-//		return KErrUnderflow;
-//	}
-//	
-//	if (aMessage.mask.Length() > mask->DataSize()) {
-//		return KErrOverflow;
-//	}
-//	
-//	mask->BeginDataAccess();
-//	
-//	data = (TUint8*) mask->DataAddress();
-//	from = aMessage.mask.Ptr();
-//	amount = aMessage.mask.Length();
-//	
-//	memcpy(data, from, amount);
-//
-//	mask->EndDataAccess();
-//	mask->Compress();
 	
 	//TODO: free aMessage.icon and aMessage.mask
 	
