@@ -69,7 +69,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.appName = aMessage.appName;
 	item.text = aMessage.text;
 	item.icon = NULL;
-	item.removeOnTap = aMessage.remove;
+	item.removeOnTap = EFalse;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
 	TInt uid = 0;
@@ -167,6 +167,9 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 		// айтема нет в списке поэтому просто удаляем
 		RemoveStatusPanelItem(aUid);
 	}
+	
+	//TODO: show Java or native app if it is already opened
+	//TODO: if not launch it and show it then
 }
 
 TInt PiglerPlugin::getItemIdx(const TInt aUid)

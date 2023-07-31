@@ -20,3 +20,4 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [ ] Java JNI methods
 * [x] Qt utility methods
 * [ ] Application launch on indicator tap
+* [ ] Show indicators on lock screen
