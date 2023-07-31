@@ -41,6 +41,8 @@ public:
 	
 	/**
 	 * Removes all notifications created by this app
+	 * 
+	 * Returns removed items count
 	 */
 	TInt RemoveAllNotifications();
 	
