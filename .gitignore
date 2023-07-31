@@ -9,3 +9,4 @@ api/Makefile_piglerapi_lib.mk
 api/piglerapi.pro.user
 api/piglerapi_lib.mmp
 api/piglerapi_qt_lib.mmp
+.project
