@@ -108,7 +108,9 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
 	for (TInt i = iItems->Count()-1; i > 0; i--) {
-		if (iItems->At(i).appName.Compare(aMessage.appName) == 0) {
+		TNotificationItem item = iItems->At(i);
+		if (item.appName.Compare(aMessage.appName) == 0) {
+			RemoveStatusPanelItem(item.uid);
 			iItems->Delete(i);
 		}
 	}
