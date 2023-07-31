@@ -2,8 +2,6 @@
 #include <eikenv.h>
 #include "PiglerPlugin.h"
 
-//TODO: i will revork this today kek
-
 PiglerPlugin::PiglerPlugin()
 {
 }
@@ -49,7 +47,6 @@ void PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 	app.appName = aMessage.appName;
 	iApps->AppendL(app);
 }
-
 
 TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 {
@@ -135,9 +132,10 @@ TInt PiglerPlugin::GetLastTappedAppItem(TPiglerMessage aMessage)
 TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 {
 	TInt idx = getItemIdx(aMessage.uid);
-	if (idx == KErrNotFound) {
+	if (idx == -1) {
 		return KErrNotFound;
 	}
+	
 	TNotificationItem& item = iItems->At(idx);
 	// проверка на изменение уведомления из другой проги
 	if (item.appName.Compare(aMessage.appName) != 0) {
@@ -191,16 +189,13 @@ HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
 		aTextType = EAknIndicatorPluginLinkText;
-		//TODO: could it be a memory leak?
 		return iItems->At(idx).text.AllocL();
 	}
 	return NULL;
 }
 
-TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr) 
+TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon) 
 {
-	//TODO: memory leaks? 
-	//TODO: do not allocate CFbsBitmap if already exists
 	TInt idx = getItemIdx(aMessage.uid);
 	if (idx == KErrNotFound) {
 		return KErrNotFound;
@@ -215,7 +210,6 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr)
 	
 	CFbsBitmap *icon = NULL;
 	TRAP(error, icon = new (ELeave) CFbsBitmap);
-	//EColor16M = BRG???
 	error = icon->Create(TSize(68, 68), EColor16MA);
 	
 	if (error != KErrNone) {
@@ -224,32 +218,35 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr)
 	if (icon == NULL) {
 		return KErrGeneral;
 	}
-	
-	if (aIconPtr.Length() < icon->DataSize()) {
+
+	TInt amount = aIcon->Length();
+	if (amount < icon->DataSize()) {
 		return KErrUnderflow;
 	}
 	
-	if (aIconPtr.Length() > icon->DataSize()) {
+	if (amount > icon->DataSize()) {
 		return KErrOverflow;
 	}
 	
 	icon->BeginDataAccess();
 	
 	TUint8* data = (TUint8*) icon->DataAddress();
-	const TUint8* from = aIconPtr.Ptr();
-	TInt amount = aIconPtr.Length();
+	const TUint8* from = aIcon->Ptr();
 	
 	memcpy(data, from, amount);
 
 	icon->EndDataAccess();
 	icon->Compress();
 	
-	//TODO: free aMessage.icon and aMessage.mask
-	
 	CGulIcon* gulIcon = NULL;
-	TRAP(error, gulIcon = CGulIcon::NewL(icon)); //, mask
+	TRAP(error, gulIcon = CGulIcon::NewL(icon));
 	if (error != KErrNone) {
 		return error;
+	}
+	
+	delete aIcon;
+	if (item.icon != NULL) {
+		delete item.icon;
 	}
 	
 	item.icon = gulIcon;
@@ -259,9 +256,6 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr)
 
 const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 {
-	// размер иконки разный на Belle Refresh и Belle FP1: ~54 и 68 (откуда инфа?)
-	// >>откуда инфа, сравнил
-	// TODO: сделать скейлинг или делать иконки меньшим размером (на клиенте)
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
 		return iItems->At(idx).icon;

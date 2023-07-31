@@ -36,7 +36,7 @@ public:
 	TInt RemoveItems(TPiglerMessage aMessage);
 	TInt GetLastTappedAppItem(TPiglerMessage aMessage);
 	TInt SetRemoveItemOnTap(TPiglerMessage aMessage);
-	TInt SetItemIcon(TPiglerMessage aMessage, TPtrC8 aIconPtr);
+	TInt SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon);
 
 private:
 	TInt getItemIdx(const TInt aUid);

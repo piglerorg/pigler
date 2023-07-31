@@ -56,9 +56,9 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPckg<TPiglerMessage> data(message);
 		aMessage.ReadL(0, data);
 		HBufC8* iconBuf = HBufC8::NewL(aMessage.GetDesLengthL(1));
-		TPtr8 iconPtr(iconBuf->Des());
-		aMessage.ReadL(1, iconPtr);
-		aMessage.Complete(iPlugin->SetItemIcon(message, iconPtr));
+		TPtr8 bufPtr(iconBuf->Des());
+		aMessage.ReadL(1, bufPtr);
+		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
 	}
 	break;
 	default:
