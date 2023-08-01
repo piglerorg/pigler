@@ -2,7 +2,22 @@
 #include <QString>
 #include <QImage>
 
-class PiglerAPI;
+#include "PiglerAPI.h"
+#include "PiglerTapServer.h"
+
+class QPiglerAPI;
+
+class QPiglerTapHandler : public IPiglerTapHandler
+{
+private:
+	QPiglerAPI *api;
+	
+public:
+	IPiglerTapHandler *handler;
+	
+	QPiglerTapHandler(QPiglerAPI *api);
+	virtual void handleTap(TInt uid);
+};
 
 class QPiglerAPI : public QObject
 {
@@ -10,6 +25,7 @@ class QPiglerAPI : public QObject
 	
 private:
 	PiglerAPI* api;
+	QPiglerTapHandler *handler;
 	
 public:
 	explicit QPiglerAPI(QObject* parent);
@@ -20,7 +36,6 @@ public slots:
 	qint32 init();
 	
 	QString appName();
-	QString hexAppName();
 	
 	qint32 setNotification(qint32 notificationId, QString title, QString message);
 	qint32 updateNotification(qint32 notificationId, QString title, QString message);
@@ -36,4 +51,11 @@ public slots:
 	qint32 setNotificationIcon(qint32 notificationId, QImage icon);
 	
 	void close();
+	
+	void doHandleTap(qint32 notificationId);
+	
+	void setTapHandler(IPiglerTapHandler *handler);
+	
+signals:
+	void handleTap(qint32 notificationId);
 };

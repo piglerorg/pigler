@@ -1,11 +1,24 @@
 #include "PiglerAPI.h"
 
+#include "PiglerTapServer.h"
 #include "PiglerProtocol.h"
 #include <random.h>
+
+PiglerAPI::PiglerAPI() :
+	RSessionBase(), server(new CPiglerTapServer)
+{
+	
+}
 
 PiglerAPI::~PiglerAPI()
 {
 	Close();
+	delete server;
+}
+
+void PiglerAPI::SetTapHandler(IPiglerTapHandler *handler)
+{
+	server->SetHandler(handler);
 }
 
 TInt PiglerAPI::Init(TBuf<64> aAppName)
@@ -15,6 +28,11 @@ TInt PiglerAPI::Init(TBuf<64> aAppName)
 		iAppName = aAppName;
 		TPiglerMessage message;
 		message.appName = aAppName;
+		
+		TBuf<128> serverName(_L("PiglerHandler_"));
+		serverName.Append(aAppName);
+		server->StartL(serverName);
+		
 		return this->SendMessage(EInitApp, message);
 	}
 	return err;
@@ -25,6 +43,11 @@ TInt PiglerAPI::Init()
 	TBuf8<64> random;
 	random.SetLength(64);
 	TRandom::RandomL(random);
+	
+	TUint8* ptr = (TUint8*) random.Ptr();
+	for (TInt i = 0; i < random.Length(); ++i) {
+		ptr[i] = (ptr[i] % 26) + 0x41;
+	}
 	
 	TBuf<64> appName;
 	appName.Copy(random);
@@ -90,6 +113,7 @@ TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap)
 void PiglerAPI::Close()
 {
 	RSessionBase::Close();
+	server->Cancel();
 }
 
 TInt PiglerAPI::Connect()

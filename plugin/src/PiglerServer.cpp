@@ -1,6 +1,25 @@
 #include "PiglerServer.h"
 #include "PiglerPlugin.h"
 
+TInt CPiglerTapSession::Connect(TBuf<64> aAppName)
+{
+	TBuf<128> serverName(_L("PiglerHandler_"));
+	serverName.Append(aAppName);
+	return CreateSession(serverName, TVersion(1, 0, 0));
+}
+
+TInt CPiglerTapSession::SendMessage(TInt uid)
+{
+	TPckg<TInt> data(uid);
+	TIpcArgs args(&data);
+	return SendReceive(EHandleTap, args);
+}
+
+void CPiglerTapSession::Close()
+{
+	RSessionBase::Close();
+}
+
 CPiglerServer::CPiglerServer(PiglerPlugin* plugin) :
 	CServer2(EPriorityStandard), iPlugin(plugin)
 {
@@ -21,8 +40,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 	switch (aMessage.Function()) {
 	case EInitApp:
 	{
-		iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId);
-		aMessage.Complete(KErrNone);
+		aMessage.Complete(iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId));
 	}
 	break;
 	case ESetItem:

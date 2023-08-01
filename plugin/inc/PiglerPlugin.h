@@ -16,6 +16,7 @@ struct TNotificationApp
 	TInt secureId;
 	TBuf<64> appName;
 	TInt lastTappedItem;
+	TInt lastMissedItem;
 };
 
 class TUidNotificationMap;
@@ -30,7 +31,7 @@ public:
 	virtual HBufC* TextL(const TInt aUid, TInt& aTextType);
 	virtual const CGulIcon* IconL(const TInt aUid);
 
-	void InitApp(TPiglerMessage aMessage, const TInt secureId);
+	TInt InitApp(TPiglerMessage aMessage, const TInt secureId);
 	TInt SetItem(TPiglerMessage aMessage);
 	TInt RemoveItem(TPiglerMessage aMessage);
 	TInt RemoveItems(TPiglerMessage aMessage);

@@ -10,7 +10,8 @@ enum TPiglerCommands {
 	EGetAppItems,
 	EGetLastTappedAppItem,
 	ESetRemoveItemOnTap,
-	ESetItemIcon
+	ESetItemIcon,
+	EHandleTap
 };
 
 struct TPiglerMessage

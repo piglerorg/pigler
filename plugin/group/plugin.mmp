@@ -19,6 +19,7 @@ LIBRARY	fbscli.lib
 LIBRARY	eikcore.lib
 LIBRARY	cone.lib
 LIBRARY	apparc.lib
+LIBRARY apgrfx.lib
 
 SOURCEPATH ..\src
 SOURCE dllmain.cpp PiglerPlugin.cpp PiglerServer.cpp

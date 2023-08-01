@@ -1,6 +1,8 @@
 #include <mw/gulicon.h>
 #include <eikenv.h>
 #include "PiglerPlugin.h"
+#include <apaid.h>
+#include <apgcli.h>
 
 PiglerPlugin::PiglerPlugin()
 {
@@ -34,18 +36,24 @@ void PiglerPlugin::ConstructL()
 	iServer->StartL(_L("PiglerServer"));
 }
 
-void PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
+TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 {
 	for (TInt i = 0; i < iApps->Count(); i++) {
-		TNotificationApp app = iApps->At(i);
+		TNotificationApp& app = iApps->At(i);
 		if (app.appName.Compare(aMessage.appName) == 0) {
-			return; // прога уже есть в списке
+			app.secureId = aSecureId;
+			TInt lastMissedItem = app.lastMissedItem;
+			app.lastMissedItem = 0;
+			return lastMissedItem; // прога уже есть в списке
 		}
 	}
 	TNotificationApp app;
 	app.secureId = aSecureId;
 	app.appName = aMessage.appName;
+	app.lastMissedItem = 0;
 	iApps->AppendL(app);
+	
+	return 0;
 }
 
 TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
@@ -69,7 +77,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.appName = aMessage.appName;
 	item.text = aMessage.text;
 	item.icon = NULL;
-	item.removeOnTap = EFalse;
+	item.removeOnTap = ETrue;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
 	TInt uid = 0;
@@ -145,6 +153,48 @@ TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 	return KErrNone;
 }
 
+void LaunchApp(TInt aUid)
+{
+	TUid uid = {aUid};
+	TApaAppInfo appInfo;
+	RApaLsSession session;
+	
+	TInt result;
+	
+	result = session.Connect();
+	
+	if (result != KErrNone) {
+		return;
+	}
+	
+	result = session.GetAppInfo(appInfo, uid);
+	
+	if (result != KErrNone || appInfo.iUid != uid) {
+		return;
+	}
+	
+	CApaCommandLine* cli = CApaCommandLine::NewL();
+	cli->SetExecutableNameL(appInfo.iFullName);
+	session.StartApp(*cli);
+	delete cli;
+}
+
+TBool NotifyApp(TNotificationItem item)
+{
+	CPiglerTapSession session;
+	
+	if (session.Connect(item.appName) != KErrNone) {
+		return EFalse;
+	}
+	
+	if (session.SendMessage(item.uid) != KErrNone) {
+		return EFalse;
+	}
+	
+	session.Close();
+	return ETrue;
+}
+
 void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 {
 	// TODO: add tap handling
@@ -155,6 +205,10 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 			TNotificationApp& app = iApps->At(i);
 			if (app.appName.Compare(item.appName) == 0) {
 				app.lastTappedItem = aUid;
+				if (!NotifyApp(item)) {
+					app.lastMissedItem = aUid;
+				}
+				LaunchApp(app.secureId);
 				break;
 			}
 		}

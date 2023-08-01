@@ -1,17 +1,41 @@
 #include "QPiglerAPI.h"
 
-#include "PiglerAPI.h"
+QPiglerTapHandler::QPiglerTapHandler(QPiglerAPI *api) : api(api), handler(NULL)
+{
+	
+}
+
+void QPiglerTapHandler::handleTap(TInt uid)
+{
+	api->doHandleTap(uid);
+	
+	if (handler) {
+		handler->handleTap(uid);
+	}
+}
+
+void QPiglerAPI::doHandleTap(qint32 notificationId)
+{
+	emit handleTap(notificationId);
+}
+
+void QPiglerAPI::setTapHandler(IPiglerTapHandler *handler)
+{
+	this->handler->handler = handler;
+}
 
 QPiglerAPI::QPiglerAPI(QObject* parent)
 	: QObject(parent)
 	, api(new PiglerAPI)
+	, handler(new QPiglerTapHandler(this))
 {
-	
+	api->SetTapHandler(handler);
 }
 
 QPiglerAPI::~QPiglerAPI()
 {
 	delete api;
+	delete handler;
 }
 
 qint32 QPiglerAPI::init()
@@ -23,12 +47,6 @@ QString QPiglerAPI::appName()
 {
 	TBuf<64> buf = api->GetAppName();
 	return QString::fromUtf16(buf.Ptr(), buf.Length());
-}
-
-QString QPiglerAPI::hexAppName()
-{
-	TBuf<64> buf = api->GetAppName();
-	return QString(QByteArray::fromRawData((const char*) buf.Ptr(), buf.Length() * 2).toHex());
 }
 
 qint32 QPiglerAPI::init(QString name)

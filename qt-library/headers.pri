@@ -6,6 +6,7 @@ INCLUDEPATH += \
 	$$PWD/../plugin/inc
 	
 HEADERS += \
-	$$PWD/inc/QPiglerAPI.h \
+    $$PWD/inc/QPiglerAPI.h \
     $$PWD/../sym-library/inc/PiglerAPI.h \
+    $$PWD/../sym-library/inc/PiglerTapServer.h \
     $$PWD/../plugin/inc/PiglerProtocol.h

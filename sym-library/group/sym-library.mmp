@@ -9,4 +9,4 @@ USERINCLUDE ../inc
 APP_LAYER_SYSTEMINCLUDE
 
 SOURCEPATH ../src
-SOURCE PiglerAPI.cpp
+SOURCE PiglerAPI.cpp PiglerTapServer.cpp

@@ -15,14 +15,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     
-    qint32 error = api->init();
-    if(error) {
-        log("API init error: " + QString::number(error));
+    connect(api, SIGNAL(handleTap(qint32)), this, SLOT(notificationTapped(qint32)));
+    
+    qint32 response = api->init("HelloWorld");
+    if(response < 0) {
+        log("API init error: " + QString::number(response));
         api->deleteLater();
         api = NULL;
+    } else if (response > 0) {
+        log("API initialized. Got missed notification: " + QString::number(response));
     } else {
-        log("API initialized: " + api->hexAppName());
+        log("API initialized: " + api->appName());
     }
+}
+
+void MainWindow::notificationTapped(qint32 id)
+{
+	log("Notification tapped: " + QString::number(id));
 }
 
 MainWindow::~MainWindow()
