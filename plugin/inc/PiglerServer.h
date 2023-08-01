@@ -6,7 +6,7 @@
 class CPiglerTapSession: private RSessionBase {
 public:
 	TInt Connect(TBuf<64> appName);
-	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
+	TInt SendMessage(TInt uid);
 	void Close();
 };
 

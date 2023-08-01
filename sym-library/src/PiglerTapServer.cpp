@@ -27,13 +27,10 @@ void CPiglerTapSession::ServiceL(const RMessage2& aMessage)
 	switch (aMessage.Function()) {
 	case EHandleTap:
 	{
-		if (!handler) {
-			aMessage.Complete(KErrNotFound);
-			return;
+		if (handler) {
+			handler->handleTap(ReadMessage(aMessage));
 		}
-
-		TPiglerMessage message = ReadMessage(aMessage);
-		handler->handleTap(message.uid, message.appName, message.text, message.remove);
+		
 		aMessage.Complete(KErrNone);
 		break;
 	}
@@ -44,9 +41,9 @@ void CPiglerTapSession::ServiceL(const RMessage2& aMessage)
 	}
 }
 
-TPiglerMessage CPiglerTapSession::ReadMessage(const RMessage2& aMessage) {
-	TPiglerMessage message;
-	TPckg<TPiglerMessage> data(message);
+TInt CPiglerTapSession::ReadMessage(const RMessage2& aMessage) {
+	TInt message;
+	TPckg<TInt> data(message);
 	aMessage.ReadL(0, data);
 	return message;
 }

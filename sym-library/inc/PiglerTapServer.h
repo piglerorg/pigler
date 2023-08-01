@@ -20,7 +20,7 @@ NONSHARABLE_CLASS(CPiglerTapSession): public CSession2
 {
 private:
 	IPiglerTapHandler *handler;
-	TPiglerMessage ReadMessage(const RMessage2& message);
+	TInt ReadMessage(const RMessage2& message);
 
 public:
 	CPiglerTapSession(IPiglerTapHandler *handler);

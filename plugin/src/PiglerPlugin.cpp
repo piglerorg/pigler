@@ -36,18 +36,24 @@ void PiglerPlugin::ConstructL()
 	iServer->StartL(_L("PiglerServer"));
 }
 
-void PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
+TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 {
 	for (TInt i = 0; i < iApps->Count(); i++) {
-		TNotificationApp app = iApps->At(i);
+		TNotificationApp& app = iApps->At(i);
 		if (app.appName.Compare(aMessage.appName) == 0) {
-			return; // прога уже есть в списке
+			app.secureId = aSecureId;
+			TInt lastMissedItem = app.lastMissedItem;
+			app.lastMissedItem = 0;
+			return lastMissedItem; // прога уже есть в списке
 		}
 	}
 	TNotificationApp app;
 	app.secureId = aSecureId;
 	app.appName = aMessage.appName;
+	app.lastMissedItem = 0;
 	iApps->AppendL(app);
+	
+	return 0;
 }
 
 TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
@@ -173,22 +179,20 @@ void LaunchApp(TInt aUid)
 	delete cli;
 }
 
-void NotifyApp(TNotificationItem item)
+TBool NotifyApp(TNotificationItem item)
 {
-	//TODO: Wait for app loading
 	CPiglerTapSession session;
+	
 	if (session.Connect(item.appName) != KErrNone) {
-		return;
+		return EFalse;
 	}
 	
-	TPiglerMessage message;
-	message.uid = item.uid;
-	message.appName = item.appName;
-	message.text = item.text;
-	message.remove = item.removeOnTap;
-	session.SendMessage(EHandleTap, message);
+	if (session.SendMessage(item.uid) != KErrNone) {
+		return EFalse;
+	}
 	
 	session.Close();
+	return ETrue;
 }
 
 void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
@@ -201,8 +205,10 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 			TNotificationApp& app = iApps->At(i);
 			if (app.appName.Compare(item.appName) == 0) {
 				app.lastTappedItem = aUid;
+				if (!NotifyApp(item)) {
+					app.lastMissedItem = aUid;
+				}
 				LaunchApp(app.secureId);
-				NotifyApp(item);
 				break;
 			}
 		}

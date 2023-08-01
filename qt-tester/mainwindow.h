@@ -36,7 +36,7 @@ private slots:
 
     void on_updateBtn_clicked();
     
-    void notificationTapped(qint32 id, QString name, QString text, bool remove);
+    void notificationTapped(qint32 id);
 
 private:
     Ui::MainWindow *ui;

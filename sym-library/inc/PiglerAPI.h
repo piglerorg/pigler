@@ -5,7 +5,7 @@ class CPiglerTapServer;
 
 class IPiglerTapHandler {
 public:
-	virtual void handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove) = 0;
+	virtual void handleTap(TInt uid) = 0;
 };
 
 /**

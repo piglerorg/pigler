@@ -5,21 +5,18 @@ QPiglerTapHandler::QPiglerTapHandler(QPiglerAPI *api) : api(api), handler(NULL)
 	
 }
 
-void QPiglerTapHandler::handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove)
+void QPiglerTapHandler::handleTap(TInt uid)
 {
-	api->doHandleTap(uid, 
-		QString::fromUtf16(appName.Ptr(), appName.Length()),
-		QString::fromUtf16(text.Ptr(), text.Length()),
-		remove);
+	api->doHandleTap(uid);
 	
 	if (handler) {
-		handler->handleTap(uid, appName, text, remove);
+		handler->handleTap(uid);
 	}
 }
 
-void QPiglerAPI::doHandleTap(qint32 notificationId, QString appName, QString text, bool remove)
+void QPiglerAPI::doHandleTap(qint32 notificationId)
 {
-	emit handleTap(notificationId, appName, text, remove);
+	emit handleTap(notificationId);
 }
 
 void QPiglerAPI::setTapHandler(IPiglerTapHandler *handler)

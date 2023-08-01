@@ -16,7 +16,7 @@ public:
 	IPiglerTapHandler *handler;
 	
 	QPiglerTapHandler(QPiglerAPI *api);
-	virtual void handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove);
+	virtual void handleTap(TInt uid);
 };
 
 class QPiglerAPI : public QObject
@@ -52,10 +52,10 @@ public slots:
 	
 	void close();
 	
-	void doHandleTap(qint32 notificationId, QString appName, QString text, bool remove);
+	void doHandleTap(qint32 notificationId);
 	
 	void setTapHandler(IPiglerTapHandler *handler);
 	
 signals:
-	void handleTap(qint32 notificationId, QString appName, QString text, bool remove);
+	void handleTap(qint32 notificationId);
 };

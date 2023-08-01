@@ -8,11 +8,11 @@ TInt CPiglerTapSession::Connect(TBuf<64> aAppName)
 	return CreateSession(serverName, TVersion(1, 0, 0));
 }
 
-TInt CPiglerTapSession::SendMessage(TInt function, const TPiglerMessage aMessage)
+TInt CPiglerTapSession::SendMessage(TInt uid)
 {
-	TPckg<TPiglerMessage> data(aMessage);
+	TPckg<TInt> data(uid);
 	TIpcArgs args(&data);
-	return SendReceive(function, args);
+	return SendReceive(EHandleTap, args);
 }
 
 void CPiglerTapSession::Close()
@@ -40,8 +40,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 	switch (aMessage.Function()) {
 	case EInitApp:
 	{
-		iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId);
-		aMessage.Complete(KErrNone);
+		aMessage.Complete(iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId));
 	}
 	break;
 	case ESetItem:
