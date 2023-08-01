@@ -71,7 +71,7 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.appName = aMessage.appName;
 	item.text = aMessage.text;
 	item.icon = NULL;
-	item.removeOnTap = EFalse;
+	item.removeOnTap = ETrue;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
 	TInt uid = 0;

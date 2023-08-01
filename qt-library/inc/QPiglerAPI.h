@@ -13,6 +13,8 @@ private:
 	QPiglerAPI *api;
 	
 public:
+	IPiglerTapHandler *handler;
+	
 	QPiglerTapHandler(QPiglerAPI *api);
 	virtual void handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove);
 };
@@ -34,7 +36,6 @@ public slots:
 	qint32 init();
 	
 	QString appName();
-	QString hexAppName();
 	
 	qint32 setNotification(qint32 notificationId, QString title, QString message);
 	qint32 updateNotification(qint32 notificationId, QString title, QString message);
@@ -51,8 +52,10 @@ public slots:
 	
 	void close();
 	
-	void doHandleTap(qint32 notificationId, QString appName, QString appNameHex, QString text, bool remove);
+	void doHandleTap(qint32 notificationId, QString appName, QString text, bool remove);
+	
+	void setTapHandler(IPiglerTapHandler *handler);
 	
 signals:
-	void handleTap(qint32 notificationId, QString appName, QString appNameHex, QString text, bool remove);
+	void handleTap(qint32 notificationId, QString appName, QString text, bool remove);
 };

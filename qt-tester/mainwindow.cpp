@@ -15,19 +15,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     
-    connect(api, SIGNAL(handleTap(qint32, QString, QString, QString, bool)), this, SLOT(notificationTapped(qint32, QString, QString, QString, bool)));
+    connect(api, SIGNAL(handleTap(qint32, QString, QString, bool)), this, SLOT(notificationTapped(qint32, QString, QString, bool)));
     
-    qint32 error = api->init();
+    qint32 error = api->init("HelloWorld");
     if(error) {
         log("API init error: " + QString::number(error));
         api->deleteLater();
         api = NULL;
     } else {
-        log("API initialized: " + api->hexAppName());
+        log("API initialized: " + api->appName());
     }
 }
 
-void MainWindow::notificationTapped(qint32 id, QString name, QString hexName, QString text, bool remove)
+void MainWindow::notificationTapped(qint32 id, QString name, QString text, bool remove)
 {
 	log("Notification tapped: " + QString::number(id) + " " + text);
 }
