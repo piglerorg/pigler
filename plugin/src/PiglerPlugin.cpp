@@ -175,6 +175,7 @@ void LaunchApp(TInt aUid)
 
 void NotifyApp(TNotificationItem item)
 {
+	//TODO: Wait for app loading
 	CPiglerTapSession session;
 	if (session.Connect(item.appName) != KErrNone) {
 		return;

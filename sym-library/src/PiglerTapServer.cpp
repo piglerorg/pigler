@@ -1,5 +1,7 @@
 #include "PiglerTapServer.h"
 
+#include "PiglerAPI.h"
+
 CPiglerTapServer::CPiglerTapServer() :
 	CServer2(EPriorityStandard), handler(NULL)
 {
@@ -33,6 +35,7 @@ void CPiglerTapSession::ServiceL(const RMessage2& aMessage)
 		TPiglerMessage message = ReadMessage(aMessage);
 		handler->handleTap(message.uid, message.appName, message.text, message.remove);
 		aMessage.Complete(KErrNone);
+		break;
 	}
 	default:
 	{

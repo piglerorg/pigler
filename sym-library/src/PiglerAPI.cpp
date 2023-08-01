@@ -16,6 +16,11 @@ PiglerAPI::~PiglerAPI()
 	delete server;
 }
 
+void PiglerAPI::SetTapHandler(IPiglerTapHandler *handler)
+{
+	server->SetHandler(handler);
+}
+
 TInt PiglerAPI::Init(TBuf<64> aAppName)
 {
 	TInt err = Connect();
@@ -38,6 +43,11 @@ TInt PiglerAPI::Init()
 	TBuf8<64> random;
 	random.SetLength(64);
 	TRandom::RandomL(random);
+	
+	TUint8* ptr = (TUint8*) random.Ptr();
+	for (TInt i = 0; i < random.Length(); ++i) {
+		ptr[i] = (ptr[i] % 26) + 0x41;
+	}
 	
 	TBuf<64> appName;
 	appName.Copy(random);

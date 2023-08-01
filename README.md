@@ -26,3 +26,4 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [ ] Automatic package creation and installation with JNI library
 * [ ] Notification permissions management
 * [ ] Placeholder icon for notifications without icon
+* [ ] Discreet popup show feature

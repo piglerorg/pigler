@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     
+    connect(api, SIGNAL(handleTap(qint32, QString, QString, QString, bool)), this, SLOT(notificationTapped(qint32, QString, QString, QString, bool)));
+    
     qint32 error = api->init();
     if(error) {
         log("API init error: " + QString::number(error));
@@ -23,6 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
     } else {
         log("API initialized: " + api->hexAppName());
     }
+}
+
+void MainWindow::notificationTapped(qint32 id, QString name, QString hexName, QString text, bool remove)
+{
+	log("Notification tapped: " + QString::number(id) + " " + text);
 }
 
 MainWindow::~MainWindow()

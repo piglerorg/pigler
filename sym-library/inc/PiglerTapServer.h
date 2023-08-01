@@ -3,12 +3,9 @@
 #include <e32base.h>
 #include "PiglerProtocol.h"
 
-class IPiglerTapHandler {
-public:
-	virtual void handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove) = 0;
-};
+class IPiglerTapHandler;
 
-NONSHARABLE_CLASS(CPiglerTapServer): public CServer2
+class CPiglerTapServer : public CServer2
 {
 private:
 	IPiglerTapHandler *handler;

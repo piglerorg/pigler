@@ -3,6 +3,11 @@
 class TPiglerMessage;
 class CPiglerTapServer;
 
+class IPiglerTapHandler {
+public:
+	virtual void handleTap(TInt uid, TBuf<64> appName, TBuf<256> text, TBool remove) = 0;
+};
+
 /**
  * Pigler Notifications API
  */
@@ -103,17 +108,16 @@ public:
 	 * Closes API connection
 	 */
 	void Close();
+	
+	/**
+	 * Sets current tap handler
+	 * 
+	 * @param handler Tap handler, ownership is not transferred
+	 */
+	void SetTapHandler(IPiglerTapHandler *handler);
 private:
-	CPiglerTapServer* server;
+	CPiglerTapServer *server;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;
-};
-
-/**
- * Pigler Notifications handler API
- */
-class PiglerNotificationHandler {
-public:
-	virtual void HandleNotificationTap(TInt uid);
 };
