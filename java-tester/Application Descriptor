@@ -1,0 +1,7 @@
+MIDlet-Vendor: nnproject
+MIDlet-Version: 1.0.0
+MicroEdition-Configuration: CLDC-1.0
+MIDlet-Name: Pigler Tester
+MIDlet-1: Pigler Tester,/testicon.png,org.pigler.tester.PiglerTestMIDlet
+MicroEdition-Profile: MIDP-2.0
+MIDlet-Jar-URL: PiglerTester.jar
