@@ -1,3 +1,6 @@
+#ifndef QPIGLERAPI
+#define QPIGLERAPI
+
 #include <QObject>
 #include <QString>
 #include <QImage>
@@ -59,3 +62,5 @@ public slots:
 signals:
 	void handleTap(qint32 notificationId);
 };
+
+#endif

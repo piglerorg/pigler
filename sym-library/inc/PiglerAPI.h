@@ -1,3 +1,6 @@
+#ifndef PIGLERAPI
+#define PIGLERAPI
+
 #include <e32base.h>
 
 class TPiglerMessage;
@@ -121,3 +124,5 @@ private:
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;
 };
+
+#endif
