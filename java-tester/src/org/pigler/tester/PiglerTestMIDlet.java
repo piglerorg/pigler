@@ -139,7 +139,7 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 				log("Removed: " + String.valueOf(uid));
 			} catch (Exception e) {
 				e.printStackTrace();
-				form.append("Pop: " + e.toString());
+				log("Pop: " + e.toString());
 			}
 			break;
 		case 4:
