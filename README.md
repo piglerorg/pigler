@@ -12,7 +12,8 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [ ] ~~Icon color change depending on theme (as stated in docs)~~
 * [x] Implement indicator icons and various images formats support
 * [x] Find a workaround for missing indicators bug until any system indicator is shown on Symbian Belle
-* [ ] Implement tap handling/callbacking for indicators
+* [x] Implement tap handling/callbacking for indicators for native
+* [] Implement tap handling/callbacking for indicators for Java
 * [ ] ~~Implement a plugin for status pane top indicators~~
 * [x] Implement icon sending and resizing
 * [ ] ~~Notifications saving to DB and load them on system start~~
@@ -27,3 +28,4 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [ ] Notification permissions management
 * [ ] Placeholder icon for notifications without icon
 * [ ] Discreet popup show feature
+* [ ] Javadoc, API docs, building guides
