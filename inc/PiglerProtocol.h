@@ -17,7 +17,7 @@ struct TPiglerMessage
 {
 	TInt uid;
 	TBuf<64> appName;
-	TBuf<128> text;
+	TBuf<256> text;
 	TBool remove;
 };
 

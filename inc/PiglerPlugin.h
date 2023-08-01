@@ -5,7 +5,7 @@ struct TNotificationItem
 {
 	TInt uid;
 	TBuf<64> appName;
-	TBuf<128> text;
+	TBuf<256> text;
 	CGulIcon *icon;
 	TBool removeOnTap;
 };
