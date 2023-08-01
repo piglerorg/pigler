@@ -1,6 +1,25 @@
 #include "PiglerServer.h"
 #include "PiglerPlugin.h"
 
+TInt CPiglerTapSession::Connect(TBuf<64> aAppName)
+{
+	TBuf<128> serverName(_L("PiglerHandler_"));
+	serverName.Append(aAppName);
+	return CreateSession(serverName, TVersion(1, 0, 0));
+}
+
+TInt CPiglerTapSession::SendMessage(TInt function, const TPiglerMessage aMessage)
+{
+	TPckg<TPiglerMessage> data(aMessage);
+	TIpcArgs args(&data);
+	return SendReceive(function, args);
+}
+
+void CPiglerTapSession::Close()
+{
+	RSessionBase::Close();
+}
+
 CPiglerServer::CPiglerServer(PiglerPlugin* plugin) :
 	CServer2(EPriorityStandard), iPlugin(plugin)
 {

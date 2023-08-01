@@ -1,12 +1,14 @@
 #include <e32base.h>
 
 class TPiglerMessage;
+class CPiglerTapServer;
 
 /**
  * Pigler Notifications API
  */
 class PiglerAPI: private RSessionBase {
 public:
+	PiglerAPI();
 	~PiglerAPI();
 	
 	/**
@@ -102,6 +104,7 @@ public:
 	 */
 	void Close();
 private:
+	CPiglerTapServer* server;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;

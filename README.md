@@ -21,6 +21,8 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [x] Qt utility methods
 * [ ] Application launch on indicator tap
 * [ ] Show indicators on lock screen
-* [ ] System beeping function
-* [ ] System notification light function
+* [ ] ~~System beeping function~~
+* [ ] ~~System notification light function~~
 * [ ] Automatic package creation and installation with JNI library
+* [ ] Notification permissions management
+* [ ] Placeholder icon for notifications without icon

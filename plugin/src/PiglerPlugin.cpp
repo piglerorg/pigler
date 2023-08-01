@@ -1,6 +1,8 @@
 #include <mw/gulicon.h>
 #include <eikenv.h>
 #include "PiglerPlugin.h"
+#include <apaid.h>
+#include <apgcli.h>
 
 PiglerPlugin::PiglerPlugin()
 {
@@ -145,6 +147,49 @@ TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 	return KErrNone;
 }
 
+void LaunchApp(TInt aUid)
+{
+	TUid uid = {aUid};
+	TApaAppInfo appInfo;
+	RApaLsSession session;
+	
+	TInt result;
+	
+	result = session.Connect();
+	
+	if (result != KErrNone) {
+		return;
+	}
+	
+	result = session.GetAppInfo(appInfo, uid);
+	
+	if (result != KErrNone || appInfo.iUid != uid) {
+		return;
+	}
+	
+	CApaCommandLine* cli = CApaCommandLine::NewL();
+	cli->SetExecutableNameL(appInfo.iFullName);
+	session.StartApp(*cli);
+	delete cli;
+}
+
+void NotifyApp(TNotificationItem item)
+{
+	CPiglerTapSession session;
+	if (session.Connect(item.appName) != KErrNone) {
+		return;
+	}
+	
+	TPiglerMessage message;
+	message.uid = item.uid;
+	message.appName = item.appName;
+	message.text = item.text;
+	message.remove = item.removeOnTap;
+	session.SendMessage(EHandleTap, message);
+	
+	session.Close();
+}
+
 void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 {
 	// TODO: add tap handling
@@ -155,6 +200,8 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 			TNotificationApp& app = iApps->At(i);
 			if (app.appName.Compare(item.appName) == 0) {
 				app.lastTappedItem = aUid;
+				LaunchApp(app.secureId);
+				NotifyApp(item);
 				break;
 			}
 		}
