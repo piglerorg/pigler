@@ -1,0 +1,12 @@
+TARGET		  piglerapi_sym.lib
+TARGETTYPE	  STDLIB
+UID 0
+
+LIBRARY random.dll
+
+USERINCLUDE ../../plugin/inc
+USERINCLUDE ../inc
+APP_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH ../src
+SOURCE PiglerAPI.cpp

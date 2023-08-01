@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="javasrc"/>
+	<classpathentry kind="lib" path="G:/Nokia/Devices/Nokia_Symbian3_SDK_v1.0/epoc32/release/winscw/udeb/java_signature_test.jar"/>
+	<classpathentry kind="lib" path="G:/Nokia/Devices/Nokia_Symbian3_SDK_v1.0/epoc32/release/winscw/udeb/java_impl_cldc.jar"/>
+	<classpathentry kind="lib" path="G:/Nokia/Devices/Nokia_Symbian3_SDK_v1.0/epoc32/release/winscw/udeb/java_platform_api.jar"/>
+	<classpathentry kind="lib" path="G:/Nokia/Devices/Nokia_Symbian3_SDK_v1.0/epoc32/release/winscw/udeb/java_public_api.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

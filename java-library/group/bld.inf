@@ -2,9 +2,9 @@
 ============================================================================
  Name		: bld.inf
  Author	  : 
- Copyright   : Your copyright notice
+ Copyright   : 
  Description : This file provides the information required for building the
-				whole of a pigler.
+				whole of a PiglerJavaAPI.
 ============================================================================
 */
 
@@ -14,4 +14,4 @@ DEFAULT
 PRJ_EXPORTS
 
 PRJ_MMPFILES
-piglerplugin.mmp
+java-library.mmp

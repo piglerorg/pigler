@@ -1,0 +1,18 @@
+/*
+============================================================================
+ Name		: bld.inf
+ Author	  : 
+ Copyright   : Your copyright notice
+ Description : This file provides the information required for building the
+				whole of a pigler.
+============================================================================
+*/
+
+PRJ_PLATFORMS
+DEFAULT
+
+PRJ_EXPORTS
+../inc/PiglerAPI.h
+
+PRJ_MMPFILES
+sym-library.mmp

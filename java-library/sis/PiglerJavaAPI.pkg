@@ -1,0 +1,9 @@
+#{"Pigler Java API"},(0x20292B70),1,0,0
+
+[0x2003A678], 0, 0, 0, {"S60ProductID"} ; Belle
+
+%{"nnproject"}
+
+:"nnproject"
+
+"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\PiglerJavaAPI.dll"-"c:\sys\bin\PiglerJavaAPI.dll"
