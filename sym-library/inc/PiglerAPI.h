@@ -124,7 +124,7 @@ public:
 	TInt SetRemoveOnTap(TInt uid, TBool remove);
 	
 	/**
-	 * Marks that app needs to be launcher on notification tap,
+	 * Marks that app needs to be launched on notification tap,
 	 * by default this setting is true
 	 * 
 	 * Returns error code
