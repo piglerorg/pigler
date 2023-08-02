@@ -16,3 +16,4 @@ ABLD.BAT
 *.def
 .metadata
 carbide_cs_settings.xml
+*.jar
