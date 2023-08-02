@@ -47,10 +47,11 @@ TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 			return lastMissedItem; // прога уже есть в списке
 		}
 	}
+	
 	TNotificationApp app;
 	app.secureId = aSecureId;
-	app.appId = aMessage.argument;
 	app.appName = aMessage.appName;
+	app.appId = aMessage.argument;
 	app.lastMissedItem = 0;
 	iApps->AppendL(app);
 	
