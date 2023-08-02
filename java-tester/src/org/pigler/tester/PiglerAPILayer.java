@@ -2,6 +2,7 @@ package org.pigler.tester;
 
 import javax.microedition.lcdui.Image;
 
+import org.pigler.api.IPiglerTapHandler;
 import org.pigler.api.PiglerAPI;
 
 public class PiglerAPILayer {
@@ -12,16 +13,16 @@ public class PiglerAPILayer {
 		api = new PiglerAPI();
 	}
 
-	public void init(String string) throws Exception {
-		api.init(string);
+	public void init(String appName) throws Exception {
+		api.init(appName);
 	}
 
 	public void close() {
 		api.close();
 	}
 
-	public int createNotification(String string, String string2, Image icon, boolean b) throws Exception {
-		return api.createNotification(string, string2, icon, b);
+	public int createNotification(String title, String text, Image icon, boolean removeOnTap) throws Exception {
+		return api.createNotification(title, text, icon, removeOnTap);
 	}
 
 	public void removeNotification(int uid) throws Exception {
@@ -32,8 +33,16 @@ public class PiglerAPILayer {
 		return api.removeAllNotifications();
 	}
 
-	public void updateNotification(int uid, String string, String string2) throws Exception {
-		api.updateNotification(uid, string, string2);
+	public void updateNotification(int uid, String title, String text) throws Exception {
+		api.updateNotification(uid, title, text);
+	}
+	
+	public void setListener(final PiglerAPIHandlerLayer handler) {
+		api.setListener(new IPiglerTapHandler() {
+			public void handleNotificationTap(int uid) {
+				handler.handleNotificationTap(uid);
+			}
+		});
 	}
 
 }

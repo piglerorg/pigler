@@ -13,7 +13,7 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 
-public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCommandListener {
+public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCommandListener, PiglerAPIHandlerLayer {
 	
 	private Form form;
 	private PiglerAPILayer api;
@@ -88,6 +88,7 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 		log("PiglerJavaAPI version: " + version);
 		try {
 			api = new PiglerAPILayer();
+			api.setListener(this);
 			api.init("Example");
 			log("API loaded successfuly");
 		} catch (Throwable e) {
@@ -166,6 +167,10 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 
 	public void commandAction(Command c, Item item) {
 		commandAction(c, (Displayable) null);
+	}
+
+	public void handleNotificationTap(int uid) {
+		log("Tap: " + uid);
 	}
 
 }
