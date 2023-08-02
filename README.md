@@ -29,3 +29,4 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [ ] Placeholder icon for notifications without icon
 * [ ] Discreet popup show feature
 * [ ] Javadoc, API docs, building guides
+* [ ] Do not open app on tap option
