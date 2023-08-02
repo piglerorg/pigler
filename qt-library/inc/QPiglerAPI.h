@@ -31,7 +31,7 @@ private:
 	QPiglerTapHandler *handler;
 	
 public:
-	explicit QPiglerAPI(QObject* parent);
+	explicit QPiglerAPI(QObject* parent = 0);
 	~QPiglerAPI();
 	
 public slots:
