@@ -40,6 +40,12 @@ public:
 	TInt Init();
 	
 	/**
+	 * Sets application ID that needs to be launched on notification tap,
+	 * must be called before Init()
+	 */
+	void SetAppId(TInt appId);
+	
+	/**
 	 * Returns API version of installed plugin or error code
 	 * 
 	 * KErrNotReady if connection was not initialized
@@ -162,6 +168,7 @@ private:
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;
 	TBool iConnected;
+	TInt iAppId;
 };
 
 #endif

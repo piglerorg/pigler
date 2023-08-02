@@ -21,6 +21,11 @@ void PiglerAPI::SetTapHandler(IPiglerTapHandler *handler)
 	server->SetHandler(handler);
 }
 
+void PiglerAPI::SetAppId(TInt aAppId)
+{
+	iAppId = aAppId;
+}
+
 TInt PiglerAPI::Init(TBuf<64> aAppName)
 {
 	TInt err = Connect();
@@ -28,6 +33,7 @@ TInt PiglerAPI::Init(TBuf<64> aAppName)
 		iAppName = aAppName;
 		TPiglerMessage message;
 		message.appName = aAppName;
+		message.argument = iAppId;
 		
 		TBuf<128> serverName(_L("PiglerHandler_"));
 		serverName.Append(aAppName);
