@@ -190,7 +190,7 @@ public final class PiglerAPI {
 		Image scaledIcon = DirectUtils.createImage(68, 68, 0);
 		
 		// icon scaling
-		final int targetSize = 53;
+		final int targetSize = 52;
 		int w = icon.getWidth();
 		int h = icon.getHeight();
 		

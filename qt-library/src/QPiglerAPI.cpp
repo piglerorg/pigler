@@ -117,8 +117,8 @@ qint32 QPiglerAPI::setLaunchAppOnTap(qint32 notificationId, bool launch)
 
 qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 {
-	if (icon.width() > 53 || icon.height() > 53) {
-		icon = icon.scaled(53, 53, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	if (icon.width() > 52 || icon.height() > 52) {
+		icon = icon.scaled(52, 52, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 	
 	icon = icon.convertToFormat(QImage::Format_ARGB32);
