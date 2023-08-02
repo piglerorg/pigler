@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import com.nokia.mid.ui.DirectUtils;
+import com.nokia.mj.impl.rt.legacy.LegacyRtPort;
 import com.nokia.mj.impl.rt.support.Finalizer;
 import com.nokia.mj.impl.rt.support.Jvm;
 
@@ -17,10 +18,12 @@ public final class PiglerAPI {
 		}
 	}
 
+	private Finalizer finalizer;
 	private int serverHandle;
 	private int apiHandle;
-	private Finalizer finalizer;
 	private boolean closed;
+	private IPiglerTapHandler listener;
+	private boolean initialized;
 	
 	public PiglerAPI() {
 		finalizer = registerFinalize();
@@ -29,35 +32,45 @@ public final class PiglerAPI {
 	}
 
 	public void init() throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
-		int res = _initRandom(serverHandle, apiHandle);
+		if (initialized) throw new IllegalStateException();
+		int res = _init(serverHandle, apiHandle, LegacyRtPort.getMidletUid(), "JavaApp_" + Integer.toHexString(LegacyRtPort.getMidletUid()));
 		if (res < 0) {
 			throw new PiglerException("Init error: " + res);
 		}
+		initialized = true;
 	}
 
 	public void init(String appName) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		if (initialized) throw new IllegalStateException();
 		if (appName == null) {
 			throw new NullPointerException("appName");
 		}
 		if (appName.length() > 63) {
 			appName = appName.substring(0, 63);
 		}
-		int res = _init(serverHandle, apiHandle, appName);
+		int res = _init(serverHandle, apiHandle, LegacyRtPort.getMidletUid(), appName);
 		if (res < 0) {
 			throw new PiglerException("Init error: " + res);
 		}
+		initialized = true;
+	}
+
+	public void initRandom() throws Exception {
+		if (initialized) throw new IllegalStateException();
+		int res = _initRandom(serverHandle, apiHandle, LegacyRtPort.getMidletUid());
+		if (res < 0) {
+			throw new PiglerException("Init error: " + res);
+		}
+		initialized = true;
 	}
 	
+	public int getAPIVersion() throws Exception {
+		checkClosed();
+		return _getAPIVersion(serverHandle, apiHandle);
+	}
+
 	public int createNotification(String title, String text, Image icon, boolean removeOnTap) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		if (title == null) {
 			title = "";
 		}
@@ -74,9 +87,7 @@ public final class PiglerAPI {
 		if (res < 0) {
 			throw new PiglerException("Create notification error: " + res);
 		}
-		if(removeOnTap) {
-			_setRemoveNotificationOnTap(serverHandle, apiHandle, 0, removeOnTap);
-		}
+		_setRemoveNotificationOnTap(serverHandle, apiHandle, 0, removeOnTap);
 		if (icon != null) {
 			setNotificationIcon(res, icon);
 		}
@@ -89,9 +100,7 @@ public final class PiglerAPI {
 	}
 	
 	public void updateNotification(int uid, String title, String text) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		if (title == null) {
 			title = "";
 		}
@@ -111,9 +120,7 @@ public final class PiglerAPI {
 	}
 	
 	public void updateNotification(int uid, Image icon) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		if (icon == null) {
 			throw new NullPointerException("icon");
 		}
@@ -124,9 +131,7 @@ public final class PiglerAPI {
 	}
 	
 	public void removeNotification(int uid) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		int res = _removeNotification(serverHandle, apiHandle, uid);
 		if (res < 0) {
 			throw new PiglerException("Remove notification error: " + res);
@@ -134,33 +139,54 @@ public final class PiglerAPI {
 	}
 	
 	public int removeAllNotifications() {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		return _removeAllNotifications(serverHandle, apiHandle);
 	}
 	
 	public int getLastTappedNotification() {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		return _getLastTappedNotification(serverHandle, apiHandle);
 	}
 	
 	public void setRemoveNotificationOnTap(int uid, boolean remove) throws Exception {
-		if (closed || apiHandle == 0) {
-			throw new PiglerException("API connection closed");
-		}
+		checkClosed();
 		int res = _setRemoveNotificationOnTap(serverHandle, apiHandle, uid, remove);
 		if (res < 0) {
 			throw new PiglerException("Update notification error: " + res);
 		}
 	}
 	
+	public void setLaunchAppOnTap(int uid, boolean launch) throws Exception {
+		checkClosed();
+		int res = _setLaunchAppOnTap(serverHandle, apiHandle, uid, launch);
+		if (res < 0) {
+			throw new PiglerException("Update notification error: " + res);
+		}
+	}
+	
+	public void setListener(IPiglerTapHandler listener) {
+		this.listener = listener;
+	}
+	
 	public void close() {
 		if (closed || apiHandle == 0) return;
 		closed = true;
 		_close(serverHandle, apiHandle);
+	}
+	
+	private void checkClosed() {
+		if (!initialized) {
+			throw new IllegalStateException();
+		}
+		if (closed || apiHandle == 0) {
+			throw new PiglerException("API connection closed");
+		}
+	}
+	
+	private void notificationCallback(int uid) {
+		if(listener != null) {
+			listener.handleNotificationTap(uid);
+		}
 	}
 	
 	private int setNotificationIcon(int uid, Image icon) {
@@ -203,8 +229,8 @@ public final class PiglerAPI {
 	private native int _createFunctionServer();
 	private native int _createAPI(int serverHandle);
 	private native void _dispose(int serverHandle, int apiHandle);
-	private native int _initRandom(int serverHandle, int apiHandle);
-	private native int _init(int serverHandle, int apiHandle, String appName);
+	private native int _initRandom(int serverHandle, int apiHandle, int midletID);
+	private native int _init(int serverHandle, int apiHandle, int midletID, String appName);
 	private native int _setNotification(int serverHandle, int apiHandle, int uid, String text);
 	private native int _removeNotification(int serverHandle, int apiHandle, int uid);
 	private native int _removeAllNotifications(int serverHandle, int apiHandle);
@@ -212,5 +238,7 @@ public final class PiglerAPI {
 	private native int _setRemoveNotificationOnTap(int serverHandle, int apiHandle, int uid, boolean remove);
 	private native int _setNotificationIcon(int serverHandle, int apiHandle, int uid, int[] rgb);
 	private native void _close(int serverHandle, int apiHandle);
+	private native int _getAPIVersion(int serverHandle, int apiHandle);
+	private native int _setLaunchAppOnTap(int serverHandle, int apiHandle, int uid, boolean launch);
 	
 }

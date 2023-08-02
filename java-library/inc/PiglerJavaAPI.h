@@ -3,10 +3,13 @@
 #include "monitor.h"
 #include "functionserver.h"
 #include "legacyeventserverwrapper.h"
+#include "PiglerAPI.h"
 
 class PiglerAPI;
 
-class PiglerFunctionServer: public java::util::FunctionServer, public LegacyEventServerWrapper {
+class PiglerFunctionServer:
+	public java::util::FunctionServer, public LegacyEventServerWrapper
+{
 public:
 	PiglerFunctionServer(JNIEnv& aJni, jobject aPeer);
 	static TInt NewL(JNIEnv& aJni, jobject aPeer);
@@ -24,14 +27,30 @@ private:
 	java::util::FunctionServer* iServer;
 };
 
-class CPiglerJavaAPI {
+class CPiglerJavaListener:
+	public IPiglerTapHandler
+{
 public:
-	static void NewL(PiglerFunctionServer* aFunctionServer, TInt* aHandle);
+	CPiglerJavaListener(PiglerFunctionServer* aFunctionServer, JNIEnv *aEnv, jobject aObject, jmethodID aMethod);
+	virtual void HandleTap(TInt aUid);
+	void Callback(jint uid);
+private:
+	PiglerFunctionServer *iFunctionServer;
+	JNIEnv *iEnv;
+	jobject iObject;
+	jmethodID iMethod;
+};
+
+class CPiglerJavaAPI
+{
+public:
+	static void NewL(PiglerFunctionServer* aFunctionServer, CPiglerJavaListener *aHandler, TInt* aHandle);
 	~CPiglerJavaAPI();
 	PiglerAPI *iApi;
 	PiglerFunctionServer *iFunctionServer;
+	CPiglerJavaListener *iHandler;
 private:
-	CPiglerJavaAPI(PiglerFunctionServer* aFunctionServer);
+	CPiglerJavaAPI(PiglerFunctionServer* aFunctionServer, CPiglerJavaListener *aHandler);
 	void ConstructL();
 };
 
