@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     org_pigler_api_PiglerAPI
- * Method:    _createFunctionServer
- * Signature: ()I
+ * Method:    _createEventSource
+ * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createFunctionServer
-  (JNIEnv *, jobject);
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createEventSource
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     org_pigler_api_PiglerAPI

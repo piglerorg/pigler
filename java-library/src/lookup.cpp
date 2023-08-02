@@ -8,7 +8,7 @@ typedef void (*TFunc)();
 const FuncTable funcTable[] = {
    { "Java_org_pigler_api_PiglerAPI__1close", (unsigned int) Java_org_pigler_api_PiglerAPI__1close},
    { "Java_org_pigler_api_PiglerAPI__1createAPI", (unsigned int) Java_org_pigler_api_PiglerAPI__1createAPI},
-   { "Java_org_pigler_api_PiglerAPI__1createFunctionServer", (unsigned int) Java_org_pigler_api_PiglerAPI__1createFunctionServer},
+   { "Java_org_pigler_api_PiglerAPI__1createEventSource", (unsigned int) Java_org_pigler_api_PiglerAPI__1createEventSource},
    { "Java_org_pigler_api_PiglerAPI__1dispose", (unsigned int) Java_org_pigler_api_PiglerAPI__1dispose},
    { "Java_org_pigler_api_PiglerAPI__1getAPIVersion", (unsigned int) Java_org_pigler_api_PiglerAPI__1getAPIVersion},
    { "Java_org_pigler_api_PiglerAPI__1getLastTappedNotification", (unsigned int) Java_org_pigler_api_PiglerAPI__1getLastTappedNotification},

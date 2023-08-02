@@ -12,6 +12,7 @@ LIBRARY	euser.lib
 LIBRARY libc.lib
 LIBRARY	libpthread.lib
 LIBRARY	libstdcppv5.lib
+LIBRARY	javalegacyutils.lib
 LIBRARY javautils.dso
 LIBRARY random
 
@@ -34,6 +35,6 @@ OPTION ARMCC --import_all_vtbl
 OPTION GCCE -fvisibility-inlines-hidden
 
 SOURCEPATH ..\src
-SOURCE lookup.cpp PiglerJavaAPI.cpp
+SOURCE lookup.cpp PiglerJavaAPI.cpp PiglerJavaEvent.cpp  PiglerJavaEventSource.cpp
 
 STDCPP
