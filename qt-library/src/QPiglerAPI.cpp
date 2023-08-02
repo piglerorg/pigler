@@ -110,6 +110,11 @@ qint32 QPiglerAPI::setRemoveOnTap(qint32 notificationId, bool remove)
 	return api->SetRemoveOnTap(notificationId, remove);
 }
 
+qint32 QPiglerAPI::setLaunchAppOnTap(qint32 notificationId, bool launch)
+{
+	return api->SetLaunchAppOnTap(notificationId, launch);
+}
+
 qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 {
 	if (icon.width() > 53 || icon.height() > 53) {
