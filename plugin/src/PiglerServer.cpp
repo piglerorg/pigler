@@ -79,9 +79,26 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
 	}
 	break;
-	default:
+	case EGetApiVersion:
+	{
+		aMessage.Complete(KPiglerAPIVersion);
+	}
+	break;
+	case EGetItem:
+	{
+		
+		aMessage.Complete(KErrNotFound);
+	}
+	break;
+	case ESetItemSettings:
 	{
 		aMessage.Complete(KErrNotFound);
+	}
+	break;
+	default:
+	{
+		// функция не поддерживается
+		aMessage.Complete(KErrNotSupported);
 	}
 	}
 }

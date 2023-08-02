@@ -3,7 +3,7 @@
 #include <e32base.h>
 #include "PiglerProtocol.h"
 
-class CPiglerTapSession: private RSessionBase {
+NONSHARABLE_CLASS(CPiglerTapSession): private RSessionBase {
 public:
 	TInt Connect(TBuf<64> appName);
 	TInt SendMessage(TInt uid);
