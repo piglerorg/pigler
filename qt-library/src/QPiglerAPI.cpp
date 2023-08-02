@@ -105,9 +105,9 @@ qint32 QPiglerAPI::getLastTappedNotification()
 	return api->GetLastTappedNotification();
 }
 
-qint32 QPiglerAPI::setRemoveNotificationOnTap(qint32 notificationId, bool remove)
+qint32 QPiglerAPI::setRemoveOnTap(qint32 notificationId, bool remove)
 {
-	return api->SetRemoveNotificationOnTap(notificationId, remove);
+	return api->SetRemoveOnTap(notificationId, remove);
 }
 
 qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)

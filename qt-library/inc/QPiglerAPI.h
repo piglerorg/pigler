@@ -51,7 +51,7 @@ public slots:
 	
 	qint32 getLastTappedNotification();
 	
-	qint32 setRemoveNotificationOnTap(qint32 notificationId, bool remove);
+	qint32 setRemoveOnTap(qint32 notificationId, bool remove);
 	
 	qint32 setNotificationIcon(qint32 notificationId, QImage icon);
 	
