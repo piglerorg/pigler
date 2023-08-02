@@ -9,6 +9,13 @@ import com.nokia.mj.impl.rt.legacy.MIDEventServer;
 import com.nokia.mj.impl.rt.support.Finalizer;
 import com.nokia.mj.impl.rt.support.Jvm;
 
+/**
+ * Pigler Notifications Java API
+ * 
+ * @version v2
+ * 
+ * @author Shinovon
+ */
 public final class PiglerAPI {
 	
 	static {
@@ -91,7 +98,7 @@ public final class PiglerAPI {
 	 * @throws IllegalStateException If connection not initialized or closed
 	 * @throws PiglerException If connection is not ready
 	 * 
-	 * @since PiglerAPI.h v2
+	 * @since v2
 	 */
 	public int getAPIVersion() throws Exception {
 		checkClosed();
@@ -291,7 +298,7 @@ public final class PiglerAPI {
 	 * @throws PiglerException If connection is not ready
 	 * @throws PiglerException If update is failed
 	 * 
-	 * @since PiglerAPI.h v2
+	 * @since v2
 	 */
 	public void setLaunchAppOnTap(int uid, boolean launch) throws Exception {
 		checkClosed();
