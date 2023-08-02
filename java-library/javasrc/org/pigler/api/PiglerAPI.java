@@ -12,7 +12,7 @@ import com.nokia.mj.impl.rt.support.Jvm;
 /**
  * Pigler Notifications Java API
  * 
- * @version v2
+ * @version 1.0, API level 2
  * 
  * @author Shinovon
  */
@@ -93,12 +93,14 @@ public final class PiglerAPI {
 	}
 	
 	/**
-	 * @return API version of installed plugin
+	 * Gets API version of installed plugin
+	 * 
+	 * @return Supported API level
 	 * 
 	 * @throws IllegalStateException If connection not initialized or closed
 	 * @throws PiglerException If connection is not ready
 	 * 
-	 * @since v2
+	 * @since API level 2
 	 */
 	public int getAPIVersion() throws Exception {
 		checkClosed();
@@ -298,7 +300,7 @@ public final class PiglerAPI {
 	 * @throws PiglerException If connection is not ready
 	 * @throws PiglerException If update is failed
 	 * 
-	 * @since v2
+	 * @since API level 2
 	 */
 	public void setLaunchAppOnTap(int uid, boolean launch) throws Exception {
 		checkClosed();
