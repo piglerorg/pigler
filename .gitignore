@@ -15,4 +15,4 @@ ABLD.BAT
 *.d
 *.def
 .metadata
-java-library/.settings/carbide_cs_settings.xml
+carbide_cs_settings.xml
