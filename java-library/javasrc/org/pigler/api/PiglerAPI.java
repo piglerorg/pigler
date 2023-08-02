@@ -240,7 +240,6 @@ public final class PiglerAPI {
 	/**
 	 * Removes all notifications created by this app or session
 	 * 
-	 * @param uid Notification id
 	 * @return Removed notifications count
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
