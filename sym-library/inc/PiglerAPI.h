@@ -8,7 +8,7 @@ class CPiglerTapServer;
 
 class IPiglerTapHandler {
 public:
-	virtual void handleTap(TInt uid) = 0;
+	virtual void HandleTap(TInt uid) = 0;
 };
 
 /**

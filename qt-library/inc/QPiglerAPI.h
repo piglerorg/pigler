@@ -19,7 +19,7 @@ public:
 	IPiglerTapHandler *handler;
 	
 	QPiglerTapHandler(QPiglerAPI *api);
-	virtual void handleTap(TInt uid);
+	virtual void HandleTap(TInt uid);
 };
 
 class QPiglerAPI : public QObject

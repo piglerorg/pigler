@@ -5,12 +5,12 @@ QPiglerTapHandler::QPiglerTapHandler(QPiglerAPI *api) : api(api), handler(NULL)
 	
 }
 
-void QPiglerTapHandler::handleTap(TInt uid)
+void QPiglerTapHandler::HandleTap(TInt uid)
 {
 	api->doHandleTap(uid);
 	
 	if (handler) {
-		handler->handleTap(uid);
+		handler->HandleTap(uid);
 	}
 }
 
