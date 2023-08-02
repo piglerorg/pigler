@@ -12,7 +12,7 @@ enum TPiglerCommands {
 	ESetRemoveItemOnTap,
 	ESetItemIcon,
 	EHandleTap,
-	EGetApiVersion,
+	EGetAPIVersion,
 	EGetItem,
 	ESetItemSettings
 };

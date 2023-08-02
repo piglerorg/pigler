@@ -1,7 +1,7 @@
 #include "AknIndicatorPlugin.h"
 #include "PiglerServer.h"
 
-const TInt KPiglerAPIVersion = 2
+const TInt KPiglerAPIVersion = 2;
 
 struct TNotificationItem
 {

@@ -38,6 +38,7 @@ CPiglerSession::CPiglerSession(PiglerPlugin* aPlugin) :
 void CPiglerSession::ServiceL(const RMessage2& aMessage)
 {
 	switch (aMessage.Function()) {
+	// api base functions
 	case EInitApp:
 	{
 		aMessage.Complete(iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId));
@@ -79,14 +80,14 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
 	}
 	break;
-	case EGetApiVersion:
+	// api v2 functions
+	case EGetAPIVersion:
 	{
 		aMessage.Complete(KPiglerAPIVersion);
 	}
 	break;
 	case EGetItem:
 	{
-		
 		aMessage.Complete(KErrNotFound);
 	}
 	break;

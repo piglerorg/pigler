@@ -22,6 +22,10 @@ public:
 	/**
 	 * Initializes API connection with specified app name
 	 * 
+	 * Returns connection error, or notification UID
+	 * if app was started by tap handle event,
+	 * otherwise KErrNone is returned
+	 * 
 	 * @param appName Application name
 	 */
 	TInt Init(TBuf<64> appName);
@@ -29,12 +33,23 @@ public:
 	/**
 	 * Initializes API connection with random app name
 	 * 
+	 * Returns connection error, or notification UID
+	 * if app was started by tap handle event,
+	 * otherwise KErrNone is returned
 	 */
 	TInt Init();
 	
 	/**
-	 * Returns current app name
+	 * Returns API version of installed plugin or error code
 	 * 
+	 * KErrNotReady if connection was not initialized
+	 * 
+	 * @since v2
+	 */
+	TInt GetAPIVersion();
+	
+	/**
+	 * Returns current app name
 	 */
 	TBuf<64> GetAppName();
 	
@@ -45,6 +60,7 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID, 0 - to create
 	 * @param text Notification text
@@ -58,6 +74,7 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 */
@@ -66,7 +83,9 @@ public:
 	/**
 	 * Removes all notifications created by this app
 	 * 
-	 * Returns removed items count
+	 * Returns removed items count or error code
+	 * 
+	 * KErrNotReady if connection was not initialized
 	 */
 	TInt RemoveAllNotifications();
 	
@@ -77,6 +96,7 @@ public:
 	 * 
 	 * KErrNotFound if app is not initialized
 	 * KErrNone if no notification has been tapped yet
+	 * KErrNotReady if connection was not initialized
 	 */
 	TInt GetLastTappedNotification();
 	
@@ -87,6 +107,7 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 * @param remove
@@ -101,6 +122,7 @@ public:
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
 	 * KErrUnderflow if icon or mask have the smaller size than 68x68
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
@@ -123,6 +145,7 @@ private:
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;
+	TBool iConnected;
 };
 
 #endif

@@ -33,7 +33,7 @@ TInt PiglerAPI::Init(TBuf<64> aAppName)
 		serverName.Append(aAppName);
 		server->StartL(serverName);
 		
-		return this->SendMessage(EInitApp, message);
+		return SendMessage(EInitApp, message);
 	}
 	return err;
 }
@@ -55,6 +55,12 @@ TInt PiglerAPI::Init()
 	return Init(appName);
 }
 
+TInt PiglerAPI::GetAPIVersion()
+{
+	if (!iConnected) return KErrNotReady;
+	return SendReceive(EGetAPIVersion);
+}
+
 TBuf<64> PiglerAPI::GetAppName()
 {
 	return iAppName;
@@ -62,46 +68,52 @@ TBuf<64> PiglerAPI::GetAppName()
 
 TInt PiglerAPI::SetNotification(TInt aUid, TBuf<256> aText)
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.uid = aUid;
 	message.appName = iAppName;
 	message.text = aText;
-	return this->SendMessage(ESetItem, message);
+	return SendMessage(ESetItem, message);
 }
 
 TInt PiglerAPI::RemoveNotification(TInt aUid)
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.uid = aUid;
 	message.appName = iAppName;
-	return this->SendMessage(ERemoveItem, message);
+	return SendMessage(ERemoveItem, message);
 }
 
 TInt PiglerAPI::RemoveAllNotifications()
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.appName = iAppName;
-	return this->SendMessage(ERemoveAppItems, message);
+	return SendMessage(ERemoveAppItems, message);
 }
 
 TInt PiglerAPI::GetLastTappedNotification()
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.appName = iAppName;
-	return this->SendMessage(EGetLastTappedAppItem, message);
+	return SendMessage(EGetLastTappedAppItem, message);
 }
 
 TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.appName = iAppName;
 	message.uid = aUid;
 	message.remove = aRemove;
-	return this->SendMessage(ESetRemoveItemOnTap, message);
+	return SendMessage(ESetRemoveItemOnTap, message);
 }
 
 TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap)
 {
+	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
 	message.appName = iAppName;
 	message.uid = aUid;
@@ -112,13 +124,19 @@ TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap)
 
 void PiglerAPI::Close()
 {
-	RSessionBase::Close();
+	if (iConnected) {
+		RSessionBase::Close();
+	}
 	server->Cancel();
 }
 
 TInt PiglerAPI::Connect()
 {
-	return CreateSession(_L("PiglerServer"), TVersion(1, 0, 0));
+	TInt res = CreateSession(_L("PiglerServer"), TVersion(1, 0, 0));
+	if(res == KErrNone) {
+		iConnected = ETrue;
+	}
+	return res;
 }
 
 TInt PiglerAPI::SendMessage(TInt function, const TPiglerMessage aMessage)
