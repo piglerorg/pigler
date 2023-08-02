@@ -167,7 +167,7 @@ public:
 	 */
 	void SetTapHandler(IPiglerTapHandler *handler);
 private:
-	CPiglerTapServer *server;
+	CPiglerTapServer *iServer;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;

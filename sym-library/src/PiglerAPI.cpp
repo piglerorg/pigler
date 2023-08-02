@@ -5,7 +5,7 @@
 #include <random.h>
 
 PiglerAPI::PiglerAPI() :
-	RSessionBase(), server(new CPiglerTapServer)
+	RSessionBase(), iServer(new CPiglerTapServer), iConnected(EFalse), iAppId(0)
 {
 	
 }
@@ -13,12 +13,12 @@ PiglerAPI::PiglerAPI() :
 PiglerAPI::~PiglerAPI()
 {
 	Close();
-	delete server;
+	delete iServer;
 }
 
 void PiglerAPI::SetTapHandler(IPiglerTapHandler *handler)
 {
-	server->SetHandler(handler);
+	iServer->SetHandler(handler);
 }
 
 void PiglerAPI::SetAppId(TInt aAppId)
@@ -37,7 +37,7 @@ TInt PiglerAPI::Init(TBuf<64> aAppName)
 		
 		TBuf<128> serverName(_L("PiglerHandler_"));
 		serverName.Append(aAppName);
-		server->StartL(serverName);
+		iServer->StartL(serverName);
 		
 		return SendMessage(EInitApp, message);
 	}
@@ -143,7 +143,7 @@ void PiglerAPI::Close()
 	if (iConnected) {
 		RSessionBase::Close();
 	}
-	server->Cancel();
+	iServer->Cancel();
 }
 
 TInt PiglerAPI::Connect()
