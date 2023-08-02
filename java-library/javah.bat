@@ -1,0 +1,2 @@
+G:\Progs\Java\jdk1.8.0_241\bin\javah.exe -classpath G:\Nokia\Devices\Nokia_Symbian3_SDK_v1.0\epoc32\release\winscw\udeb\java_signature_test.jar;eclipse\bin -d inc org.pigler.api.PiglerAPI
+G:\stol\jrt\build\buildutils\generates60lookup.py --nojxe inc\org_pigler_api_PiglerAPI.h src\lookup.cpp

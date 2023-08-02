@@ -1,38 +1,26 @@
 #include <e32base.h>
 #include "jni.h"
-#include "monitor.h"
-#include "functionserver.h"
-#include "legacyeventserverwrapper.h"
+#include "jutils.h"
+#include "PiglerAPI.h"
+#include "PiglerJavaEventSource.h"
+#include "PiglerJavaEvent.h"
 
 class PiglerAPI;
 
-class PiglerFunctionServer: public java::util::FunctionServer, public LegacyEventServerWrapper {
+class CPiglerJavaAPI:
+	public IPiglerTapHandler
+{
 public:
-	PiglerFunctionServer(JNIEnv& aJni, jobject aPeer);
-	static TInt NewL(JNIEnv& aJni, jobject aPeer);
-	void ConstructL(JNIEnv& aJni, jobject aPeer);
-    JNIEnv* getValidJniEnv();
-	jobject getPeer();
-	~PiglerFunctionServer();
-	java::util::FunctionServer* getFunctionServer() const;
-
-private:
-	void doServerSideInit();
-	void vmDetached();
-private:
-	bool mVmAttached;
-	java::util::FunctionServer* iServer;
-};
-
-class CPiglerJavaAPI {
-public:
-	static void NewL(PiglerFunctionServer* aFunctionServer, TInt* aHandle);
+	static void NewL(CPiglerJavaEventSource* aEventSource, jobject aPeer, TInt* aHandle);
 	~CPiglerJavaAPI();
 	PiglerAPI *iApi;
-	PiglerFunctionServer *iFunctionServer;
+	virtual void HandleTap(TInt aUid);
+	void ConstructL(jobject aPeer);
 private:
-	CPiglerJavaAPI(PiglerFunctionServer* aFunctionServer);
-	void ConstructL();
+	CPiglerJavaAPI(CPiglerJavaEventSource* aEventSource);
+	CPiglerJavaEventSource* iEventSource;
+	jobject iPeer;
+	jmethodID iMethod;
 };
 
 TBuf<64> jstringToTBuf64(JNIEnv*, jstring);

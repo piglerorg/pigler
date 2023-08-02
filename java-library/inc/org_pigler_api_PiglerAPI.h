@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     org_pigler_api_PiglerAPI
- * Method:    _createFunctionServer
- * Signature: ()I
+ * Method:    _createEventSource
+ * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createFunctionServer
-  (JNIEnv *, jobject);
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createEventSource
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     org_pigler_api_PiglerAPI
@@ -34,18 +34,18 @@ JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1dispose
 /*
  * Class:     org_pigler_api_PiglerAPI
  * Method:    _initRandom
- * Signature: (II)I
+ * Signature: (III)I
  */
 JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1initRandom
-  (JNIEnv *, jobject, jint, jint);
+  (JNIEnv *, jobject, jint, jint, jint);
 
 /*
  * Class:     org_pigler_api_PiglerAPI
  * Method:    _init
- * Signature: (IILjava/lang/String;)I
+ * Signature: (IIILjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1init
-  (JNIEnv *, jobject, jint, jint, jstring);
+  (JNIEnv *, jobject, jint, jint, jint, jstring);
 
 /*
  * Class:     org_pigler_api_PiglerAPI
@@ -102,6 +102,22 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotificationIcon
  */
 JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1close
   (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getAPIVersion
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getAPIVersion
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _setLaunchAppOnTap
+ * Signature: (IIIZ)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setLaunchAppOnTap
+  (JNIEnv *, jobject, jint, jint, jint, jboolean);
 
 #ifdef __cplusplus
 }

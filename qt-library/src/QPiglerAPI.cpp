@@ -5,12 +5,12 @@ QPiglerTapHandler::QPiglerTapHandler(QPiglerAPI *api) : api(api), handler(NULL)
 	
 }
 
-void QPiglerTapHandler::handleTap(TInt uid)
+void QPiglerTapHandler::HandleTap(TInt uid)
 {
 	api->doHandleTap(uid);
 	
 	if (handler) {
-		handler->handleTap(uid);
+		handler->HandleTap(uid);
 	}
 }
 
@@ -59,6 +59,11 @@ qint32 QPiglerAPI::init(QString name)
 	return api->Init(buf);
 }
 
+void QPiglerAPI::setAppId(qint32 appId)
+{
+	api->SetAppId(appId);
+}
+
 qint32 QPiglerAPI::setNotification(qint32 notificationId, QString title, QString message)
 {
 	if (title.length() > 63) {
@@ -100,9 +105,14 @@ qint32 QPiglerAPI::getLastTappedNotification()
 	return api->GetLastTappedNotification();
 }
 
-qint32 QPiglerAPI::setRemoveNotificationOnTap(qint32 notificationId, bool remove)
+qint32 QPiglerAPI::setRemoveOnTap(qint32 notificationId, bool remove)
 {
-	return api->SetRemoveNotificationOnTap(notificationId, remove);
+	return api->SetRemoveOnTap(notificationId, remove);
+}
+
+qint32 QPiglerAPI::setLaunchAppOnTap(qint32 notificationId, bool launch)
+{
+	return api->SetLaunchAppOnTap(notificationId, launch);
 }
 
 qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)

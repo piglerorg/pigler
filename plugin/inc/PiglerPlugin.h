@@ -1,6 +1,8 @@
 #include "AknIndicatorPlugin.h"
 #include "PiglerServer.h"
 
+const TInt KPiglerAPIVersion = 2;
+
 struct TNotificationItem
 {
 	TInt uid;
@@ -8,12 +10,14 @@ struct TNotificationItem
 	TBuf<256> text;
 	CGulIcon *icon;
 	TBool removeOnTap;
+	TBool launchApp;
 };
 
 
 struct TNotificationApp
 {
 	TInt secureId;
+	TInt appId;
 	TBuf<64> appName;
 	TInt lastTappedItem;
 	TInt lastMissedItem;
@@ -38,6 +42,8 @@ public:
 	TInt GetLastTappedAppItem(TPiglerMessage aMessage);
 	TInt SetRemoveItemOnTap(TPiglerMessage aMessage);
 	TInt SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon);
+	TInt GetItem(TPiglerMessage& aMessage);
+	TInt SetLaunchOnTap(TPiglerMessage aMessage);
 
 private:
 	TInt getItemIdx(const TInt aUid);

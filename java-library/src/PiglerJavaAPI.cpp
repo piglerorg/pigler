@@ -1,55 +1,11 @@
-#include <e32base.h>
 #include "org_pigler_api_PiglerAPI.h"
-#include "fs_methodcall.h"
 #include "PiglerJavaAPI.h"
-#include "PiglerAPI.h"
-#include "javasymbianoslayer.h"
+#include "JniEnvWrapper.h"
+#include "javacommonutils.h"
 #include "s60commonutils.h"
 
-PiglerFunctionServer::PiglerFunctionServer(JNIEnv& aJni, jobject aPeer):
-	java::util::FunctionServer("PiglerFunctionServer")
-{
-	createServerToNewThread();
-	attachToVm(aJni, aPeer);
-	mVmAttached = true;
-	iServer = reinterpret_cast<java::util::FunctionServer*>(this);
-}
-
-JNIEnv* PiglerFunctionServer::getValidJniEnv()
-{
-	return mJniEnv;
-}
-
-jobject PiglerFunctionServer::getPeer()
-{
-	return mJavaPeerObject;
-}
-
-PiglerFunctionServer::~PiglerFunctionServer()
-{
-	if (mVmAttached) {
-		detachFromVm();
-	}
-	stopServer();
-}
-
-java::util::FunctionServer* PiglerFunctionServer::getFunctionServer() const
-{
-	return iServer;
-}
-
-void PiglerFunctionServer::doServerSideInit()
-{
-	FunctionServer::doServerSideInit();
-}
-
-void PiglerFunctionServer::vmDetached()
-{
-	FunctionServer::vmDetached();
-}
-
-CPiglerJavaAPI::CPiglerJavaAPI(PiglerFunctionServer* aFunctionServer) :
-		iFunctionServer(aFunctionServer)
+CPiglerJavaAPI::CPiglerJavaAPI(CPiglerJavaEventSource* aEventSource):
+	iEventSource(aEventSource)
 {
 }
 
@@ -59,19 +15,34 @@ CPiglerJavaAPI::~CPiglerJavaAPI()
     iApi = NULL;
 }
 
-void CPiglerJavaAPI::ConstructL()
+void CPiglerJavaAPI::ConstructL(jobject aPeer)
 {
-    iApi = new PiglerAPI();
+    iApi = new PiglerAPI;
+    iApi->SetTapHandler(this);
+	iPeer = aPeer;
+	JNIEnv* jniEnv = JniEnvWrapper::GetValidJniRef();
+	jclass classRef = jniEnv->GetObjectClass(aPeer);
+	iMethod = jniEnv->GetMethodID(classRef, "notificationCallback", "(I)V");
 }
 
-void CPiglerJavaAPI::NewL(PiglerFunctionServer* aFunctionServer, TInt* aHandle)
+void CPiglerJavaAPI::HandleTap(TInt aUid)
 {
-	CPiglerJavaAPI* self = new (ELeave) CPiglerJavaAPI(aFunctionServer);
+	CPiglerJavaEvent* javaEvent = new (ELeave) CPiglerJavaEvent(iPeer, iMethod, aUid);
+	iEventSource->PostEvent(javaEvent, CJavaEventBase::EEventPriority);
+}
+
+LOCAL_C void Construct(CPiglerJavaAPI *self, jobject aPeer)
+{
+	self->ConstructL(aPeer);
+}
+
+void CPiglerJavaAPI::NewL(CPiglerJavaEventSource* aEventSource, jobject aPeer, TInt* aHandle)
+{
+	CPiglerJavaAPI* self = new (ELeave) CPiglerJavaAPI(aEventSource);
 	CleanupStack::PushL(self);
-	self->ConstructL();
-	CallMethodL(self, &CPiglerJavaAPI::ConstructL, self->iFunctionServer);
+	aEventSource->Execute(&Construct, self, aPeer);
 	CleanupStack::Pop(self);
-	*aHandle = reinterpret_cast<TInt>(self);
+	*aHandle = JavaMakeHandle(self);
 }
 
 LOCAL_C void Dispose(CPiglerJavaAPI* aApi)
@@ -81,115 +52,197 @@ LOCAL_C void Dispose(CPiglerJavaAPI* aApi)
 
 // JNI implementation
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createFunctionServer(JNIEnv *aEnv, jobject aThis)
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createEventSource(JNIEnv *aEnv, jobject aThis, jint aEventServerHandle)
 {
-	PiglerFunctionServer* functionServer = new PiglerFunctionServer(*aEnv, aThis);
-	return reinterpret_cast<jint>(functionServer);
+	TInt eventSourceHandle = CPiglerJavaEventSource::New(*aEnv, aThis, aEventServerHandle);
+	return eventSourceHandle;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createAPI(JNIEnv *aEnv, jobject aThis, jint aServerHandle)
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createAPI(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
+	jobject peer = aEnv->NewWeakGlobalRef(aThis);
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
 	TInt handle = 0;
-	TRAPD(err, CPiglerJavaAPI::NewL(server, &handle))
+	TRAPD(err, CPiglerJavaAPI::NewL(eventSource, peer, &handle))
 	if(err != KErrNone) {
+        aEnv->DeleteWeakGlobalRef((jweak)peer);
 		return err;
 	}
 	return handle;
 }
 
-JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1dispose(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle)
+JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1dispose(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
-	CallMethod(Dispose, api, server);
-	delete server;
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	eventSource->Execute(&Dispose, api);
+	//CallMethod(Dispose, api, server);
+	eventSource->Dispose(*aEnv);
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1initRandom(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle)
+LOCAL_C void SetAppId(PiglerAPI* aApi, TInt aAppId)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
+	aApi->SetAppId(aAppId);
+}
+
+LOCAL_C void Init1(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->Init();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1initRandom(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aAppId)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
 	TInt res = KErrNone;
-	CallMethod(res, api->iApi, &PiglerAPI::Init, server);
+	eventSource->Execute(&SetAppId, api->iApi, aAppId);
+	eventSource->Execute(&Init1, api->iApi, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1init(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle, jstring aAppName)
+LOCAL_C void Init2(PiglerAPI* aApi, JNIEnv *aEnv, jstring aAppName, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
+	TBuf<64> buf = jstringToTBuf64(aEnv, aAppName);
+	*aRes = aApi->Init(buf);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1init(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aAppId, jstring aAppName)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
 	TInt res = KErrNone;
-	TBuf<64> tbuf = jstringToTBuf64(aEnv, aAppName);
-	CallMethod(res, api->iApi, &PiglerAPI::Init, tbuf, server);
+	eventSource->Execute(&SetAppId, api->iApi, aAppId);
+	eventSource->Execute(&Init2, api->iApi, aEnv, aAppName, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotification(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle, jint aUid, jstring aText)
+LOCAL_C void SetNotification(PiglerAPI* aApi, JNIEnv *aEnv, TInt aUid, jstring aText, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
-	TInt res = aUid;
-	TBuf<256> tbuf = jstringToTBuf256(aEnv, aText);
-	CallMethod(res, api->iApi, &PiglerAPI::SetNotification, res, tbuf, server);
+	TBuf<256> buf = jstringToTBuf256(aEnv, aText);
+	*aRes = aApi->SetNotification(aUid, buf);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotification(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aUid, jstring aText)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&SetNotification, api->iApi, aEnv, aUid, aText, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1removeNotification(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle, jint aUid)
+LOCAL_C void Remove(PiglerAPI* aApi, TInt aUid, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
-	TInt res = aUid;
-	CallMethod(res, api->iApi, &PiglerAPI::RemoveNotification, res, server);
+	*aRes = aApi->RemoveNotification(aUid);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1removeNotification(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aUid)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&Remove, api->iApi, aUid, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1removeAllNotifications(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle)
+LOCAL_C void RemoveAll(PiglerAPI* aApi, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
+	*aRes = aApi->RemoveAllNotifications();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1removeAllNotifications(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
 	TInt res = KErrNone;
-	CallMethod(res, api->iApi, &PiglerAPI::RemoveAllNotifications, server);
+	eventSource->Execute(&RemoveAll, api->iApi, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getLastTappedNotification(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle)
+LOCAL_C void GetLastTappedNotification(PiglerAPI* aApi, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
+	*aRes = aApi->GetLastTappedNotification();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getLastTappedNotification(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
 	TInt res = KErrNone;
-	CallMethod(res, api->iApi, &PiglerAPI::GetLastTappedNotification, server);
+	eventSource->Execute(&GetLastTappedNotification, api->iApi, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setRemoveNotificationOnTap(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle, jint aUid, jboolean aRemove)
+LOCAL_C void SetRemoveOnTap(PiglerAPI* aApi, TInt aUid, TBool aRemove, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
-	TInt res = aUid;
-	TBool remove = aRemove;
-	CallMethod(res, api->iApi, &PiglerAPI::SetRemoveNotificationOnTap, res, remove, server);
+	*aRes = aApi->SetRemoveOnTap(aUid, aRemove);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setRemoveNotificationOnTap(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aUid, jboolean aRemove)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&SetRemoveOnTap, api->iApi, (TInt) aUid, (TBool) aRemove, &res);
 	return res;
 }
 
-JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotificationIcon(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle, jint aUid, jintArray aRgb)
+LOCAL_C void SetIcon(PiglerAPI* aApi, JNIEnv *aEnv, TInt aUid, jintArray aRgb, TInt* aRes)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
 	int size = aEnv->GetArrayLength(aRgb);
 	jboolean iscopy;
 	int *rgb = aEnv->GetIntArrayElements(aRgb, &iscopy);
-	TPtrC8 iconBitmap((const TUint8 *) rgb, size * 4);
-	TInt res = aUid;
-	CallMethod(res, api->iApi, &PiglerAPI::SetNotificationIcon, res, iconBitmap, server);
+	TPtrC8 bitmap((const TUint8 *) rgb, size * 4);
+	*aRes = aApi->SetNotificationIcon(aUid, bitmap);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotificationIcon(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aUid, jintArray aRgb)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&SetIcon, api->iApi, aEnv, (TInt) aUid, aRgb, &res);
 	return res;
 }
 
-JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1close(JNIEnv *aEnv, jobject aThis, jint aServerHandle, jint aHandle)
+LOCAL_C void Close(PiglerAPI* aApi)
 {
-    PiglerFunctionServer *server = reinterpret_cast<PiglerFunctionServer *>(aServerHandle);
-	CPiglerJavaAPI* api = reinterpret_cast<CPiglerJavaAPI *>(aHandle);
-	CallMethod(api->iApi, &PiglerAPI::Close, server);
+	aApi->Close();
+}
+
+JNIEXPORT void JNICALL Java_org_pigler_api_PiglerAPI__1close(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	eventSource->Execute(&Close, api->iApi);
+}
+
+LOCAL_C void GetAPIVersion(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->GetAPIVersion();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getAPIVersion(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&GetAPIVersion, api->iApi, &res);
+	return res;
+}
+
+LOCAL_C void SetLaunchOnTap(PiglerAPI* aApi, TInt aUid, TBool aLaunch, TInt* aRes)
+{
+	*aRes = aApi->SetLaunchAppOnTap(aUid, aLaunch);
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setLaunchAppOnTap(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle, jint aUid, jboolean aLaunch)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&SetLaunchOnTap, api->iApi, aUid, (TBool) aLaunch, &res);
+	return res;
 }
 
 TBuf<64> jstringToTBuf64(JNIEnv* aEnv, jstring aJstring) {

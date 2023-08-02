@@ -38,6 +38,7 @@ CPiglerSession::CPiglerSession(PiglerPlugin* aPlugin) :
 void CPiglerSession::ServiceL(const RMessage2& aMessage)
 {
 	switch (aMessage.Function()) {
+	// api base functions
 	case EInitApp:
 	{
 		aMessage.Complete(iPlugin->InitApp(ReadMessage(aMessage), aMessage.SecureId().iId));
@@ -79,9 +80,32 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
 	}
 	break;
+	// api v2 functions
+	case EGetAPIVersion:
+	{
+		aMessage.Complete(KPiglerAPIVersion);
+	}
+	break;
+	case ESetLaunchOnTap:
+	{
+		aMessage.Complete(iPlugin->SetLaunchOnTap(ReadMessage(aMessage)));
+	}
+	break;
+	case EGetItem:
+	{
+		TPiglerMessage message = ReadMessage(aMessage);
+		TInt res = iPlugin->GetItem(message);
+		if(res >= 0) {
+			TPckg<TPiglerMessage> data(message);
+			aMessage.WriteL(1, data);
+		}
+		aMessage.Complete(res);
+	}
+	break;
 	default:
 	{
-		aMessage.Complete(KErrNotFound);
+		// функция не поддерживается
+		aMessage.Complete(KErrNotSupported);
 	}
 	}
 }

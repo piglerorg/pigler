@@ -6,4 +6,6 @@
 
 :"nnproject"
 
-"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\PiglerJavaAPI.dll"-"c:\sys\bin\PiglerJavaAPI.dll"
+"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\piglerjavaapi.dll"-"c:\sys\bin\piglerjavaapi.dll"
+"..\odc\javapiglerapi.odc"-"C:\resource\java\jvm\lib\jrt\javapiglerapi.odc"
+"..\eclipse\javapiglerapi.jar"-"C:\resource\java\jvm\lib\jrt\odc\javapiglerapi.jar"

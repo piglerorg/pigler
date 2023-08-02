@@ -19,7 +19,7 @@ public:
 	IPiglerTapHandler *handler;
 	
 	QPiglerTapHandler(QPiglerAPI *api);
-	virtual void handleTap(TInt uid);
+	virtual void HandleTap(TInt uid);
 };
 
 class QPiglerAPI : public QObject
@@ -38,6 +38,8 @@ public slots:
 	qint32 init(QString name);
 	qint32 init();
 	
+	void setAppId(qint32 appId);
+	
 	QString appName();
 	
 	qint32 setNotification(qint32 notificationId, QString title, QString message);
@@ -49,7 +51,8 @@ public slots:
 	
 	qint32 getLastTappedNotification();
 	
-	qint32 setRemoveNotificationOnTap(qint32 notificationId, bool remove);
+	qint32 setRemoveOnTap(qint32 notificationId, bool remove);
+	qint32 setLaunchAppOnTap(qint32 notificationId, bool launch);
 	
 	qint32 setNotificationIcon(qint32 notificationId, QImage icon);
 	

@@ -1,0 +1,9 @@
+[container]
+name=javapiglerapi.jar
+type=JAR
+
+[packages]
+org/pigler/api
+
+[properties]
+-Dorg.pigler.api.version=1.0

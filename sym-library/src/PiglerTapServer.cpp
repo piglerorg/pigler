@@ -28,7 +28,7 @@ void CPiglerTapSession::ServiceL(const RMessage2& aMessage)
 	case EHandleTap:
 	{
 		if (handler) {
-			handler->handleTap(ReadMessage(aMessage));
+			handler->HandleTap(ReadMessage(aMessage));
 		}
 		
 		aMessage.Complete(KErrNone);

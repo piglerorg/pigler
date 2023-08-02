@@ -6,21 +6,27 @@
 class TPiglerMessage;
 class CPiglerTapServer;
 
-class IPiglerTapHandler {
+class IPiglerTapHandler
+{
 public:
-	virtual void handleTap(TInt uid) = 0;
+	virtual void HandleTap(TInt uid) = 0;
 };
 
 /**
  * Pigler Notifications API
  */
-class PiglerAPI: private RSessionBase {
+class PiglerAPI: private RSessionBase
+{
 public:
 	PiglerAPI();
 	~PiglerAPI();
 	
 	/**
 	 * Initializes API connection with specified app name
+	 * 
+	 * Returns connection error, or notification UID
+	 * if app was started by tap handle event,
+	 * otherwise KErrNone is returned
 	 * 
 	 * @param appName Application name
 	 */
@@ -29,12 +35,29 @@ public:
 	/**
 	 * Initializes API connection with random app name
 	 * 
+	 * Returns connection error, or notification UID
+	 * if app was started by tap handle event,
+	 * otherwise KErrNone is returned
 	 */
 	TInt Init();
 	
 	/**
-	 * Returns current app name
+	 * Sets application ID that needs to be launched on notification tap,
+	 * must be called before Init()
+	 */
+	void SetAppId(TInt appId);
+	
+	/**
+	 * Returns API version of installed plugin or error code
 	 * 
+	 * KErrNotReady if connection was not initialized
+	 * 
+	 * @since v2
+	 */
+	TInt GetAPIVersion();
+	
+	/**
+	 * Returns current app name
 	 */
 	TBuf<64> GetAppName();
 	
@@ -45,6 +68,7 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID, 0 - to create
 	 * @param text Notification text
@@ -58,6 +82,7 @@ public:
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 */
@@ -66,7 +91,9 @@ public:
 	/**
 	 * Removes all notifications created by this app
 	 * 
-	 * Returns removed items count
+	 * Returns removed items count or error code
+	 * 
+	 * KErrNotReady if connection was not initialized
 	 */
 	TInt RemoveAllNotifications();
 	
@@ -77,21 +104,41 @@ public:
 	 * 
 	 * KErrNotFound if app is not initialized
 	 * KErrNone if no notification has been tapped yet
+	 * KErrNotReady if connection was not initialized
 	 */
 	TInt GetLastTappedNotification();
 	
 	/**
-	 * Marks that notification needs to be removed on tap
+	 * Marks that notification needs to be removed on tap,
+	 * by default this setting is true
 	 * 
 	 * Returns error code
 	 * 
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 * @param remove
 	 */
-	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
+	TInt SetRemoveOnTap(TInt uid, TBool remove);
+	
+	/**
+	 * Marks that app needs to be launcher on notification tap,
+	 * by default this setting is true
+	 * 
+	 * Returns error code
+	 * 
+	 * KErrNotFound if there is no such item with that uid
+	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
+	 * 
+	 * @param uid Notification UID
+	 * @param launchOnTap
+	 * 
+	 * @since v2
+	 */
+	TInt SetLaunchAppOnTap(TInt uid, TBool launchOnTap);
 	
 	/**
 	 * Sets notification icon
@@ -101,6 +148,7 @@ public:
 	 * KErrNotFound if there is no such item with that uid
 	 * KErrAccessDenied if item was created by another app
 	 * KErrUnderflow if icon or mask have the smaller size than 68x68
+	 * KErrNotReady if connection was not initialized
 	 * 
 	 * @param uid Notification UID
 	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
@@ -119,10 +167,12 @@ public:
 	 */
 	void SetTapHandler(IPiglerTapHandler *handler);
 private:
-	CPiglerTapServer *server;
+	CPiglerTapServer *iServer;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TBuf<64> iAppName;
+	TBool iConnected;
+	TInt iAppId;
 };
 
 #endif
