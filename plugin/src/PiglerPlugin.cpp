@@ -49,6 +49,7 @@ TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 	}
 	TNotificationApp app;
 	app.secureId = aSecureId;
+	app.appId = aMessage.argument;
 	app.appName = aMessage.appName;
 	app.lastMissedItem = 0;
 	iApps->AppendL(app);
@@ -77,7 +78,9 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	item.appName = aMessage.appName;
 	item.text = aMessage.text;
 	item.icon = NULL;
+	// дефолтные настройки
 	item.removeOnTap = ETrue;
+	item.launchApp = ETrue;
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
 	TInt uid = 0;
@@ -149,7 +152,38 @@ TInt PiglerPlugin::SetRemoveItemOnTap(TPiglerMessage aMessage)
 	if (item.appName.Compare(aMessage.appName) != 0) {
 		return KErrAccessDenied;
 	}
-	item.removeOnTap = aMessage.remove;
+	item.removeOnTap = aMessage.argument;
+	return KErrNone;
+}
+
+TInt PiglerPlugin::GetItem(TPiglerMessage& aMessage)
+{
+	TInt idx = getItemIdx(aMessage.uid);
+	if (idx == -1) {
+		return KErrNotFound;
+	}
+	TNotificationItem item = iItems->At(idx);
+	// проверка на изменение уведомления из другой проги
+	if (item.appName.Compare(aMessage.appName) != 0) {
+		return KErrAccessDenied;
+	}
+	aMessage.text = item.text;
+	aMessage.argument = item.removeOnTap;
+	return idx;
+}
+
+TInt PiglerPlugin::SetLaunchOnTap(TPiglerMessage aMessage)
+{
+	TInt idx = getItemIdx(aMessage.uid);
+	if (idx == -1) {
+		return KErrNotFound;
+	}
+	TNotificationItem& item = iItems->At(idx);
+	// проверка на изменение уведомления из другой проги
+	if (item.appName.Compare(aMessage.appName) != 0) {
+		return KErrAccessDenied;
+	}
+	item.launchApp = aMessage.argument;
 	return KErrNone;
 }
 
@@ -208,7 +242,9 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 				if (!NotifyApp(item)) {
 					app.lastMissedItem = aUid;
 				}
-				LaunchApp(app.secureId);
+				if(!item.launchApp) {
+					LaunchApp(app.secureId);
+				}
 				break;
 			}
 		}

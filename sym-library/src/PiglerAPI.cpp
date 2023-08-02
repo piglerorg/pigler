@@ -107,7 +107,17 @@ TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
 	TPiglerMessage message;
 	message.appName = iAppName;
 	message.uid = aUid;
-	message.remove = aRemove;
+	message.argument = aRemove;
+	return SendMessage(ESetRemoveItemOnTap, message);
+}
+
+TInt PiglerAPI::SetLaunchAppOnNotificationTap(TInt aUid, TBool aLaunchOnTap)
+{
+	if (!iConnected) return KErrNotReady;
+	TPiglerMessage message;
+	message.appName = iAppName;
+	message.uid = aUid;
+	message.argument = aLaunchOnTap;
 	return SendMessage(ESetRemoveItemOnTap, message);
 }
 

@@ -88,12 +88,16 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 	break;
 	case EGetItem:
 	{
-		aMessage.Complete(KErrNotFound);
+		TPiglerMessage message = ReadMessage(aMessage);
+		TInt res = iPlugin->GetItem(message);
+		TPckg<TPiglerMessage> data(message);
+		aMessage.WriteL(1, data);
+		aMessage.Complete(res);
 	}
 	break;
-	case ESetItemSettings:
+	case ESetLaunchOnTap:
 	{
-		aMessage.Complete(KErrNotFound);
+		aMessage.Complete(iPlugin->SetLaunchOnTap(ReadMessage(aMessage)));
 	}
 	break;
 	default:

@@ -6,15 +6,15 @@ enum TPiglerCommands {
 	EInitApp = 1,
 	ESetItem,
 	ERemoveItem,
-	ERemoveAppItems,
+	ERemoveAppItems, // deprecated, use SetItemSettings
 	EGetAppItems,
 	EGetLastTappedAppItem,
 	ESetRemoveItemOnTap,
 	ESetItemIcon,
-	EHandleTap,
+	EHandleTap, // client side
 	EGetAPIVersion,
 	EGetItem,
-	ESetItemSettings
+	ESetLaunchOnTap
 };
 
 struct TPiglerMessage
@@ -22,7 +22,7 @@ struct TPiglerMessage
 	TInt uid;
 	TBuf<64> appName;
 	TBuf<256> text;
-	TBool remove;
+	TInt argument; // removeOnTap or appId
 };
 
 #endif

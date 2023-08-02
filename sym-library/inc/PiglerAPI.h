@@ -101,7 +101,8 @@ public:
 	TInt GetLastTappedNotification();
 	
 	/**
-	 * Marks that notification needs to be removed on tap
+	 * Marks that notification needs to be removed on tap,
+	 * by default this setting is true
 	 * 
 	 * Returns error code
 	 * 
@@ -113,6 +114,21 @@ public:
 	 * @param remove
 	 */
 	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
+	
+	/**
+	 * Marks that app needs to be launcher on notification tap,
+	 * by default this setting is true
+	 * 
+	 * Returns error code
+	 * 
+	 * KErrNotFound if there is no such item with that uid
+	 * KErrAccessDenied if item was created by another app
+	 * KErrNotReady if connection was not initialized
+	 * 
+	 * @param uid Notification UID
+	 * @param launchOnTap
+	 */
+	TInt SetLaunchAppOnNotificationTap(TInt uid, TBool launchOnTap);
 	
 	/**
 	 * Sets notification icon
