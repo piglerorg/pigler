@@ -241,7 +241,7 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 				if (!NotifyApp(item)) {
 					app.lastMissedItem = aUid;
 				}
-				if(!item.launchApp) {
+				if(item.launchApp) {
 					LaunchApp(app.appId != 0 ? app.appId : app.secureId);
 				}
 				break;
