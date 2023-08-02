@@ -59,6 +59,11 @@ qint32 QPiglerAPI::init(QString name)
 	return api->Init(buf);
 }
 
+void QPiglerAPI::setAppId(qint32 appId)
+{
+	api->SetAppId(appId);
+}
+
 qint32 QPiglerAPI::setNotification(qint32 notificationId, QString title, QString message)
 {
 	if (title.length() > 63) {

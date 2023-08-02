@@ -231,7 +231,6 @@ TBool NotifyApp(TNotificationItem item)
 
 void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 {
-	// TODO: add tap handling
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
 		TNotificationItem item = iItems->At(idx);

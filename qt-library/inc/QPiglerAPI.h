@@ -38,6 +38,8 @@ public slots:
 	qint32 init(QString name);
 	qint32 init();
 	
+	void setAppId(qint32 appId);
+	
 	QString appName();
 	
 	qint32 setNotification(qint32 notificationId, QString title, QString message);
