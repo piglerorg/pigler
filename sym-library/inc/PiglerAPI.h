@@ -6,7 +6,8 @@
 class TPiglerMessage;
 class CPiglerTapServer;
 
-class IPiglerTapHandler {
+class IPiglerTapHandler
+{
 public:
 	virtual void HandleTap(TInt uid) = 0;
 };
@@ -14,7 +15,8 @@ public:
 /**
  * Pigler Notifications API
  */
-class PiglerAPI: private RSessionBase {
+class PiglerAPI: private RSessionBase
+{
 public:
 	PiglerAPI();
 	~PiglerAPI();
@@ -119,7 +121,7 @@ public:
 	 * @param uid Notification UID
 	 * @param remove
 	 */
-	TInt SetRemoveNotificationOnTap(TInt uid, TBool remove);
+	TInt SetRemoveOnTap(TInt uid, TBool remove);
 	
 	/**
 	 * Marks that app needs to be launcher on notification tap,
@@ -133,8 +135,10 @@ public:
 	 * 
 	 * @param uid Notification UID
 	 * @param launchOnTap
+	 * 
+	 * @since v2
 	 */
-	TInt SetLaunchAppOnNotificationTap(TInt uid, TBool launchOnTap);
+	TInt SetLaunchAppOnTap(TInt uid, TBool launchOnTap);
 	
 	/**
 	 * Sets notification icon

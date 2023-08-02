@@ -86,18 +86,20 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(KPiglerAPIVersion);
 	}
 	break;
+	case ESetLaunchOnTap:
+	{
+		aMessage.Complete(iPlugin->SetLaunchOnTap(ReadMessage(aMessage)));
+	}
+	break;
 	case EGetItem:
 	{
 		TPiglerMessage message = ReadMessage(aMessage);
 		TInt res = iPlugin->GetItem(message);
-		TPckg<TPiglerMessage> data(message);
-		aMessage.WriteL(1, data);
+		if(res >= 0) {
+			TPckg<TPiglerMessage> data(message);
+			aMessage.WriteL(1, data);
+		}
 		aMessage.Complete(res);
-	}
-	break;
-	case ESetLaunchOnTap:
-	{
-		aMessage.Complete(iPlugin->SetLaunchOnTap(ReadMessage(aMessage)));
 	}
 	break;
 	default:

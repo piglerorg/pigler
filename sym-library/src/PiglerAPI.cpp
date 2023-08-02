@@ -107,7 +107,7 @@ TInt PiglerAPI::GetLastTappedNotification()
 	return SendMessage(EGetLastTappedAppItem, message);
 }
 
-TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
+TInt PiglerAPI::SetRemoveOnTap(TInt aUid, TBool aRemove)
 {
 	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;
@@ -117,7 +117,7 @@ TInt PiglerAPI::SetRemoveNotificationOnTap(TInt aUid, TBool aRemove)
 	return SendMessage(ESetRemoveItemOnTap, message);
 }
 
-TInt PiglerAPI::SetLaunchAppOnNotificationTap(TInt aUid, TBool aLaunchOnTap)
+TInt PiglerAPI::SetLaunchAppOnTap(TInt aUid, TBool aLaunchOnTap)
 {
 	if (!iConnected) return KErrNotReady;
 	TPiglerMessage message;

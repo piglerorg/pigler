@@ -6,15 +6,15 @@ enum TPiglerCommands {
 	EInitApp = 1,
 	ESetItem,
 	ERemoveItem,
-	ERemoveAppItems, // deprecated, use SetItemSettings
+	ERemoveAppItems,
 	EGetAppItems,
 	EGetLastTappedAppItem,
 	ESetRemoveItemOnTap,
 	ESetItemIcon,
 	EHandleTap, // client side
 	EGetAPIVersion,
-	EGetItem,
-	ESetLaunchOnTap
+	ESetLaunchOnTap,
+	EGetItem
 };
 
 struct TPiglerMessage
