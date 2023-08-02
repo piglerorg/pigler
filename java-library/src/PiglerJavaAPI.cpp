@@ -113,7 +113,6 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1init(JNIEnv *aEnv, jobjec
 	TInt res = KErrNone;
 	eventSource->Execute(&SetAppId, api->iApi, aAppId);
 	eventSource->Execute(&Init2, api->iApi, aEnv, aAppName, &res);
-	ELOG(EJavaRuntime, "init done");
 	return res;
 }
 
