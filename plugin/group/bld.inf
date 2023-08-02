@@ -12,7 +12,6 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_EXPORTS
-../inc/PiglerProtocol.h
 
 PRJ_MMPFILES
 plugin.mmp

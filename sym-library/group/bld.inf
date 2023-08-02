@@ -12,7 +12,6 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_EXPORTS
-../inc/PiglerAPI.h
 
 PRJ_MMPFILES
 sym-library.mmp
