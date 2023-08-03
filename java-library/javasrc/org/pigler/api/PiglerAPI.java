@@ -33,6 +33,7 @@ public final class PiglerAPI {
 	private boolean closed;
 	private IPiglerTapHandler listener;
 	private boolean initialized;
+	private String appName;
 	
 	/**
 	 * Creates API instance
@@ -57,7 +58,9 @@ public final class PiglerAPI {
 	public int init() throws Exception {
 		if (initialized) throw new IllegalStateException();
 		//int res = _initRandom(serverHandle, apiHandle, LegacyRtPort.getMidletUid());
-		int res = _init(eventSourceHandle, apiHandle, LegacyRtPort.getMidletUid(), "JavaApp_" + Integer.toHexString(LegacyRtPort.getMidletUid()));
+		String appName = "JavaApp_" + Integer.toHexString(LegacyRtPort.getMidletUid());
+		this.appName = appName;
+		int res = _init(eventSourceHandle, apiHandle, LegacyRtPort.getMidletUid(), appName);
 		if (res < 0) {
 			throw new PiglerException("Init error: " + res);
 		}
@@ -84,6 +87,7 @@ public final class PiglerAPI {
 		if (appName.length() > 63) {
 			appName = appName.substring(0, 63);
 		}
+		this.appName = appName;
 		int res = _init(eventSourceHandle, apiHandle, LegacyRtPort.getMidletUid(), appName);
 		if (res < 0) {
 			throw new PiglerException("Init error: " + res);
@@ -326,6 +330,13 @@ public final class PiglerAPI {
 		if (closed || apiHandle == 0) return;
 		closed = true;
 		_close(eventSourceHandle, apiHandle);
+	}
+	
+	/**
+	 * @return Current app name
+	 */
+	public String getAppName() {
+		return appName;
 	}
 	
 	private void checkClosed() {
