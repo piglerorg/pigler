@@ -6,14 +6,22 @@
 class TPiglerMessage;
 class CPiglerTapServer;
 
+/**
+ * Notification tap handler
+ */
 class IPiglerTapHandler
 {
 public:
+	/**
+	 * @param uid Notification UID
+	 */
 	virtual void HandleTap(TInt uid) = 0;
 };
 
 /**
  * Pigler Notifications API
+ * 
+ * @version v2
  */
 class PiglerAPI: private RSessionBase
 {
@@ -24,7 +32,7 @@ public:
 	/**
 	 * Initializes API connection with specified app name
 	 * 
-	 * Returns connection error, or notification UID
+	 * @return Connection error, or notification UID
 	 * if app was started by tap handle event,
 	 * otherwise KErrNone is returned
 	 * 
@@ -35,7 +43,7 @@ public:
 	/**
 	 * Initializes API connection with random app name
 	 * 
-	 * Returns connection error, or notification UID
+	 * @return Connection error, or notification UID
 	 * if app was started by tap handle event,
 	 * otherwise KErrNone is returned
 	 */
@@ -44,31 +52,35 @@ public:
 	/**
 	 * Sets application ID that needs to be launched on notification tap,
 	 * must be called before Init()
+	 * 
+	 * @param appId Symbian app UID
 	 */
 	void SetAppId(TInt appId);
 	
 	/**
-	 * Returns API version of installed plugin or error code
+	 * @return API version of installed plugin or error code
 	 * 
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @since v2
 	 */
 	TInt GetAPIVersion();
 	
 	/**
-	 * Returns current app name
+	 * @return Current app name
 	 */
 	TBuf<64> GetAppName();
 	
 	/**
 	 * Adds or updates notification
 	 * 
-	 * Returns UID or error code
+	 * @return Notification UID or error code
 	 * 
-	 * KErrNotFound if there is no such item with that uid
-	 * KErrAccessDenied if item was created by another app
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if there is no such item with that uid <br>
+	 * KErrAccessDenied if item was created by another app <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID, 0 - to create
 	 * @param text Notification text
@@ -78,11 +90,12 @@ public:
 	/**
 	 * Removes notification by its UID
 	 * 
-	 * Returns error code
+	 * @return Error code
 	 * 
-	 * KErrNotFound if there is no such item with that uid
-	 * KErrAccessDenied if item was created by another app
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if there is no such item with that uid <br>
+	 * KErrAccessDenied if item was created by another app <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
 	 */
@@ -91,20 +104,22 @@ public:
 	/**
 	 * Removes all notifications created by this app
 	 * 
-	 * Returns removed items count or error code
+	 * @return Removed items count or error code
 	 * 
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotReady if connection was not initialized <br>
 	 */
 	TInt RemoveAllNotifications();
 	
 	/**
 	 * Gets last tapped notification
 	 * 
-	 * Returns UID or error code
+	 * @return Notification UID or error code
 	 * 
-	 * KErrNotFound if app is not initialized
-	 * KErrNone if no notification has been tapped yet
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if app is not initialized <br>
+	 * KErrNone if no notification has been tapped yet <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 */
 	TInt GetLastTappedNotification();
 	
@@ -112,11 +127,12 @@ public:
 	 * Marks that notification needs to be removed on tap,
 	 * by default this setting is true
 	 * 
-	 * Returns error code
+	 * @return Error code
 	 * 
-	 * KErrNotFound if there is no such item with that uid
-	 * KErrAccessDenied if item was created by another app
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if there is no such item with that uid <br>
+	 * KErrAccessDenied if item was created by another app <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
 	 * @param remove
@@ -127,14 +143,17 @@ public:
 	 * Marks that app needs to be launched on notification tap,
 	 * by default this setting is true
 	 * 
-	 * Returns error code
+	 * @return Error code
 	 * 
-	 * KErrNotFound if there is no such item with that uid
-	 * KErrAccessDenied if item was created by another app
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if there is no such item with that uid <br>
+	 * KErrAccessDenied if item was created by another app <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
 	 * @param launchOnTap
+	 * 
+	 * @see PiglerAPI#SetAppId(TInt)
 	 * 
 	 * @since v2
 	 */
@@ -143,12 +162,13 @@ public:
 	/**
 	 * Sets notification icon
 	 * 
-	 * Returns error code
+	 * @return Error code
 	 * 
-	 * KErrNotFound if there is no such item with that uid
-	 * KErrAccessDenied if item was created by another app
-	 * KErrUnderflow if icon or mask have the smaller size than 68x68
-	 * KErrNotReady if connection was not initialized
+	 * <p>Error codes:</p>
+	 * KErrNotFound if there is no such item with that uid <br>
+	 * KErrAccessDenied if item was created by another app <br>
+	 * KErrUnderflow if icon or mask have the smaller size than 68x68 <br>
+	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
 	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
