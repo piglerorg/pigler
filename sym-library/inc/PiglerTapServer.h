@@ -5,7 +5,7 @@
 
 class IPiglerTapHandler;
 
-class CPiglerTapServer : public CServer2
+NONSHARABLE_CLASS(CPiglerTapServer) : public CServer2
 {
 private:
 	IPiglerTapHandler *handler;
