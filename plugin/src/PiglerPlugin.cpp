@@ -262,9 +262,6 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 		// айтема нет в списке поэтому просто удаляем
 		RemoveStatusPanelItem(aUid);
 	}
-	
-	//TODO: show Java or native app if it is already opened
-	//TODO: if not launch it and show it then
 }
 
 TInt PiglerPlugin::getItemIdx(const TInt aUid)
