@@ -48,7 +48,7 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 		
 		StringItem updateBtn = new StringItem(null, "Update", StringItem.BUTTON);
 		updateBtn.setLayout(Item.LAYOUT_EXPAND | Item.LAYOUT_NEWLINE_AFTER);
-		Command updateCmd = new Command("Update", Command.ITEM, 3);
+		Command updateCmd = new Command("Update", Command.ITEM, 5);
 		updateBtn.addCommand(updateCmd);
 		updateBtn.setDefaultCommand(updateCmd);
 		updateBtn.setItemCommandListener(this);
