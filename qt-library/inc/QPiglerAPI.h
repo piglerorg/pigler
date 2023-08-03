@@ -6,7 +6,6 @@
 #include <QImage>
 
 #include "PiglerAPI.h"
-#include "PiglerTapServer.h"
 
 class QPiglerAPI;
 
@@ -27,7 +26,7 @@ class QPiglerAPI : public QObject
 	Q_OBJECT
 	
 private:
-	PiglerAPI* api;
+	PiglerAPI *api;
 	QPiglerTapHandler *handler;
 	
 public:
