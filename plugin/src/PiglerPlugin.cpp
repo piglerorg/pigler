@@ -52,6 +52,7 @@ TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 	app.secureId = aSecureId;
 	app.appName = aMessage.appName;
 	app.appId = aMessage.argument;
+	app.lastTappedItem = 0;
 	app.lastMissedItem = 0;
 	iApps->AppendL(app);
 	
@@ -102,10 +103,12 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 	TInt idx = getItemIdx(aMessage.uid);
 	if (idx != -1) {
 		// проверка на изменение уведомления из другой проги
-		if (iItems->At(idx).appName.Compare(aMessage.appName) != 0) {
+		TNotificationItem item = iItems->At(idx);
+		if (item.appName.Compare(aMessage.appName) != 0) {
 			return KErrAccessDenied;
 		}
 		RemoveStatusPanelItem(aMessage.uid);
+		delete item.icon;
 		iItems->Delete(idx);
 		iItems->Compress();
 		return KErrNone;
@@ -120,6 +123,7 @@ TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 		TNotificationItem item = iItems->At(i);
 		if (item.appName.Compare(aMessage.appName) == 0) {
 			RemoveStatusPanelItem(item.uid);
+			delete item.icon;
 			iItems->Delete(i);
 			removed++;
 		}
@@ -250,6 +254,7 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 		}
 		if (item.removeOnTap) {
 			RemoveStatusPanelItem(aUid);
+			delete item.icon;
 			iItems->Delete(idx);
 			iItems->Compress();
 		}
@@ -338,9 +343,7 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon)
 	}
 	
 	delete aIcon;
-	if (item.icon != NULL) {
-		delete item.icon;
-	}
+	delete item.icon;
 	
 	item.icon = gulIcon;
 	TRAP_IGNORE(UpdateL(item.uid));
