@@ -1,13 +1,8 @@
 #include "QPiglerAPI.h"
 
-QPiglerTapHandler::QPiglerTapHandler(QPiglerAPI *api) : api(api), handler(NULL)
+void QPiglerAPI::HandleTap(TInt uid)
 {
-	
-}
-
-void QPiglerTapHandler::HandleTap(TInt uid)
-{
-	api->doHandleTap(uid);
+	doHandleTap(uid);
 	
 	if (handler) {
 		handler->HandleTap(uid);
@@ -21,15 +16,15 @@ void QPiglerAPI::doHandleTap(qint32 notificationId)
 
 void QPiglerAPI::setTapHandler(IPiglerTapHandler *handler)
 {
-	this->handler->handler = handler;
+	this->handler = handler;
 }
 
 QPiglerAPI::QPiglerAPI(QObject* parent)
 	: QObject(parent)
 	, api(new PiglerAPI)
-	, handler(new QPiglerTapHandler(this))
+	, handler(NULL)
 {
-	api->SetTapHandler(handler);
+	api->SetTapHandler(this);
 }
 
 QPiglerAPI::~QPiglerAPI()
