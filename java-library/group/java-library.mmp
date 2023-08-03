@@ -4,10 +4,12 @@ UID			 0x1000008d 0x20292B70
 
 USERINCLUDE	..\inc
 USERINCLUDE ..\jni_inc
+USERINCLUDE	..\..\sym-library\inc
+USERINCLUDE	..\..\plugin\inc
 
 EPOCALLOWDLLDATA
 
-STATICLIBRARY piglerapi_sym.lib
+// STATICLIBRARY piglerapi_sym.lib
 LIBRARY	euser.lib
 LIBRARY libc.lib
 LIBRARY	libpthread.lib
@@ -36,5 +38,8 @@ OPTION GCCE -fvisibility-inlines-hidden
 
 SOURCEPATH ..\src
 SOURCE lookup.cpp PiglerJavaAPI.cpp PiglerJavaEvent.cpp  PiglerJavaEventSource.cpp
+
+SOURCEPATH ..\..\sym-library\src
+SOURCE PiglerAPI.cpp PiglerTapServer.cpp
 
 STDCPP

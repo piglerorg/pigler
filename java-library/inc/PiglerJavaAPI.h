@@ -7,7 +7,7 @@
 
 class PiglerAPI;
 
-class CPiglerJavaAPI:
+NONSHARABLE_CLASS(CPiglerJavaAPI):
 	public IPiglerTapHandler
 {
 public:
