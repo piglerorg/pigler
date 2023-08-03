@@ -89,8 +89,11 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 		try {
 			api = new PiglerAPILayer();
 			api.setListener(this);
-			api.init("Example");
+			int init = api.init("Example");
 			log("API loaded successfuly");
+			if(init > 0) {
+				log("Got missed tap: " + init);
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 			log("API load: " + e.toString());

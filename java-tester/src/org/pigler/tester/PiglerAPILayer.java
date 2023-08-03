@@ -13,8 +13,8 @@ public class PiglerAPILayer {
 		api = new PiglerAPI();
 	}
 
-	public void init(String appName) throws Exception {
-		api.init(appName);
+	public int init(String appName) throws Exception {
+		return api.init(appName);
 	}
 
 	public void close() {
