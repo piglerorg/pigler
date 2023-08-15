@@ -1,4 +1,4 @@
-# PiglerPlugin
+# Pigler Notifications API
 ### by [shinovon](https://github.com/shinovon) and [curoviyxru](https://github.com/curoviyxru)
 The indicator plugin implementation, currently avaliable for Symbian/Nokia Belle only, written in Symbian C++.<br>
 The purpose of this plugin is to provide easy and open-source API that provides Symbian's notification features.
@@ -7,16 +7,15 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 
 # Planned things:
 * [x] Implement indicator icons and various images formats support
-* [x] Find a workaround for missing indicators bug until any system indicator is shown on Symbian Belle
+* [x] Implement icon sending and resizing
+* [x] Qt utility methods
+* [x] Java JNI methods
+* [x] Application launch on indicator tap
 * [x] Implement tap handling/callbacking for indicators for native
 * [x] Implement tap handling/callbacking for indicators for Java
-* [x] Implement icon sending and resizing
-* [x] Java JNI methods
-* [x] Qt utility methods
-* [x] Application launch on indicator tap
 * [x] Do not open app on tap option
 * [x] Javadoc, API docs, building guides
-* [ ] Reboot phone after package install and uninstall
+* [ ] Reboot phone automatically after package install and uninstall
 * [ ] Automatic package creation and installation with java library
 * [ ] Placeholder icon for notifications without icon
 * [ ] Notification permissions management
