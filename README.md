@@ -44,7 +44,6 @@ Import plugin & sym-library as Symbian OS Bld.inf file
 
 ![image](https://github.com/piglerorg/pigler/assets/43963888/6103a974-e39c-4b96-a532-d269b413b569)
 
-
 ![image](https://github.com/piglerorg/pigler/assets/43963888/560d4ecd-2f15-4a82-b553-a048e81fbdcd)
 
 
@@ -54,6 +53,15 @@ Import qt-library & qt-tester as Qt Project
 
 ![image](https://github.com/piglerorg/pigler/assets/43963888/81f561c8-07e8-49a9-9174-17241bf346d0)
 
+## Building
+
+Select project and its build configuration, then build
+
+![image](https://github.com/piglerorg/pigler/assets/43963888/fbe85e6d-2e89-4516-83ac-c13143987bff)
+
+![image](https://github.com/piglerorg/pigler/assets/43963888/c517419a-440b-41bc-8bad-29f768a12ad8)
+
+![image](https://github.com/piglerorg/pigler/assets/43963888/741ed133-37dd-4426-9049-7fe2287cd923)
 
 
 # Planned things:
