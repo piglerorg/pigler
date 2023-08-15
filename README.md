@@ -5,9 +5,28 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 
 ![Screenshot](screenshot.png)
 
+# Planned things:
+* [x] Implement indicator icons and various images formats support
+* [x] Find a workaround for missing indicators bug until any system indicator is shown on Symbian Belle
+* [x] Implement tap handling/callbacking for indicators for native
+* [x] Implement tap handling/callbacking for indicators for Java
+* [x] Implement icon sending and resizing
+* [x] Java JNI methods
+* [x] Qt utility methods
+* [x] Application launch on indicator tap
+* [x] Do not open app on tap option
+* [x] Javadoc, API docs, building guides
+* [ ] Reboot phone after package install and uninstall
+* [ ] Automatic package creation and installation with java library
+* [ ] Placeholder icon for notifications without icon
+* [ ] Notification permissions management
+* [ ] Discreet popup show feature
+* [ ] System vibration function
+* [ ] Show indicators on lock screen
+
 # Building
 You will need Carbide.c++ v2.7, Qt SDK and Belle SDK for QT SDK<br>
-Links: <a href="https://mrrosset.github.io/Symbian-Archive/Dep&IDE.html">Carbide</a>,  <a href="https://mrrosset.github.io/Symbian-Archive/SDKs-Langs.html">Qt SDK and Belle SDK</a>
+Links: <a href="https://mrrosset.github.io/Symbian-Archive/Dep&IDE.html">Carbide</a>,  <a href="https://mrrosset.github.io/Symbian-Archive/SDKs-Langs.html">Qt SDK and Belle SDK</a> or <a href="https://www.mediafire.com/folder/79jhy594xb3uk/Symbian_Development">Symbian Development</a>
 
 Note: This guide does not show how to build java-library and java-tester
 
@@ -53,7 +72,7 @@ Import qt-library & qt-tester as Qt Project
 
 ![image](https://github.com/piglerorg/pigler/assets/43963888/81f561c8-07e8-49a9-9174-17241bf346d0)
 
-## Building
+## Project building
 
 Select project and its build configuration, then build
 
@@ -62,31 +81,3 @@ Select project and its build configuration, then build
 ![image](https://github.com/piglerorg/pigler/assets/43963888/c517419a-440b-41bc-8bad-29f768a12ad8)
 
 ![image](https://github.com/piglerorg/pigler/assets/43963888/741ed133-37dd-4426-9049-7fe2287cd923)
-
-
-# Planned things:
-* [x] Implement indicator icons and various images formats support
-* [x] Find a workaround for missing indicators bug until any system indicator is shown on Symbian Belle
-* [x] Implement tap handling/callbacking for indicators for native
-* [x] Implement tap handling/callbacking for indicators for Java
-* [x] Implement icon sending and resizing
-* [x] Java JNI methods
-* [x] Qt utility methods
-* [x] Application launch on indicator tap
-* [x] Do not open app on tap option
-* [ ] Javadoc, API docs, building guides
-* [ ] Implement a range of standard icons for notifications
-* [ ] Reboot phone after package install and uninstall
-* [ ] Show indicators on lock screen
-* [ ] System vibration function
-* [ ] Automatic package creation and installation with JNI library
-* [ ] Notification permissions management
-* [ ] Placeholder icon for notifications without icon
-* [ ] Discreet popup show feature
-* [ ] ~~Implement a plugin for status pane top indicators~~
-* [ ] ~~Notifications saving to DB and load them on system start~~
-* [ ] ~~System notification sound / beeping function~~
-* [ ] ~~System notification light function~~
-* [ ] ~~Research for workarounds for Symbian Anna and Symbian 9.4~~
-* [ ] ~~Implement an TCP (or UDP?) server for J2ME and other technology-based apps~~
-* [ ] ~~Icon color change depending on theme (as stated in docs)~~
