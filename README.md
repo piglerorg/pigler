@@ -15,8 +15,8 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [x] Implement tap handling/callbacking for indicators for Java
 * [x] Do not open app on tap option
 * [x] Javadoc, API docs, building guides
+* [x] Automatic package creation and installation with java library
 * [ ] Reboot phone automatically after package install and uninstall
-* [ ] Automatic package creation and installation with java library
 * [ ] Placeholder icon for notifications without icon
 * [ ] Notification permissions management
 * [ ] Discreet popup show feature
