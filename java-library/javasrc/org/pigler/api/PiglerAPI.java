@@ -12,7 +12,7 @@ import com.nokia.mj.impl.rt.support.Jvm;
 /**
  * Pigler Notifications Java API
  * 
- * @version 1.0, API level 2
+ * @version 1.2, API level 3
  * 
  * @author Shinovon
  */
@@ -338,6 +338,26 @@ public final class PiglerAPI {
 	public String getAppName() {
 		return appName;
 	}
+
+	/**
+	 * @return Maximum number of notifications that can be created at one time, -1 if unknown<br>
+	 * depends on platform
+	 * 
+	 * @since Java API 1.2
+	 */
+    public int getMaxNotificationsCount() {
+        return 100;
+    }
+    
+    /**
+	 * @return Number of created notifications by this app
+	 * 
+	 * @since Java API 1.2, API level 3
+	 */
+    public int getNotificationsCount() {
+		checkClosed();
+    	return _getNotificationsCount(eventSourceHandle, apiHandle);
+    }
 	
 	private void checkClosed() {
 		if (!initialized || closed || apiHandle == 0) {
@@ -402,5 +422,6 @@ public final class PiglerAPI {
 	private native void _close(int serverHandle, int apiHandle);
 	private native int _getAPIVersion(int serverHandle, int apiHandle);
 	private native int _setLaunchAppOnTap(int serverHandle, int apiHandle, int uid, boolean launch);
+	private native int _getNotificationsCount(int serverHandle, int apiHandle);
 	
 }

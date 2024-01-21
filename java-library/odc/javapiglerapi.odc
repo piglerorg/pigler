@@ -6,4 +6,4 @@ type=JAR
 org/pigler/api
 
 [properties]
--Dorg.pigler.api.version=1.0
+-Dorg.pigler.api.version=1.2

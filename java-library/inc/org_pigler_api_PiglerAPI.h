@@ -119,6 +119,14 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getAPIVersion
 JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setLaunchAppOnTap
   (JNIEnv *, jobject, jint, jint, jint, jboolean);
 
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getNotificationsCount
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getNotificationsCount
+  (JNIEnv *, jobject, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif
