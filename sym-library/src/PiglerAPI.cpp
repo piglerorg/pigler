@@ -138,6 +138,14 @@ TInt PiglerAPI::SetNotificationIcon(TInt aUid, TPtrC8& aIconBitmap)
 	return SendReceive(ESetItemIcon, args);
 }
 
+TInt PiglerAPI::GetNotificationsCount()
+{
+	if (!iConnected) return KErrNotReady;
+	TPiglerMessage message;
+	message.appName = iAppName;
+	return SendMessage(EGetNotificationsCount, message);
+}
+
 void PiglerAPI::Close()
 {
 	if (iConnected) {

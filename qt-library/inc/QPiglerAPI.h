@@ -111,6 +111,13 @@ public slots:
 	qint32 setNotificationIcon(qint32 notificationId, QImage icon);
 	
 	/**
+	 * @see PiglerAPI#GetNotificationsCount()
+	 * @return Notifications count or error code
+	 * @since v3
+	 */
+	qint32 getNotificationsCount();
+	
+	/**
 	 * @see PiglerAPI#Close()
 	 */
 	void close();

@@ -21,7 +21,7 @@ public:
 /**
  * Pigler Notifications API
  * 
- * @version v2
+ * @version v3
  */
 class PiglerAPI: private RSessionBase
 {
@@ -42,6 +42,10 @@ public:
 	
 	/**
 	 * Initializes API connection with random app name
+	 * 
+	 * Don't use if you need notification callbacks!
+	 * 
+	 * @see PiglerAPI#Init(TBuf<64>)
 	 * 
 	 * @return Connection error, or notification UID
 	 * if app was started by tap handle event,
@@ -174,6 +178,19 @@ public:
 	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
 	 */
 	TInt SetNotificationIcon(TInt uid, TPtrC8& iconBitmap);
+	
+	/**
+	 * Gets number of notifications created by this app
+	 * 
+	 * @return Notifications count or error code
+	 * 
+	 * <p>Error codes:</p>
+	 * KErrNotReady if connection was not initialized <br>
+	 * KErrNotSupported
+	 * 
+	 * @since v3
+	 */
+	TInt GetNotificationsCount();
 	
 	/**
 	 * Closes API connection

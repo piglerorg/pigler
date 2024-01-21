@@ -134,6 +134,11 @@ qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 	return api->SetNotificationIcon(notificationId, buf);
 }
 
+qint32 QPiglerAPI::getNotificationsCount()
+{
+	return api->GetNotificationsCount();
+}
+
 void QPiglerAPI::close()
 {
 	return api->Close();
