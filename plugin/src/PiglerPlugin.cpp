@@ -355,3 +355,16 @@ const CGulIcon* PiglerPlugin::IconL(const TInt aUid)
 	}
 	return NULL;
 }
+
+// v3
+TInt PiglerPlugin::GetNotificationsCount(TPiglerMessage aMessage)
+{
+	TInt count(0);
+	for (TInt i = 0; i < iItems->Count(); i++) {
+		TNotificationItem item = iItems->At(i);
+		if(item.appName.Compare(aMessage.appName) == 0) {
+			count++;
+		}
+	}
+	return count;
+}

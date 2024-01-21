@@ -44,6 +44,7 @@ public:
 	TInt SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon);
 	TInt GetItem(TPiglerMessage& aMessage);
 	TInt SetLaunchOnTap(TPiglerMessage aMessage);
+	TInt GetNotificationsCount(TPiglerMessage aMessage);
 
 private:
 	TInt getItemIdx(const TInt aUid);

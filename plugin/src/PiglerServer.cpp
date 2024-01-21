@@ -102,9 +102,15 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(res);
 	}
 	break;
+	// api v3 functions
+	case EGetNotificationsCount:
+	{
+		aMessage.Complete(iPlugin->GetNotificationsCount(ReadMessage(aMessage)));
+	}
+	break;
 	default:
 	{
-		// функция не поддерживается
+		// not supported function
 		aMessage.Complete(KErrNotSupported);
 	}
 	}

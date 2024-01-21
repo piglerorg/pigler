@@ -14,9 +14,11 @@ enum TPiglerCommands {
 	EHandleTap, // client side
 	EGetAPIVersion,
 	ESetLaunchOnTap,
-	EGetItem
+	EGetItem,
+	EGetNotificationsCount
 };
 
+// DO NOT CHANGE!
 struct TPiglerMessage
 {
 	TInt uid;
