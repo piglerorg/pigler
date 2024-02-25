@@ -12,6 +12,7 @@ const FuncTable funcTable[] = {
    { "Java_org_pigler_api_PiglerAPI__1dispose", (unsigned int) Java_org_pigler_api_PiglerAPI__1dispose},
    { "Java_org_pigler_api_PiglerAPI__1getAPIVersion", (unsigned int) Java_org_pigler_api_PiglerAPI__1getAPIVersion},
    { "Java_org_pigler_api_PiglerAPI__1getLastTappedNotification", (unsigned int) Java_org_pigler_api_PiglerAPI__1getLastTappedNotification},
+   { "Java_org_pigler_api_PiglerAPI__1getNotificationsCount", (unsigned int) Java_org_pigler_api_PiglerAPI__1getNotificationsCount},
    { "Java_org_pigler_api_PiglerAPI__1init", (unsigned int) Java_org_pigler_api_PiglerAPI__1init},
    { "Java_org_pigler_api_PiglerAPI__1initRandom", (unsigned int) Java_org_pigler_api_PiglerAPI__1initRandom},
    { "Java_org_pigler_api_PiglerAPI__1removeAllNotifications", (unsigned int) Java_org_pigler_api_PiglerAPI__1removeAllNotifications},
