@@ -70,8 +70,8 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 				return KErrAccessDenied;
 			}
 			item.text = aMessage.text;
-			UpdateL(item.uid);
-			return KErrNone;
+			TRAPD(error, UpdateL(item.uid));
+			return error;
 		}
 		return KErrNotFound;
 	}
@@ -209,6 +209,7 @@ void LaunchApp(TInt aUid)
 	result = session.GetAppInfo(appInfo, uid);
 	
 	if (result != KErrNone || appInfo.iUid != uid) {
+		session.Close();
 		return;
 	}
 	
@@ -216,6 +217,7 @@ void LaunchApp(TInt aUid)
 	cli->SetExecutableNameL(appInfo.iFullName);
 	session.StartApp(*cli);
 	delete cli;
+	session.Close();
 }
 
 TBool NotifyApp(TNotificationItem item)
@@ -227,6 +229,7 @@ TBool NotifyApp(TNotificationItem item)
 	}
 	
 	if (session.SendMessage(item.uid) != KErrNone) {
+		session.Close();
 		return EFalse;
 	}
 	
