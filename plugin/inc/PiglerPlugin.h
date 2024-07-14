@@ -3,8 +3,8 @@
 
 const TInt KPiglerAPIVersion = 4;
 #ifdef PIGLER_ANNA
-const TInt KMaxNotificationsCount = 3;
-const TInt KMaxNotificationsPerAppCount = 3; // = 1; FIXME
+const TInt KMaxNotificationsCount = 4;
+const TInt KMaxNotificationsPerAppCount = 3; // = 1; TODO ?
 #else
 const TInt KMaxNotificationsCount = 100;
 const TInt KMaxNotificationsPerAppCount = 10;
