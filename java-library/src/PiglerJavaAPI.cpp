@@ -259,6 +259,20 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getNotificationsCount(JNI
 	return res;
 }
 
+LOCAL_C void GetMaxNotificationsCount(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->GetMaxNotificationsCount();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getMaxNotificationsCount(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&GetMaxNotificationsCount, api->iApi, &res);
+	return res;
+}
+
 TBuf<64> jstringToTBuf64(JNIEnv* aEnv, jstring aJstring) {
 	jboolean iscopy;
 	const char* utf8 = aEnv->GetStringUTFChars(aJstring, &iscopy);

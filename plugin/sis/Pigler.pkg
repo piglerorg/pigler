@@ -1,11 +1,18 @@
-#{"Pigler Notifications API"},(0x20292B69),1,1,0
+#{"Pigler Notifications API"},(0x20292B69),1,4,0
 
+[0x1028315F], 0, 0, 0, {"S60ProductID"} ; S60v5
+[0x20022E6D], 0, 0, 0, {"S60ProductID"} ; Symbian^3
 [0x2003A678], 0, 0, 0, {"S60ProductID"} ; Belle
 
 %{"curoviyxru & shinovon"}
 
 :"curoviyxru & shinovon"
 
-"$(EPOCROOT)epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"-"C:\sys\bin\piglerplugin.dll"
+if exists("z:\system\install\Series60v5.3.sis")
+	"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin.dll"-"c:\sys\bin\piglerplugin.dll"
 "$(EPOCROOT)epoc32\data\z\resource\plugins\piglerplugin.rsc"-"C:\resource\plugins\piglerplugin.rsc"
+else
+	"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\piglerplugin_anna.dll"-"c:\sys\bin\piglerplugin.dll"
+"$(EPOCROOT)epoc32\data\z\resource\plugins\piglerplugin_anna.rsc"-"C:\resource\plugins\piglerplugin.rsc"
+endif
 

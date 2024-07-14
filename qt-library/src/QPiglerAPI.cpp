@@ -69,7 +69,9 @@ qint32 QPiglerAPI::setNotification(qint32 notificationId, QString title, QString
 		message = message.left(63);
 	}
 	
-	title += "\n" + message;
+	if (message.length() > 0) {
+		title += "\n" + message;
+	}
 	
 	TBuf<128> buf(title.utf16());
 	return api->SetNotification(notificationId, buf);
@@ -137,6 +139,11 @@ qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 qint32 QPiglerAPI::getNotificationsCount()
 {
 	return api->GetNotificationsCount();
+}
+
+qint32 QPiglerAPI::getMaxNotificationsCount()
+{
+	return api->GetMaxNotificationsCount();
 }
 
 void QPiglerAPI::close()

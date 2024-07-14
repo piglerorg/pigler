@@ -1,8 +1,19 @@
+#include "PiglerPlugin.h"
 #include <mw/gulicon.h>
 #include <eikenv.h>
-#include "PiglerPlugin.h"
 #include <apaid.h>
 #include <apgcli.h>
+
+#ifdef PIGLER_ANNA
+#include <avkon.hrh>
+#include "AknSmallIndicator.h"
+#include "aknstatuspanedatapublisher.h"
+#include "PiglerUids.hrh"
+#include "eikspane.h"
+#include "eiksrvsp.h"
+#endif
+
+static PiglerPlugin *mainPlugin = NULL;
 
 PiglerPlugin::PiglerPlugin()
 {
@@ -17,6 +28,7 @@ PiglerPlugin::~PiglerPlugin()
 	iApps = NULL;
 	delete iItems;
 	iItems = NULL;
+	mainPlugin = NULL;
 }
 
 PiglerPlugin* PiglerPlugin::NewL()
@@ -25,6 +37,7 @@ PiglerPlugin* PiglerPlugin::NewL()
 	CleanupStack::PushL(self);
 	self->ConstructL();
 	CleanupStack::Pop(self);
+	mainPlugin = self;
 	return self;
 }
 
@@ -54,10 +67,20 @@ TInt PiglerPlugin::InitApp(TPiglerMessage aMessage, TInt aSecureId)
 	app.appId = aMessage.argument;
 	app.lastTappedItem = 0;
 	app.lastMissedItem = 0;
+	app.itemsCount = 0;
 	iApps->AppendL(app);
 	
 	return 0;
 }
+
+#ifdef PIGLER_ANNA
+LOCAL_C void SetIndicatorState(TInt aUid, TInt aState) {
+	CEikServStatusPane* ssp = static_cast<CEikServStatusPane*>(CEikStatusPaneBase::Current());
+	CAknStatusPaneDataPublisher* publisher = ssp->iDataPublisher;
+	publisher->SetIndicatorState(TUid::Uid(aUid), aState);
+	publisher->PublishDataL();
+}
+#endif
 
 TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 {
@@ -76,6 +99,16 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 		return KErrNotFound;
 	}
 	
+	TInt appIdx = getAppIdx(aMessage.appName);
+	if (appIdx == KErrNotFound) {
+		return KErrArgument;
+	}
+	
+	TNotificationApp& app = iApps->At(appIdx);
+	if (app.itemsCount >= KMaxNotificationsPerAppCount) {
+		return KErrAlreadyExists;
+	}
+	
 	TNotificationItem item;
 	item.appName = aMessage.appName;
 	item.text = aMessage.text;
@@ -86,12 +119,26 @@ TInt PiglerPlugin::SetItem(TPiglerMessage aMessage)
 	
 	// сначала добавляем айтем в статус панельку чтобы получить уид, а потом изменяем его
 	TInt uid = 0;
-	TRAPD(error, uid = AddStatusPanelItemL());
-	if (error != KErrNone) {
-		return error;
+#ifdef PIGLER_ANNA
+	if (getItemIdx(KPiglerIndicator1UID) == KErrNotFound) {
+		uid = KPiglerIndicator1UID;
+	} else if (getItemIdx(KPiglerIndicator2UID) == KErrNotFound) {
+		uid = KPiglerIndicator2UID;
+	} else if (getItemIdx(KPiglerIndicator3UID) == KErrNotFound) {
+		uid = KPiglerIndicator3UID;
+	} else {
+		return KErrOverflow;
 	}
+	SetIndicatorState(uid, EAknIndicatorStateOn);
+#else
+		TRAPD(error, uid = AddStatusPanelItemL());
+		if (error != KErrNone) {
+			return error;
+		}
+#endif
 	
 	item.uid = uid;
+	++app.itemsCount;
 	
 	TRAP_IGNORE(iItems->AppendL(item));
 	TRAP_IGNORE(UpdateL(uid));
@@ -103,14 +150,24 @@ TInt PiglerPlugin::RemoveItem(TPiglerMessage aMessage)
 	TInt idx = getItemIdx(aMessage.uid);
 	if (idx != -1) {
 		// проверка на изменение уведомления из другой проги
-		TNotificationItem item = iItems->At(idx);
+		TNotificationItem& item = iItems->At(idx);
 		if (item.appName.Compare(aMessage.appName) != 0) {
 			return KErrAccessDenied;
 		}
+#ifdef PIGLER_ANNA
+		SetIndicatorState(aMessage.uid, EAknIndicatorStateOff);
+#else
 		RemoveStatusPanelItem(aMessage.uid);
+#endif
 		delete item.icon;
 		iItems->Delete(idx);
 		iItems->Compress();
+		
+		TInt appIdx = getAppIdx(aMessage.appName);
+		if (appIdx != KErrNotFound) {
+			iApps->At(appIdx).itemsCount--;
+		}
+		
 		return KErrNone;
 	}
 	return KErrNotFound;
@@ -120,15 +177,25 @@ TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 {
 	TInt removed = 0;
 	for (TInt i = iItems->Count()-1; i >= 0; i--) {
-		TNotificationItem item = iItems->At(i);
+		TNotificationItem& item = iItems->At(i);
 		if (item.appName.Compare(aMessage.appName) == 0) {
+#ifdef PIGLER_ANNA
+			SetIndicatorState(item.uid, EAknIndicatorStateOff);
+#else
 			RemoveStatusPanelItem(item.uid);
+#endif
 			delete item.icon;
 			iItems->Delete(i);
 			removed++;
 		}
 	}
 	iItems->Compress();
+	
+	TInt appIdx = getAppIdx(aMessage.appName);
+	if (appIdx != KErrNotFound) {
+		iApps->At(appIdx).itemsCount = 0;
+	}
+	
 	// возвращать колво удаленных уведов
 	return removed;
 }
@@ -136,7 +203,7 @@ TInt PiglerPlugin::RemoveItems(TPiglerMessage aMessage)
 TInt PiglerPlugin::GetLastTappedAppItem(TPiglerMessage aMessage)
 {
 	for (TInt i = 0; i < iApps->Count(); i++) {
-		TNotificationApp app = iApps->At(i);
+		TNotificationApp& app = iApps->At(i);
 		if (app.appName.Compare(aMessage.appName) == 0) {
 			return app.lastTappedItem;
 		}
@@ -167,7 +234,7 @@ TInt PiglerPlugin::GetItem(TPiglerMessage& aMessage)
 	if (idx == -1) {
 		return KErrNotFound;
 	}
-	TNotificationItem item = iItems->At(idx);
+	TNotificationItem& item = iItems->At(idx);
 	// проверка на изменение уведомления из другой проги
 	if (item.appName.Compare(aMessage.appName) != 0) {
 		return KErrAccessDenied;
@@ -241,7 +308,7 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 {
 	TInt idx = getItemIdx(aUid);
 	if (idx != -1) {
-		TNotificationItem item = iItems->At(idx);
+		TNotificationItem& item = iItems->At(idx);
 		for (TInt i = 0; i < iApps->Count(); i++) {
 			TNotificationApp& app = iApps->At(i);
 			if (app.appName.Compare(item.appName) == 0) {
@@ -256,21 +323,34 @@ void PiglerPlugin::HandleIndicatorTapL(const TInt aUid)
 			}
 		}
 		if (item.removeOnTap) {
+#ifdef PIGLER_ANNA
+			SetIndicatorState(aUid, EAknIndicatorStateOff);
+#else
 			RemoveStatusPanelItem(aUid);
+#endif
+			TInt appIdx = getAppIdx(item.appName);
+			if (appIdx != KErrNotFound) {
+				iApps->At(appIdx).itemsCount--;
+			}
+
 			delete item.icon;
 			iItems->Delete(idx);
 			iItems->Compress();
 		}
 	} else {
 		// айтема нет в списке поэтому просто удаляем
+#ifdef PIGLER_ANNA
+		SetIndicatorState(aUid, EAknIndicatorStateOff);
+#else
 		RemoveStatusPanelItem(aUid);
+#endif
 	}
 }
 
 TInt PiglerPlugin::getItemIdx(const TInt aUid)
 {
 	if (aUid == 0) {
-		return -1;
+		return KErrNotFound;
 	}
 	
 	for (TInt i = 0; i < iItems->Count(); i++) {
@@ -279,7 +359,17 @@ TInt PiglerPlugin::getItemIdx(const TInt aUid)
 			return i;
 		}
 	}
-	return -1;
+	return KErrNotFound;
+}
+
+TInt PiglerPlugin::getAppIdx(TBuf<64> aAppName) {
+	for (TInt i = 0; i < iApps->Count(); i++) {
+		TNotificationApp& app = iApps->At(i);
+		if (app.appName.Compare(aAppName) == 0) {
+			return i;
+		}
+	}
+	return KErrNotFound;
 }
 
 HBufC* PiglerPlugin::TextL(const TInt aUid, TInt& aTextType)
@@ -364,10 +454,77 @@ TInt PiglerPlugin::GetNotificationsCount(TPiglerMessage aMessage)
 {
 	TInt count(0);
 	for (TInt i = 0; i < iItems->Count(); i++) {
-		TNotificationItem item = iItems->At(i);
+		TNotificationItem& item = iItems->At(i);
 		if(item.appName.Compare(aMessage.appName) == 0) {
 			count++;
 		}
 	}
 	return count;
 }
+
+// v4
+TInt PiglerPlugin::GetGlobalNotificationsCount()
+{
+	return iItems->Count();
+}
+
+TInt PiglerPlugin::RemoveApp(TPiglerMessage aMessage)
+{
+	for (TInt i = 0; i < iApps->Count(); i++) {
+		TNotificationApp& app = iApps->At(i);
+		if (app.appName.Compare(aMessage.appName) == 0) {
+			iApps->Delete(i);
+			iApps->Compress();
+			RemoveItems(aMessage);
+			return KErrNone;
+		}
+	}
+	return KErrNone;
+}
+
+
+#ifdef PIGLER_ANNA
+PiglerPlugin2::PiglerPlugin2()
+{
+}
+
+PiglerPlugin2::~PiglerPlugin2()
+{
+}
+
+PiglerPlugin2* PiglerPlugin2::NewL()
+{
+	PiglerPlugin2* self = new (ELeave) PiglerPlugin2;
+	CleanupStack::PushL(self);
+	self->ConstructL();
+	CleanupStack::Pop(self);
+	return self;
+}
+
+void PiglerPlugin2::ConstructL()
+{
+}
+
+void PiglerPlugin2::HandleIndicatorTapL(const TInt aUid)
+{
+	if (mainPlugin) {
+		return mainPlugin->HandleIndicatorTapL(aUid);
+	}
+}
+
+HBufC* PiglerPlugin2::TextL(const TInt aUid, TInt& aTextType)
+{
+	if (mainPlugin) {
+		return mainPlugin->TextL(aUid, aTextType);
+	}
+	return NULL;
+}
+
+const CGulIcon* PiglerPlugin2::IconL(const TInt aUid)
+{
+	if (mainPlugin) {
+		return mainPlugin->IconL(aUid);
+	}
+	return NULL;
+}
+#endif

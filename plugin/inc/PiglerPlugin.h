@@ -1,7 +1,14 @@
 #include "AknIndicatorPlugin.h"
 #include "PiglerServer.h"
 
-const TInt KPiglerAPIVersion = 3;
+const TInt KPiglerAPIVersion = 4;
+#ifdef PIGLER_ANNA
+const TInt KMaxNotificationsCount = 3;
+const TInt KMaxNotificationsPerAppCount = 3; // = 1; FIXME
+#else
+const TInt KMaxNotificationsCount = 100;
+const TInt KMaxNotificationsPerAppCount = 10;
+#endif
 
 struct TNotificationItem
 {
@@ -21,6 +28,7 @@ struct TNotificationApp
 	TBuf<64> appName;
 	TInt lastTappedItem;
 	TInt lastMissedItem;
+	TInt itemsCount;
 };
 
 class TUidNotificationMap;
@@ -45,12 +53,32 @@ public:
 	TInt GetItem(TPiglerMessage& aMessage);
 	TInt SetLaunchOnTap(TPiglerMessage aMessage);
 	TInt GetNotificationsCount(TPiglerMessage aMessage);
+	TInt GetGlobalNotificationsCount();
+	TInt RemoveApp(TPiglerMessage aMessage);
 
 private:
 	TInt getItemIdx(const TInt aUid);
+	TInt getAppIdx(TBuf<64> aAppName);
 	CArrayFixFlat<TNotificationItem> *iItems;
 	CArrayFixFlat<TNotificationApp> *iApps;
 	CPiglerServer *iServer;
 	PiglerPlugin();
 	void ConstructL();
 };
+
+#ifdef PIGLER_ANNA
+NONSHARABLE_CLASS(PiglerPlugin2) : public CAknIndicatorPlugin
+{
+public:
+	~PiglerPlugin2();
+	static PiglerPlugin2* NewL();
+
+	virtual void HandleIndicatorTapL(const TInt aUid);
+	virtual HBufC* TextL(const TInt aUid, TInt& aTextType);
+	virtual const CGulIcon* IconL(const TInt aUid);
+
+private:
+	PiglerPlugin2();
+	void ConstructL();
+};
+#endif

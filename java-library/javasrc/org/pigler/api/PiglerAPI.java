@@ -12,7 +12,7 @@ import com.nokia.mj.impl.rt.support.Jvm;
 /**
  * Pigler Notifications Java API
  * 
- * @version 1.2, API level 3
+ * @version 1.3, API level 4
  * 
  * @author Shinovon
  */
@@ -34,6 +34,7 @@ public final class PiglerAPI {
 	private IPiglerTapHandler listener;
 	private boolean initialized;
 	private String appName;
+	private boolean isBelle;
 	
 	/**
 	 * Creates API instance
@@ -142,7 +143,10 @@ public final class PiglerAPI {
 		if (text.length() > 63) {
 			text = text.substring(0, 63);
 		}
-		int res = _setNotification(eventSourceHandle, apiHandle, 0, title + "\n" + text);
+		if (text.length() > 0) {
+			title = title + "\n" + text;
+		}
+		int res = _setNotification(eventSourceHandle, apiHandle, 0, title);
 		if (res < 0) {
 			throw new PiglerException("Create notification error: " + res);
 		}
@@ -203,7 +207,10 @@ public final class PiglerAPI {
 		if (text.length() > 63) {
 			text = text.substring(0, 63);
 		}
-		int res = _setNotification(eventSourceHandle, apiHandle, uid, title + "\n" + text);
+		if (text.length() > 0) {
+			title = title + "\n" + text;
+		}
+		int res = _setNotification(eventSourceHandle, apiHandle, uid, title);
 		if (res < 0) {
 			throw new PiglerException("Update notification text error:" + res);
 		}
@@ -343,21 +350,35 @@ public final class PiglerAPI {
 	 * @return Maximum number of notifications that can be created at one time, -1 if unknown<br>
 	 * depends on platform
 	 * 
-	 * @since Java API 1.2
+	 * @since Java API 1.2 / API level 4
 	 */
-    public int getMaxNotificationsCount() {
-        return 100;
-    }
-    
-    /**
+	public int getMaxNotificationsCount() {
+//		return 100;
+		checkClosed();
+		int r = _getMaxNotificationsCount(eventSourceHandle, apiHandle);
+		return r < 0 ? -1 : r;
+	}
+	
+	/**
 	 * @return Number of created notifications by this app
 	 * 
 	 * @since Java API 1.2, API level 3
 	 */
-    public int getNotificationsCount() {
+	public int getNotificationsCount() {
 		checkClosed();
-    	return _getNotificationsCount(eventSourceHandle, apiHandle);
-    }
+		return _getNotificationsCount(eventSourceHandle, apiHandle);
+	}
+	
+//	/**
+//	 * @return Number of created notifications by all apps
+//	 * 
+//	 * @since Java API 1.3, API level 4
+//	 */
+//	public int getGlobalNotificationsCount() {
+//		checkClosed();
+//		int r = _getGlobalNotificationsCount(eventSourceHandle, apiHandle);
+//		return r;
+//	}
 	
 	private void checkClosed() {
 		if (!initialized || closed || apiHandle == 0) {
@@ -423,5 +444,6 @@ public final class PiglerAPI {
 	private native int _getAPIVersion(int serverHandle, int apiHandle);
 	private native int _setLaunchAppOnTap(int serverHandle, int apiHandle, int uid, boolean launch);
 	private native int _getNotificationsCount(int serverHandle, int apiHandle);
+	private native int _getMaxNotificationsCount(int serverHandle, int apiHandle);
 	
 }

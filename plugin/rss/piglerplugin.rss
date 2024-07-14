@@ -2,7 +2,7 @@
 #include "PiglerUids.hrh"
 RESOURCE REGISTRY_INFO
 {
-	dll_uid = KPiglerPluginUID;
+	dll_uid = KPiglerDllUID;
 	interfaces =
 	{
 		INTERFACE_INFO
@@ -12,12 +12,42 @@ RESOURCE REGISTRY_INFO
 			{
 				IMPLEMENTATION_INFO
 				{
-					implementation_uid = KPiglerPluginUID;
+					implementation_uid = KPiglerImplementation1UID;
 					version_no = 1;
 					display_name = "";
 					default_data = "Default";
 					opaque_data = "";
 				}
+#ifdef KPiglerImplementation2UID
+				, IMPLEMENTATION_INFO
+				{
+					implementation_uid = KPiglerImplementation2UID;
+					version_no = 1;
+					display_name = "";
+					default_data = "Default";
+					opaque_data = "";
+				}
+#endif
+#ifdef KPiglerImplementation3UID
+				, IMPLEMENTATION_INFO
+				{
+					implementation_uid = KPiglerImplementation3UID;
+					version_no = 1;
+					display_name = "";
+					default_data = "Default";
+					opaque_data = "";
+				}
+#endif
+#ifdef KPiglerImplementation4UID
+				, IMPLEMENTATION_INFO
+				{
+					implementation_uid = KPiglerImplementation4UID;
+					version_no = 1;
+					display_name = "";
+					default_data = "Default";
+					opaque_data = "";
+				}
+#endif
 			};
 		}
 	};

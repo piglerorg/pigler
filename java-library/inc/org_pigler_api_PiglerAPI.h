@@ -127,6 +127,14 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setLaunchAppOnTap
 JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getNotificationsCount
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getMaxNotificationsCount
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getMaxNotificationsCount
+  (JNIEnv *, jobject, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

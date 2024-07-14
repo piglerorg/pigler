@@ -108,6 +108,22 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->GetNotificationsCount(ReadMessage(aMessage)));
 	}
 	break;
+	// api v4 functions
+	case EGetMaxNotificationsCount:
+	{
+		aMessage.Complete(KMaxNotificationsCount);
+	}
+	break;
+	case EGetGlobalNotificationsCount:
+	{
+		aMessage.Complete(iPlugin->GetGlobalNotificationsCount());
+	}
+	break;
+	case ERemoveApp:
+	{
+		aMessage.Complete(iPlugin->RemoveApp(ReadMessage(aMessage)));
+	}
+	break;
 	default:
 	{
 		// not supported function
