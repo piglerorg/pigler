@@ -1,0 +1,1 @@
+Only N97, N97 mini and C6-00 devices are supported!

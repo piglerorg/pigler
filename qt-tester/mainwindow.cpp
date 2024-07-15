@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     qint32 response = api->init("HelloWorld");
     if(response < 0) {
         log("API init error: " + QString::number(response));
-        api->deleteLater();
-        api = NULL;
+//        api->deleteLater();
+//        api = NULL;
     } else if (response > 0) {
         log("API initialized. Got missed notification: " + QString::number(response));
     } else {
@@ -124,6 +124,11 @@ void MainWindow::on_updateBtn_clicked()
     
     qint32 uid = api->updateNotification(notifications.takeLast(), ui->titleText->text(), ui->bottomText->text());
     log("Update: " + QString::number(uid));
+}
+
+void MainWindow::on_startBtn_clicked()
+{
+	log(QString::number(api->startAnnaServer()));
 }
 
 void MainWindow::log(QString str)

@@ -181,7 +181,8 @@ public:
 	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
-	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
+	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format, 
+	 * since v4 bitmap size is obtained by {@link #GetBitmapSize}
 	 */
 	TInt SetNotificationIcon(TInt uid, TPtrC8& iconBitmap);
 	
@@ -225,6 +226,20 @@ public:
 	TInt GetGlobalNotificationsCount();
 	
 	/**
+	 * Starts server on Anna and N97, required to call before initializing connection
+	 * 
+	 * @since v4
+	 */
+	TInt StartAnnaServer();
+	
+	/**
+	 * Returns bitmap dimension
+	 * 
+	 * @since v4
+	 */
+	TInt GetBitmapSize();
+	
+	/**
 	 * Closes API connection
 	 */
 	void Close();
@@ -236,7 +251,7 @@ public:
 	 */
 	void SetTapHandler(IPiglerTapHandler *handler);
 private:
-	CPiglerTapServer *iTapServer;
+	CPiglerTapServer *iServer;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
 	TInt Remove();

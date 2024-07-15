@@ -6,13 +6,14 @@ import javax.microedition.lcdui.Image;
 import com.nokia.mid.ui.DirectUtils;
 import com.nokia.mj.impl.rt.legacy.LegacyRtPort;
 import com.nokia.mj.impl.rt.legacy.MIDEventServer;
+import com.nokia.mj.impl.rt.legacy.ToolkitInvoker;
 import com.nokia.mj.impl.rt.support.Finalizer;
 import com.nokia.mj.impl.rt.support.Jvm;
 
 /**
  * Pigler Notifications Java API
  * 
- * @version 1.3, API level 4
+ * @version 1.4, API level 4
  * 
  * @author Shinovon
  */
@@ -25,6 +26,27 @@ public final class PiglerAPI {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 *  Popup's duration is long (default is short)
+	 */
+	public static final int DiscreetPopupDurationLong = 0x00000001;
+	/**
+	 *  Popup switches the device light on
+	 */
+	public static final int DiscreetPopupLightsOn = 0x00000002;
+	/**
+	 *  Popup plays the confirmation tone
+	 */
+	public static final int DiscreetPopupConfirmationTone = 0x00000004;
+	/**
+	 *  Popup plays the warning tone
+	 */
+	public static final int DiscreetPopupWarningTone = 0x00000008;
+	/**
+	 *  Popup plays the error tone
+	 */
+	public static final int DiscreetPopupErrorTone = 0x00000010;
 
 	private static final MIDEventServer eventServer = new MIDEventServer("java-piglerapi");
 	private Finalizer finalizer;
@@ -43,6 +65,9 @@ public final class PiglerAPI {
 		finalizer = registerFinalize();
 		eventSourceHandle = _createEventSource(eventServer.getHandle());
 		apiHandle = _createAPI(eventSourceHandle);
+		String s = System.getProperty("microedition.platform");
+		isBelle = s != null && s.charAt(s.indexOf("platform_version=") + 19) > '2';
+		if (!isBelle) _startAnnaServer(eventSourceHandle, apiHandle);
 	}
 
 	/**
@@ -85,6 +110,9 @@ public final class PiglerAPI {
 		if (appName == null) {
 			throw new NullPointerException("appName");
 		}
+		if (appName.length() == 0) {
+			throw new IllegalArgumentException("appName");
+		}
 		if (appName.length() > 63) {
 			appName = appName.substring(0, 63);
 		}
@@ -117,7 +145,7 @@ public final class PiglerAPI {
 	 * 
 	 * @param title Title text
 	 * @param text Bottom text
-	 * @param icon Icon, recommended size is 52x52
+	 * @param icon Icon, see {@link #getIconSize()}
 	 * @param removeOnTap Remove on tapped
 	 * @return Notification id
 	 * 
@@ -131,23 +159,12 @@ public final class PiglerAPI {
 	 */
 	public int createNotification(String title, String text, Image icon, boolean removeOnTap) throws Exception {
 		checkClosed();
-		if (title == null) {
-			title = "";
-		}
-		if (text == null) {
-			text = "";
-		}
-		if (title.length() > 63) {
-			title = title.substring(0, 63);
-		}
-		if (text.length() > 63) {
-			text = text.substring(0, 63);
-		}
-		if (text.length() > 0) {
-			title = title + "\n" + text;
-		}
-		int res = _setNotification(eventSourceHandle, apiHandle, 0, title);
+		
+		int res = _setNotification(eventSourceHandle, apiHandle, 0, formatText(title, text));
 		if (res < 0) {
+			if (res == -9) {
+				throw new PiglerException("No more notification slots left");
+			}
 			throw new PiglerException("Create notification error: " + res);
 		}
 		_setRemoveNotificationOnTap(eventSourceHandle, apiHandle, 0, removeOnTap);
@@ -163,7 +180,7 @@ public final class PiglerAPI {
 	 * @param uid Notification id
 	 * @param title Title text
 	 * @param text Bottom text
-	 * @param icon Icon, recommended size is 52x52
+	 * @param icon Icon, see {@link #getIconSize()}
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
 	 * @throws IllegalArgumentException If notification id is wrong
@@ -195,31 +212,17 @@ public final class PiglerAPI {
 			throw new IllegalArgumentException();
 		}
 		checkClosed();
-		if (title == null) {
-			title = "";
-		}
-		if (text == null) {
-			text = "";
-		}
-		if (title.length() > 63) {
-			title = title.substring(0, 63);
-		}
-		if (text.length() > 63) {
-			text = text.substring(0, 63);
-		}
-		if (text.length() > 0) {
-			title = title + "\n" + text;
-		}
-		int res = _setNotification(eventSourceHandle, apiHandle, uid, title);
+		int res = _setNotification(eventSourceHandle, apiHandle, uid, formatText(title, text));
 		if (res < 0) {
 			throw new PiglerException("Update notification text error:" + res);
 		}
 	}
+	
 	/**
 	 * Updates notification icon
 	 * 
 	 * @param uid Notification id
-	 * @param icon Icon, recommended size is 52x52
+	 * @param icon Icon, see {@link #getIconSize()}
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
 	 * @throws IllegalArgumentException If notification id is wrong
@@ -347,13 +350,12 @@ public final class PiglerAPI {
 	}
 
 	/**
-	 * @return Maximum number of notifications that can be created at one time, -1 if unknown<br>
-	 * depends on platform
+	 * @return Maximum number of notifications that can be created at one time, negative value if unknown
+	 * <p>Depends on platform</p>
 	 * 
 	 * @since Java API 1.2 / API level 4
 	 */
 	public int getMaxNotificationsCount() {
-//		return 100;
 		checkClosed();
 		int r = _getMaxNotificationsCount(eventSourceHandle, apiHandle);
 		return r < 0 ? -1 : r;
@@ -369,16 +371,63 @@ public final class PiglerAPI {
 		return _getNotificationsCount(eventSourceHandle, apiHandle);
 	}
 	
-//	/**
-//	 * @return Number of created notifications by all apps
-//	 * 
-//	 * @since Java API 1.3, API level 4
-//	 */
-//	public int getGlobalNotificationsCount() {
-//		checkClosed();
-//		int r = _getGlobalNotificationsCount(eventSourceHandle, apiHandle);
-//		return r;
-//	}
+	/**
+	 * @return Number of created notifications by all apps
+	 * 
+	 * @since Java API 1.4, API level 4
+	 */
+	public int getGlobalNotificationsCount() {
+		checkClosed();
+		int r = _getGlobalNotificationsCount(eventSourceHandle, apiHandle);
+		return r;
+	}
+	
+	/**
+	 * @return Item has only one line
+	 * 
+	 * @since Java API 1.4
+	 */
+	public boolean isSingleLine() {
+		return !isBelle;
+	}
+	
+	/**
+	 * @return Preferred icon size dimension
+	 * 
+	 * @since Java API 1.4
+	 */
+	public int getIconSize() {
+		return isBelle ? 52 : 24;
+	}
+	
+	/**
+	 * Shows global popup
+	 * 
+	 * @param title Title
+	 * @param text Text, may be null
+	 * @param flags Popup flags
+	 * @since Java API 1.4
+	 * 
+	 * @see #DiscreetPopupDurationLong
+	 * @see #DiscreetPopupLightsOn
+	 * @see #DiscreetPopupConfirmationTone
+	 * @see #DiscreetPopupWarningTone
+	 * @see #DiscreetPopupErrorTone
+	 */
+	public void showGlobalPopup(String title, String text, int flags) {
+		if (title == null) {
+			throw new NullPointerException("title");
+		}
+		if (text == null) {
+			text = "";
+		}
+		// TODO check flags param
+		ToolkitInvoker inv = ToolkitInvoker.getToolkitInvoker();
+		int res = _showGlobalDiscreetPopup(eventSourceHandle, inv.toolkitGetHandle(inv.getToolkit()), title, text, flags, LegacyRtPort.getMidletUid());
+		if (res < 0) {
+			throw new PiglerException("showGlobalPopup error: " + res);
+		}
+	}
 	
 	private void checkClosed() {
 		if (!initialized || closed || apiHandle == 0) {
@@ -392,12 +441,44 @@ public final class PiglerAPI {
 		}
 	}
 	
+	private String formatText(String title, String text) {
+		if (title == null) {
+			title = "";
+		}
+		if (text == null) {
+			text = "";
+		}
+		if (title.length() > 63) {
+			title = title.substring(0, 63);
+		}
+		if (text.length() > 63) {
+			text = text.substring(0, 63);
+		}
+		if (!isBelle) {
+			if (text.length() > 0) {
+				title = title + " " + text;
+			}
+			title = title.trim();
+		} else {
+			if (text.length() > 0) {
+				title = title + "\n" + text;
+			}
+		}
+		if (title.length() == 0) {
+			throw new IllegalArgumentException();
+		}
+		return title;
+	}
+	
 	private int setNotificationIcon(int uid, Image icon) {
 		if (icon == null) return 0;
-		Image scaledIcon = DirectUtils.createImage(68, 68, 0);
+		int size = _getBitmapSize(eventSourceHandle, apiHandle);
+		if (size == 0) return 0;
+		if (size < 0) size = 68;
+		Image scaledIcon = DirectUtils.createImage(size, size, 0);
 		
 		// icon scaling
-		final int targetSize = 52;
+		final int targetSize = getIconSize();
 		int w = icon.getWidth();
 		int h = icon.getHeight();
 		
@@ -410,12 +491,12 @@ public final class PiglerAPI {
 		}
 		
 		scaledIcon.getGraphics().drawImage(icon, 
-			(68 - icon.getWidth()) >> 1, (68 - icon.getHeight()) >> 1, Graphics.LEFT | Graphics.TOP);
+			(size - icon.getWidth()) >> 1, (size - icon.getHeight()) >> 1, Graphics.LEFT | Graphics.TOP);
 		
 		icon = null;
 		
-		int[] rgb = new int[68 * 68];
-		scaledIcon.getRGB(rgb, 0, 68, 0, 0, 68, 68);
+		int[] rgb = new int[size * size];
+		scaledIcon.getRGB(rgb, 0, size, 0, 0, size, size);
 		return _setNotificationIcon(eventSourceHandle, apiHandle, uid, rgb);
 	}
 	
@@ -445,5 +526,9 @@ public final class PiglerAPI {
 	private native int _setLaunchAppOnTap(int serverHandle, int apiHandle, int uid, boolean launch);
 	private native int _getNotificationsCount(int serverHandle, int apiHandle);
 	private native int _getMaxNotificationsCount(int serverHandle, int apiHandle);
+	private native int _getGlobalNotificationsCount(int serverHandle, int apiHandle);
+	private native int _getBitmapSize(int serverHandle, int apiHandle);
+	private native int _startAnnaServer(int serverHandle, int apiHandle);
+	private native int _showGlobalDiscreetPopup(int serverHandle, int toolkitHandle, String title, String text, int flags, int uid);
 	
 }

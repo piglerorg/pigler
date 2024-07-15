@@ -7,26 +7,19 @@
 #include "AknSmallIndicator.h"
 
 PiglerAPI::PiglerAPI() :
-	RSessionBase(), iTapServer(new CPiglerTapServer), iConnected(EFalse), iAppId(0), iRandom(EFalse)
+	RSessionBase(), iServer(new CPiglerTapServer), iConnected(EFalse), iAppId(0), iRandom(EFalse)
 {
-	// Start server on anna
-	TRAP_IGNORE(
-		CAknSmallIndicator* smallIndicator = CAknSmallIndicator::NewLC(TUid::Uid(KPiglerStartIndicatorUID));
-		smallIndicator->SetIndicatorStateL(1);
-		smallIndicator->SetIndicatorStateL(0);
-		CleanupStack::PopAndDestroy(smallIndicator);
-	);
 }
 
 PiglerAPI::~PiglerAPI()
 {
 	Close();
-	delete iTapServer;
+	delete iServer;
 }
 
 void PiglerAPI::SetTapHandler(IPiglerTapHandler *handler)
 {
-	iTapServer->SetHandler(handler);
+	iServer->SetHandler(handler);
 }
 
 void PiglerAPI::SetAppId(TInt aAppId)
@@ -45,7 +38,7 @@ TInt PiglerAPI::Init(TBuf<64> aAppName)
 		
 		TBuf<128> serverName(_L("PiglerHandler_"));
 		serverName.Append(aAppName);
-		iTapServer->StartL(serverName);
+		iServer->StartL(serverName);
 		
 		return SendMessage(EInitApp, message);
 	}
@@ -175,6 +168,23 @@ TInt PiglerAPI::Remove()
 	return SendMessage(ERemoveApp, message);
 }
 
+TInt PiglerAPI::GetBitmapSize()
+{
+	if (!iConnected) return KErrNotReady;
+	return SendReceive(EGetBitmapSize);
+}
+
+TInt PiglerAPI::StartAnnaServer()
+{
+	TRAPD(err, 
+		CAknSmallIndicator* smallIndicator = CAknSmallIndicator::NewLC(TUid::Uid(KPiglerStartIndicatorUID));
+		smallIndicator->SetIndicatorStateL(1);
+		smallIndicator->SetIndicatorStateL(0);
+		CleanupStack::PopAndDestroy(smallIndicator);
+	);
+	return err;
+}
+
 void PiglerAPI::Close()
 {
 	if (iConnected) {
@@ -183,7 +193,7 @@ void PiglerAPI::Close()
 		}
 		RSessionBase::Close();
 	}
-	iTapServer->Cancel();
+	iServer->Cancel();
 }
 
 TInt PiglerAPI::Connect()

@@ -114,22 +114,26 @@ qint32 QPiglerAPI::setLaunchAppOnTap(qint32 notificationId, bool launch)
 
 qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 {
-	if (icon.width() > 52 || icon.height() > 52) {
-		icon = icon.scaled(52, 52, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	int size = api->GetBitmapSize();
+	if (size == 0) return 0;
+	if (size < 0) size = 68;
+	int targetsize = size > 0 && size < 48 ? size : 52;
+	if (icon.width() > targetsize || icon.height() > targetsize) {
+		icon = icon.scaled(targetsize, targetsize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 	
 	icon = icon.convertToFormat(QImage::Format_ARGB32);
-	QByteArray buffer(68 * 68 * 4, 0);
+	QByteArray buffer(size * size * 4, 0);
 	const uchar* bitmap = icon.constBits();
 	char* data = buffer.data();
 	
 	qint32 height = icon.height();
 	qint32 width = icon.width();
-	qint32 yOffset = (68 - height) / 2;
-	qint32 xOffset = (68 - width) / 2;
+	qint32 yOffset = (size - height) / 2;
+	qint32 xOffset = (size - width) / 2;
 	
 	for (qint32 y = 0; y < height; ++y) {
-		memcpy(data + (((y + yOffset) * 68 + xOffset) * 4), bitmap + (y * width * 4), width * 4);
+		memcpy(data + (((y + yOffset) * size + xOffset) * 4), bitmap + (y * width * 4), width * 4);
 	}
 	
 	TPtrC8 buf((const TUint8*) buffer.constData(), buffer.length());
@@ -144,6 +148,16 @@ qint32 QPiglerAPI::getNotificationsCount()
 qint32 QPiglerAPI::getMaxNotificationsCount()
 {
 	return api->GetMaxNotificationsCount();
+}
+
+qint32 QPiglerAPI::getGlobalNotificationsCount()
+{
+	return api->GetGlobalNotificationsCount();
+}
+
+qint32 QPiglerAPI::startAnnaServer()
+{
+	return api->StartAnnaServer();
 }
 
 void QPiglerAPI::close()

@@ -35,8 +35,10 @@ private slots:
     void on_removeAllBtn_clicked();
 
     void on_updateBtn_clicked();
+
+	void on_startBtn_clicked();
     
-    void notificationTapped(qint32 id);
+	void notificationTapped(qint32 id);
 
 private:
     Ui::MainWindow *ui;

@@ -124,6 +124,11 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(iPlugin->RemoveApp(ReadMessage(aMessage)));
 	}
 	break;
+	case EGetBitmapSize:
+	{
+		aMessage.Complete(KBitmapDimension);
+	}
+	break;
 	default:
 	{
 		// not supported function

@@ -45,4 +45,12 @@ public class PiglerAPILayer {
 		});
 	}
 
+	public void showGlobalPopup(String title, String text, int flags) throws Exception {
+		api.showGlobalPopup(title, text, flags);
+	}
+
+	public int getAPIVersion() throws Exception {
+		return api.getAPIVersion();
+	}
+
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>211</width>
-    <height>239</height>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,6 +91,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="startBtn">
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QScrollArea" name="scrollArea">
       <property name="widgetResizable">
        <bool>true</bool>
@@ -101,7 +108,7 @@
          <x>0</x>
          <y>0</y>
          <width>189</width>
-         <height>31</height>
+         <height>108</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">

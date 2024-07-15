@@ -19,6 +19,7 @@ LIBRARY javautils.dso
 LIBRARY random
 LIBRARY avkon.lib
 LIBRARY aknnotify.lib
+LIBRARY cone.lib
 
 nostrictdef
 

@@ -1,0 +1,38 @@
+MACRO PIGLER_N97
+
+#include "../inc/PiglerUids.hrh"
+
+TARGET		piglerplugin_n97.dll
+TARGETTYPE	dll
+UID			0x10009D8D KPiglerDllUID
+PAGED
+CAPABILITY 	All -Tcb
+
+USERINCLUDE	..\inc
+APP_LAYER_SYSTEMINCLUDE
+
+EPOCALLOWDLLDATA
+
+nostrictdef
+
+LIBRARY	euser.lib
+LIBRARY	avkon.lib
+LIBRARY	egul.lib
+LIBRARY	ecom.lib
+LIBRARY	fbscli.lib
+LIBRARY	eikcore.lib
+LIBRARY	cone.lib
+LIBRARY	apparc.lib
+LIBRARY apgrfx.lib
+LIBRARY aknnotify.lib
+LIBRARY	efsrv.lib
+LIBRARY eikcoctl.lib
+
+SOURCEPATH ..\src
+SOURCE dllmain.cpp PiglerPlugin.cpp PiglerServer.cpp
+SOURCEPATH ..\rss
+START RESOURCE piglerplugin.rss
+	TARGET piglerplugin_n97.rsc
+	TARGETPATH \resource\plugins
+END
+

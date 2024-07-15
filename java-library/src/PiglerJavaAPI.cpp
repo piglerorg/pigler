@@ -3,6 +3,10 @@
 #include "JniEnvWrapper.h"
 #include "javacommonutils.h"
 #include "s60commonutils.h"
+#include <akndiscreetpopup.h>
+#include <avkon.hrh>
+#include <eikenv.h>
+#include "CMidToolkit.h"
 
 CPiglerJavaAPI::CPiglerJavaAPI(CPiglerJavaEventSource* aEventSource):
 	iEventSource(aEventSource)
@@ -272,6 +276,80 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getMaxNotificationsCount(
 	eventSource->Execute(&GetMaxNotificationsCount, api->iApi, &res);
 	return res;
 }
+
+LOCAL_C void GetGlobalNotificationsCount(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->GetGlobalNotificationsCount();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getGlobalNotificationsCount(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&GetGlobalNotificationsCount, api->iApi, &res);
+	return res;
+}
+
+LOCAL_C void GetBitmapSize(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->GetBitmapSize();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getBitmapSize(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&GetBitmapSize, api->iApi, &res);
+	return res;
+}
+
+LOCAL_C void StartAnnaServer(PiglerAPI* aApi, TInt* aRes)
+{
+	*aRes = aApi->StartAnnaServer();
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1startAnnaServer(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aHandle)
+{
+	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
+	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	TInt res;
+	eventSource->Execute(&StartAnnaServer, api->iApi, &res);
+	return res;
+}
+
+LOCAL_C void ShowGlobalDiscreetPopup(TInt* aRes,const TDesC* aTitle, const TDesC* aText, TInt aFlags, TInt aUid)
+{
+	TInt res(0);
+	TRAPD(error,
+		res = CAknDiscreetPopup::ShowGlobalPopupL(*aTitle, *aText,
+			KAknsIIDNone, KNullDesC, 0, 0, aFlags, 0, NULL, TUid::Uid(aUid));
+	);
+	if (error < KErrNone) {
+		*aRes = error;
+		return;
+	}
+	*aRes = res;
+}
+
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1showGlobalDiscreetPopup
+(JNIEnv *aEnv, jobject aThis, jint aEventSourceHandle, jint aToolkitHandle, jstring aTitle, jstring aText, jint aFlags, jint aUid)
+{
+	CMIDToolkit* toolkit = JavaUnhand<CMIDToolkit>(aToolkitHandle);
+	RJString title(*aEnv, aTitle);
+	RJString text(*aEnv, aText);
+	
+	TInt res(0);
+	toolkit->Execute(&ShowGlobalDiscreetPopup, &res,
+		(const TDesC*)&title,
+		(const TDesC*)&text,
+		aFlags, aUid
+		);
+	return res;
+}
+
+// Utils
 
 TBuf<64> jstringToTBuf64(JNIEnv* aEnv, jstring aJstring) {
 	jboolean iscopy;

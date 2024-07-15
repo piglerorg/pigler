@@ -48,6 +48,16 @@ RESOURCE REGISTRY_INFO
 					opaque_data = "";
 				}
 #endif
+#ifdef KPiglerImplementation5UID
+				, IMPLEMENTATION_INFO
+				{
+					implementation_uid = KPiglerImplementation5UID;
+					version_no = 1;
+					display_name = "";
+					default_data = "Default";
+					opaque_data = "";
+				}
+#endif
 			};
 		}
 	};
