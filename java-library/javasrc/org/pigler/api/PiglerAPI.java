@@ -131,7 +131,7 @@ public final class PiglerAPI {
 	 * @return Supported API level
 	 * 
 	 * @throws IllegalStateException If connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * 
 	 * @since API level 2
 	 */
@@ -145,17 +145,18 @@ public final class PiglerAPI {
 	 * 
 	 * @param title Title text
 	 * @param text Bottom text
-	 * @param icon Icon, see {@link #getIconSize()}
+	 * @param icon Icon, see {@link PiglerAPI#getIconSize()}
 	 * @param removeOnTap Remove on tapped
 	 * @return Notification id
 	 * 
 	 * @throws IllegalStateException If connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If creation is failed
 	 * 
 	 * @see PiglerAPI#updateNotification(int, String, String, Image)
 	 * @see PiglerAPI#setRemoveNotificationOnTap(int, boolean)
 	 * @see PiglerAPI#updateNotification(int, Image)
+	 * @see PiglerAPI#getIconSize()
 	 */
 	public int createNotification(String title, String text, Image icon, boolean removeOnTap) throws Exception {
 		checkClosed();
@@ -180,7 +181,7 @@ public final class PiglerAPI {
 	 * @param uid Notification id
 	 * @param title Title text
 	 * @param text Bottom text
-	 * @param icon Icon, see {@link #getIconSize()}
+	 * @param icon Icon, see {@link PiglerAPI#getIconSize()}
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
 	 * @throws IllegalArgumentException If notification id is wrong
@@ -189,6 +190,7 @@ public final class PiglerAPI {
 	 * 
 	 * @see PiglerAPI#updateNotification(int, String, String)
 	 * @see PiglerAPI#updateNotification(int, Image)
+	 * @see PiglerAPI#getIconSize()
 	 */
 	public void updateNotification(int uid, String title, String text, Image icon) throws Exception {
 		updateNotification(uid, title, text);
@@ -204,7 +206,7 @@ public final class PiglerAPI {
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
 	 * @throws IllegalArgumentException If notification id is wrong
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If update is failed
 	 */
 	public void updateNotification(int uid, String title, String text) throws Exception {
@@ -222,12 +224,14 @@ public final class PiglerAPI {
 	 * Updates notification icon
 	 * 
 	 * @param uid Notification id
-	 * @param icon Icon, see {@link #getIconSize()}
+	 * @param icon Icon, see {@link PiglerAPI#getIconSize()}
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
 	 * @throws IllegalArgumentException If notification id is wrong
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If update is failed
+	 * 
+	 * @see PiglerAPI#getIconSize()
 	 */
 	public void updateNotification(int uid, Image icon) throws Exception {
 		if (uid <= 0) {
@@ -249,7 +253,7 @@ public final class PiglerAPI {
 	 * @param uid Notification id
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If remove is failed
 	 */
 	public void removeNotification(int uid) throws Exception {
@@ -266,7 +270,7 @@ public final class PiglerAPI {
 	 * @return Removed notifications count
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 */
 	public int removeAllNotifications() {
 		checkClosed();
@@ -277,7 +281,7 @@ public final class PiglerAPI {
 	 * @return Last tapped notification id
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 */
 	public int getLastTappedNotification() {
 		checkClosed();
@@ -292,7 +296,7 @@ public final class PiglerAPI {
 	 * @param remove
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If update is failed
 	 */
 	public void setRemoveNotificationOnTap(int uid, boolean remove) throws Exception {
@@ -311,7 +315,7 @@ public final class PiglerAPI {
 	 * @param launch
 	 * 
 	 * @throws IllegalStateException if connection not initialized or closed
-	 * @throws PiglerException If connection is not ready
+	 * @throws PiglerException -18 If connection is not ready
 	 * @throws PiglerException If update is failed
 	 * 
 	 * @since API level 2
@@ -356,17 +360,23 @@ public final class PiglerAPI {
 	 * @since Java API 1.2 / API level 4
 	 */
 	public int getMaxNotificationsCount() {
-		checkClosed();
+		if (apiHandle == 0 || !initialized) {
+			return -1;
+		}
 		int r = _getMaxNotificationsCount(eventSourceHandle, apiHandle);
-		return r < 0 ? -1 : r;
+		return r < 0 ? (isBelle ? 100 : r) : r;
 	}
 	
 	/**
 	 * @return Number of created notifications by this app
 	 * 
+	 * @throws IllegalStateException if connection not initialized or closed
+	 * @throws PiglerException -18 If connection is not ready
+	 * @throws PiglerException -5 If function is not supported
+	 * 
 	 * @since Java API 1.2, API level 3
 	 */
-	public int getNotificationsCount() {
+	public int getNotificationsCount() throws Exception {
 		checkClosed();
 		return _getNotificationsCount(eventSourceHandle, apiHandle);
 	}
@@ -374,9 +384,13 @@ public final class PiglerAPI {
 	/**
 	 * @return Number of created notifications by all apps
 	 * 
+	 * @throws IllegalStateException if connection not initialized or closed
+	 * @throws PiglerException -18 If connection is not ready
+	 * @throws PiglerException -5 If function is not supported
+	 * 
 	 * @since Java API 1.4, API level 4
 	 */
-	public int getGlobalNotificationsCount() {
+	public int getGlobalNotificationsCount() throws Exception {
 		checkClosed();
 		int r = _getGlobalNotificationsCount(eventSourceHandle, apiHandle);
 		return r;
@@ -397,7 +411,7 @@ public final class PiglerAPI {
 	 * @since Java API 1.4
 	 */
 	public int getIconSize() {
-		return isBelle ? 52 : 24;
+		return isBelle ? 52 : 28;
 	}
 	
 	/**
@@ -408,11 +422,11 @@ public final class PiglerAPI {
 	 * @param flags Popup flags
 	 * @since Java API 1.4
 	 * 
-	 * @see #DiscreetPopupDurationLong
-	 * @see #DiscreetPopupLightsOn
-	 * @see #DiscreetPopupConfirmationTone
-	 * @see #DiscreetPopupWarningTone
-	 * @see #DiscreetPopupErrorTone
+	 * @see PiglerAPI#DiscreetPopupDurationLong
+	 * @see PiglerAPI#DiscreetPopupLightsOn
+	 * @see PiglerAPI#DiscreetPopupConfirmationTone
+	 * @see PiglerAPI#DiscreetPopupWarningTone
+	 * @see PiglerAPI#DiscreetPopupErrorTone
 	 */
 	public void showGlobalPopup(String title, String text, int flags) {
 		if (title == null) {
@@ -421,7 +435,13 @@ public final class PiglerAPI {
 		if (text == null) {
 			text = "";
 		}
-		// TODO check flags param
+		if((flags & ~(DiscreetPopupDurationLong
+				| DiscreetPopupLightsOn
+				| DiscreetPopupConfirmationTone
+				| DiscreetPopupWarningTone
+				| DiscreetPopupErrorTone)) != 0) {
+			throw new IllegalArgumentException("flags");
+		}
 		ToolkitInvoker inv = ToolkitInvoker.getToolkitInvoker();
 		int res = _showGlobalDiscreetPopup(eventSourceHandle, inv.toolkitGetHandle(inv.getToolkit()), title, text, flags, LegacyRtPort.getMidletUid());
 		if (res < 0) {

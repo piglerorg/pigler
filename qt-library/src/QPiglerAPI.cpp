@@ -117,7 +117,7 @@ qint32 QPiglerAPI::setNotificationIcon(qint32 notificationId, QImage icon)
 	int size = api->GetBitmapSize();
 	if (size == 0) return 0;
 	if (size < 0) size = 68;
-	int targetsize = size > 0 && size < 48 ? size : 52;
+	int targetsize = size > 0 && size < 52 ? size : 52;
 	if (icon.width() > targetsize || icon.height() > targetsize) {
 		icon = icon.scaled(targetsize, targetsize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}

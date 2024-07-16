@@ -400,7 +400,6 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon)
 {
 	TInt idx = getItemIdx(aMessage.uid);
 	if (idx == KErrNotFound) {
-		delete aIcon;
 		return KErrNotFound;
 	}
 	TNotificationItem& item = iItems->At(idx);
@@ -416,11 +415,9 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon)
 	error = icon->Create(TSize(KBitmapDimension, KBitmapDimension), EColor16MA);
 	
 	if (error != KErrNone) {
-		delete aIcon;
 		return error;
 	}
 	if (icon == NULL) {
-		delete aIcon;
 		return KErrGeneral;
 	}
 	
@@ -428,13 +425,11 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon)
 
 	TInt amount = aIcon->Length();
 	if (amount < icon->DataSize()) {
-		delete aIcon;
 		delete icon;
 		return KErrUnderflow;
 	}
 	
 	if (amount > icon->DataSize()) {
-		delete aIcon;
 		delete icon;
 		return KErrOverflow;
 	}
@@ -469,12 +464,11 @@ TInt PiglerPlugin::SetItemIcon(TPiglerMessage aMessage, HBufC8* aIcon)
 	CGulIcon* gulIcon = NULL;
 	TRAP(error, gulIcon = CGulIcon::NewL(icon, mask));
 	if (error != KErrNone) {
-		delete aIcon;
 		delete icon;
+		delete mask;
 		return error;
 	}
 	
-	delete aIcon;
 	delete item.icon;
 	
 	item.icon = gulIcon;
@@ -525,7 +519,7 @@ TInt PiglerPlugin::RemoveApp(TPiglerMessage aMessage)
 }
 
 
-#ifdef PIGLER_ANNA
+#if defined(PIGLER_ANNA) || defined(PIGLER_N97)
 PiglerPlugin2::PiglerPlugin2()
 {
 }

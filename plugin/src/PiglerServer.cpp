@@ -78,6 +78,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPtr8 bufPtr(iconBuf->Des());
 		aMessage.ReadL(1, bufPtr);
 		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
+		delete iconBuf;
 	}
 	break;
 	// api v2 functions

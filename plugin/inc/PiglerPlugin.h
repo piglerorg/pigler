@@ -72,7 +72,7 @@ private:
 	void ConstructL();
 };
 
-#ifdef PIGLER_ANNA
+#if defined(PIGLER_ANNA) || defined(PIGLER_N97)
 NONSHARABLE_CLASS(PiglerPlugin2) : public CAknIndicatorPlugin
 {
 public:

@@ -5,7 +5,7 @@
 const TImplementationProxy ImplementationTable[] =
 {
 	IMPLEMENTATION_PROXY_ENTRY(KPiglerImplementation1UID, PiglerPlugin::NewL),
-#ifdef PIGLER_ANNA
+#if defined(PIGLER_ANNA) || defined(PIGLER_N97)
 #ifdef KPiglerImplementation2UID
 	IMPLEMENTATION_PROXY_ENTRY(KPiglerImplementation2UID, PiglerPlugin2::NewL),
 #endif
