@@ -13,6 +13,8 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 
+import org.pigler.api.PiglerAPI;
+
 public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCommandListener, PiglerAPIHandlerLayer {
 	
 	private Form form;
@@ -90,7 +92,7 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 			api = new PiglerAPILayer();
 			api.setListener(this);
 			int init = api.init("Example");
-			log("API loaded successfuly");
+			log("API loaded successfuly: " + api.getAPIVersion());
 			if(init > 0) {
 				log("Got missed tap: " + init);
 			}
@@ -131,9 +133,15 @@ public class PiglerTestMIDlet extends MIDlet implements CommandListener, ItemCom
 				int uid = api.createNotification(titleText.getString(), bottomText.getString(), icon, true);
 				notifications.push(new Integer(uid));
 				log("Pushed: " + uid);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 				log("Push: " + e.toString());
+			}
+			try {
+				api.showGlobalPopup(titleText.getString(), bottomText.getString(), PiglerAPI.DiscreetPopupDurationLong);
+			} catch (Throwable e) {
+				e.printStackTrace();
+				log("Popup: " + e.toString());
 			}
 			break;
 		case 3:

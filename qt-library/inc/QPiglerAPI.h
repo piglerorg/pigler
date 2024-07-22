@@ -118,6 +118,27 @@ public slots:
 	qint32 getNotificationsCount();
 	
 	/**
+	 * @see PiglerAPI#GetMaxNotificationsCount()
+	 * @return Max notifications count or error code
+	 * @since v4
+	 */
+	qint32 getMaxNotificationsCount();
+	
+	/**
+	 * @see PiglerAPI#GetGlobalNotificationsCount()
+	 * @return
+	 * @since v4
+	 */
+	qint32 getGlobalNotificationsCount();
+	
+	/**
+	 * @see PiglerAPI#StartAnnaServer()
+	 * @return
+	 * @since v4
+	 */
+	qint32 startAnnaServer();
+	
+	/**
 	 * @see PiglerAPI#Close()
 	 */
 	void close();

@@ -127,6 +127,46 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setLaunchAppOnTap
 JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getNotificationsCount
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getMaxNotificationsCount
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getMaxNotificationsCount
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getGlobalNotificationsCount
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getGlobalNotificationsCount
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _getBitmapSize
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1getBitmapSize
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _startAnnaServer
+ * Signature: (II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1startAnnaServer
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     org_pigler_api_PiglerAPI
+ * Method:    _showGlobalDiscreetPopup
+ * Signature: (IILjava/lang/String;Ljava/lang/String;II)I
+ */
+JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1showGlobalDiscreetPopup
+  (JNIEnv *, jobject, jint, jint, jstring, jstring, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

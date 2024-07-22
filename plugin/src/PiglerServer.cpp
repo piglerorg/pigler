@@ -78,6 +78,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		TPtr8 bufPtr(iconBuf->Des());
 		aMessage.ReadL(1, bufPtr);
 		aMessage.Complete(iPlugin->SetItemIcon(message, iconBuf));
+		delete iconBuf;
 	}
 	break;
 	// api v2 functions
@@ -106,6 +107,27 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 	case EGetNotificationsCount:
 	{
 		aMessage.Complete(iPlugin->GetNotificationsCount(ReadMessage(aMessage)));
+	}
+	break;
+	// api v4 functions
+	case EGetMaxNotificationsCount:
+	{
+		aMessage.Complete(KMaxNotificationsCount);
+	}
+	break;
+	case EGetGlobalNotificationsCount:
+	{
+		aMessage.Complete(iPlugin->GetGlobalNotificationsCount());
+	}
+	break;
+	case ERemoveApp:
+	{
+		aMessage.Complete(iPlugin->RemoveApp(ReadMessage(aMessage)));
+	}
+	break;
+	case EGetBitmapSize:
+	{
+		aMessage.Complete(KBitmapDimension);
 	}
 	break;
 	default:

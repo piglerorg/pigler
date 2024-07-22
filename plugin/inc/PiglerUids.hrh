@@ -1,1 +1,21 @@
-#define KPiglerPluginUID 0x20292B69
+#define KPiglerDllUID 0x20292B69
+
+#ifdef PIGLER_N97
+#define KPiglerImplementation1UID 0x10282E7D // KImplUIDPoCIndicatorsPlugin
+#define KPiglerImplementation2UID 0x102823BD // KImplUIDInstantMessageIndicatorsPlugin
+
+#define KPiglerIndicator1UID 26 // EAknIndicatorInstantMessage
+#define KPiglerIndicator2UID 36 // EAknIndicatorPoC
+#elif defined(PIGLER_ANNA)
+#define KPiglerImplementation1UID 0x10282E7D // KImplUIDPoCIndicatorsPlugin
+#define KPiglerImplementation2UID 0x102823BD // KImplUIDInstantMessageIndicatorsPlugin
+#define KPiglerImplementation3UID 0x2001FE39 // KImplUIDStopwatchIndicatorsPlugin
+
+#define KPiglerIndicator1UID 26 // EAknIndicatorInstantMessage
+#define KPiglerIndicator2UID 36 // EAknIndicatorPoC
+#define KPiglerIndicator3UID 61 // EAknIndicatorStopWatch
+#else
+#define KPiglerImplementation1UID 0x20292B69
+#endif
+
+#define KPiglerStartIndicatorUID 36 // EAknIndicatorPoC

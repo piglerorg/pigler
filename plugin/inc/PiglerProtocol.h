@@ -12,10 +12,14 @@ enum TPiglerCommands {
 	ESetRemoveItemOnTap,
 	ESetItemIcon,
 	EHandleTap, // client side
-	EGetAPIVersion,
+	EGetAPIVersion, // v2
 	ESetLaunchOnTap,
 	EGetItem,
-	EGetNotificationsCount
+	EGetNotificationsCount, // v3
+	EGetMaxNotificationsCount, // v4
+	EGetGlobalNotificationsCount,
+	ERemoveApp,
+	EGetBitmapSize,
 };
 
 // DO NOT CHANGE!

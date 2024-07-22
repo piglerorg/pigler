@@ -17,6 +17,9 @@ LIBRARY	libstdcppv5.lib
 LIBRARY	javalegacyutils.lib
 LIBRARY javautils.dso
 LIBRARY random
+LIBRARY avkon.lib
+LIBRARY aknnotify.lib
+LIBRARY cone.lib
 
 nostrictdef
 

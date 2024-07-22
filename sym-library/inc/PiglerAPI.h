@@ -5,6 +5,7 @@
 
 class TPiglerMessage;
 class CPiglerTapServer;
+class CAknIndicatorPlugin;
 
 /**
  * Notification tap handler
@@ -21,7 +22,7 @@ public:
 /**
  * Pigler Notifications API
  * 
- * @version v3
+ * @version v4
  */
 class PiglerAPI: private RSessionBase
 {
@@ -43,7 +44,8 @@ public:
 	/**
 	 * Initializes API connection with random app name
 	 * 
-	 * Don't use if you need notification callbacks!
+	 * Don't use if you need notification callbacks! <br>
+	 * All notifications will be removed on connection close
 	 * 
 	 * @see PiglerAPI#Init(TBuf<64>)
 	 * 
@@ -79,12 +81,16 @@ public:
 	/**
 	 * Adds or updates notification
 	 * 
+	 * <p>Number of notifications that can be created is limited and depends on the platform</p>
+	 * 
 	 * @return Notification UID or error code
 	 * 
 	 * <p>Error codes:</p>
 	 * KErrNotFound if there is no such item with that uid <br>
 	 * KErrAccessDenied if item was created by another app <br>
 	 * KErrNotReady if connection was not initialized <br>
+	 * KErrOverflow if no notification slots left <br>
+	 * KErrAlreadyExists if application exceeded maximum number of notifications per app <br>
 	 * 
 	 * @param uid Notification UID, 0 - to create
 	 * @param text Notification text
@@ -175,7 +181,8 @@ public:
 	 * KErrNotReady if connection was not initialized <br>
 	 * 
 	 * @param uid Notification UID
-	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format
+	 * @param iconBitmap Icon bitmap 68x68 in ARGB32 format, 
+	 * since v4 bitmap size is obtained by {@link #GetBitmapSize}
 	 */
 	TInt SetNotificationIcon(TInt uid, TPtrC8& iconBitmap);
 	
@@ -193,6 +200,46 @@ public:
 	TInt GetNotificationsCount();
 	
 	/**
+	 * Gets maximum number of notifications that can be created by plugin
+	 * 
+	 * @return Max notifications count or error code
+	 * 
+	 * <p>Error codes:</p>
+	 * KErrNotReady if connection was not initialized <br>
+	 * KErrNotSupported
+	 * 
+	 * @since v4
+	 */
+	TInt GetMaxNotificationsCount();
+	
+	/**
+	 * Gets number of notifications created by all applications
+	 * 
+	 * @return Global notifications count or error code
+	 * 
+	 * <p>Error codes:</p>
+	 * KErrNotReady if connection was not initialized <br>
+	 * KErrNotSupported
+	 * 
+	 * @since v4
+	 */
+	TInt GetGlobalNotificationsCount();
+	
+	/**
+	 * Starts server on Anna and N97, required to call before initializing connection
+	 * 
+	 * @since v4
+	 */
+	TInt StartAnnaServer();
+	
+	/**
+	 * Returns bitmap dimension
+	 * 
+	 * @since v4
+	 */
+	TInt GetBitmapSize();
+	
+	/**
 	 * Closes API connection
 	 */
 	void Close();
@@ -207,9 +254,11 @@ private:
 	CPiglerTapServer *iServer;
 	TInt Connect();
 	TInt SendMessage(TInt function, const TPiglerMessage aMessage);
+	TInt Remove();
 	TBuf<64> iAppName;
 	TBool iConnected;
 	TInt iAppId;
+	TBool iRandom;
 };
 
 #endif
