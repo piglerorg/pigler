@@ -16,12 +16,14 @@ The purpose of this plugin is to provide easy and open-source API that provides 
 * [x] Do not open app on tap option
 * [x] Javadoc, API docs, building guides
 * [x] Automatic package creation and installation with java library
+* [x] Symbian^3/Anna support (limited)
+* [x] Java discreet popup show feature
 * [ ] Reboot phone automatically after package install and uninstall
 * [ ] Placeholder icon for notifications without icon
 * [ ] Notification permissions management
-* [ ] Discreet popup show feature
 * [ ] System vibration function
 * [ ] Show indicators on lock screen
+* [ ] Homescreen notifications widget
 
 # Building
 You will need Carbide.c++ v2.7, Qt SDK and Belle SDK for QT SDK<br>
