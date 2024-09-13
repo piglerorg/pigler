@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2023 Mathew (curoviyxru)
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ */
+
 #include "QPiglerAPI.h"
 
 void QPiglerAPI::HandleTap(TInt uid)

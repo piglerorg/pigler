@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ */
+
 #include "org_pigler_api_PiglerAPI.h"
 #include "PiglerJavaAPI.h"
 #include "JniEnvWrapper.h"

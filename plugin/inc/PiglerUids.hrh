@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ */
+
 #define KPiglerDllUID 0x20292B69
 
 #ifdef PIGLER_N97

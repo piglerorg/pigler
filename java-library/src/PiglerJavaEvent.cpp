@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023 Arman Jussupgaliyev
+ */
+
 #include "PiglerJavaEvent.h"
 
 CPiglerJavaEvent::CPiglerJavaEvent(jobject aObject, jmethodID aMethod, TInt aUid) :

@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023 Arman Jussupgaliyev
+ */
+
 #ifndef PIGLERJAVAEVENTSOURCE
 #define PIGLERJAVAEVENTSOURCE
 #include <mevents.h>

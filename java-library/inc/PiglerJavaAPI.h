@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023 Arman Jussupgaliyev
+ */
+
 #include <e32base.h>
 #include "jni.h"
 #include "jutils.h"

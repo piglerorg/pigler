@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ * Copyright (c) 2023 Mathew (curoviyxru)
+ */
+
 #include "PiglerServer.h"
 #include "PiglerPlugin.h"
 

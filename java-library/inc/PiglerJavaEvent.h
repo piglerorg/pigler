@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023 Arman Jussupgaliyev
+ */
+
 #ifndef PIGLERJAVEEVENT
 #define PIGLERJAVEEVENT
 #include <mevents.h>

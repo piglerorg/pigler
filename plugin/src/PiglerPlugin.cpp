@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ * Copyright (c) 2023 Mathew (curoviyxru)
+ */
+
 #include "PiglerPlugin.h"
 #include <mw/gulicon.h>
 #include <eikenv.h>

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2023-2024 Arman Jussupgaliyev
+ * Copyright (c) 2023 Mathew (curoviyxru)
+ */
+
 #ifndef PIGLERTAPSERVER
 #define PIGLERTAPSERVER
 #include <e32base.h>

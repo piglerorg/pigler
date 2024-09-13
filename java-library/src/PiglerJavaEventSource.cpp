@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2023 Arman Jussupgaliyev
+ */
+
 #include "PiglerJavaEventSource.h"
 
 CPiglerJavaEventSource::CPiglerJavaEventSource()
