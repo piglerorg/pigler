@@ -402,7 +402,7 @@ public final class PiglerAPI {
 	}
 	
 	/**
-	 * @return Item has only one line
+	 * Check if platform supports only one row of text
 	 * 
 	 * @since Java API 1.4
 	 */
