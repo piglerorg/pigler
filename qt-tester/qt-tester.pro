@@ -31,6 +31,8 @@ HEADERS += mainwindow.h
 include(deployment.pri)
 qtcAddDeployment()
 
+DEFINES += PIGLER_API_ANNA_RECONNECT
+
 include(../qt-library/pigler.pri)
 
 # An alternative way to include binary

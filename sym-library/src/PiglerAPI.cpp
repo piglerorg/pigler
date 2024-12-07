@@ -35,6 +35,11 @@ void PiglerAPI::SetAppId(TInt aAppId)
 TInt PiglerAPI::Init(TBuf<64> aAppName)
 {
 	TInt err = Connect();
+#ifdef PIGLER_API_ANNA_RECONNECT
+	if (err != KErrNone && StartAnnaServer() == KErrNone) {
+		err = Connect();
+	}
+#endif
 	if (err == KErrNone) {
 		iAppName = aAppName;
 		TPiglerMessage message;

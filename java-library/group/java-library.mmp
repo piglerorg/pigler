@@ -2,6 +2,8 @@ TARGET		  piglerjavaapi.dll
 TARGETTYPE	  dll
 UID			 0x1000008d 0x20292B70
 
+MACRO PIGLER_API_ANNA_SUPPORT
+
 USERINCLUDE	..\inc
 USERINCLUDE ..\jni_inc
 USERINCLUDE	..\..\sym-library\inc
