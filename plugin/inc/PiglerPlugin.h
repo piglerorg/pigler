@@ -6,19 +6,22 @@
 #include "AknIndicatorPlugin.h"
 #include "PiglerServer.h"
 
-const TInt KPiglerAPIVersion = 4;
+const TInt KPiglerAPIVersion = 5;
 #ifdef PIGLER_N97
 const TInt KMaxNotificationsCount = 2;
 const TInt KMaxNotificationsPerAppCount = 1;
 const TInt KBitmapDimension = 28;
+const TInt KTextLines = 1;
 #elif defined(PIGLER_ANNA)
 const TInt KMaxNotificationsCount = 3;
 const TInt KMaxNotificationsPerAppCount = 2;
 const TInt KBitmapDimension = 28;
+const TInt KTextLines = 1;
 #else
 const TInt KMaxNotificationsCount = 100;
 const TInt KMaxNotificationsPerAppCount = 10;
 const TInt KBitmapDimension = 68;
+const TInt KTextLines = 2;
 #endif
 
 struct TNotificationItem

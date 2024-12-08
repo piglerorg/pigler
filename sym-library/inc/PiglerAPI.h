@@ -27,7 +27,7 @@ public:
 /**
  * Pigler Notifications API
  * 
- * @version v4
+ * @version v5
  */
 class PiglerAPI: private RSessionBase
 {

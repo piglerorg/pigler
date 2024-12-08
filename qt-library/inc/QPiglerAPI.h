@@ -17,7 +17,7 @@ class QPiglerAPI;
 /**
  * Pigler Notifications API for Qt
  * 
- * @version v4
+ * @version v5
  */
 class QPiglerAPI : public QObject, private IPiglerTapHandler
 {

@@ -138,11 +138,7 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 	// api v5
 	case EGetTextLines:
 	{
-#ifdef PIGLER_BELLE
-		aMessage.Complete(2);
-#else
-		aMessage.Complete(1);
-#endif
+		aMessage.Complete(KTextLines);
 	}
 	break;
 	default:
