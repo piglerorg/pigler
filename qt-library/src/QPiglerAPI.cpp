@@ -64,6 +64,11 @@ void QPiglerAPI::setAppId(qint32 appId)
 	api->SetAppId(appId);
 }
 
+qint32 QPiglerAPI::getAPIVersion()
+{
+	return api->GetAPIVersion();
+}
+
 qint32 QPiglerAPI::setNotification(qint32 notificationId, QString title, QString message)
 {
 	if (title.length() > 63) {
@@ -74,8 +79,15 @@ qint32 QPiglerAPI::setNotification(qint32 notificationId, QString title, QString
 		message = message.left(63);
 	}
 	
-	if (message.length() > 0) {
-		title += "\n" + message;
+	if (isSingleLine()) {
+		if (message.length() > 0) {
+			title += " " + message;
+		}
+		title = title.trimmed();
+	} else {
+		if (message.length() > 0) {
+			title += "\n" + message;
+		}
 	}
 	
 	TBuf<128> buf(title.utf16());
@@ -163,6 +175,16 @@ qint32 QPiglerAPI::getGlobalNotificationsCount()
 qint32 QPiglerAPI::startAnnaServer()
 {
 	return api->StartAnnaServer();
+}
+
+bool QPiglerAPI::isSingleLine()
+{
+	qint32 r = api->GetTextLines();
+	if (r < 0) {
+		r = api->GetBitmapSize();
+		return r > 0 && r < 68;
+	}
+	return r == 1;
 }
 
 void QPiglerAPI::close()

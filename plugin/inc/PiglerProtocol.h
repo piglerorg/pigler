@@ -25,6 +25,7 @@ enum TPiglerCommands {
 	EGetGlobalNotificationsCount,
 	ERemoveApp,
 	EGetBitmapSize,
+	EGetTextLines, // v5
 };
 
 // DO NOT CHANGE!

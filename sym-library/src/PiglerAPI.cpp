@@ -184,6 +184,12 @@ TInt PiglerAPI::GetBitmapSize()
 	return SendReceive(EGetBitmapSize);
 }
 
+TInt PiglerAPI::GetTextLines()
+{
+	if (!iConnected) return KErrNotReady;
+	return SendReceive(EGetTextLines);
+}
+
 TInt PiglerAPI::StartAnnaServer()
 {
 	TRAPD(err, 

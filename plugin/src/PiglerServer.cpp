@@ -135,6 +135,16 @@ void CPiglerSession::ServiceL(const RMessage2& aMessage)
 		aMessage.Complete(KBitmapDimension);
 	}
 	break;
+	// api v5
+	case EGetTextLines:
+	{
+#ifdef PIGLER_BELLE
+		aMessage.Complete(2);
+#else
+		aMessage.Complete(1);
+#endif
+	}
+	break;
 	default:
 	{
 		// not supported function

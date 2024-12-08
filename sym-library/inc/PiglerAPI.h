@@ -245,6 +245,12 @@ public:
 	TInt GetBitmapSize();
 	
 	/**
+	 * 
+	 * @since v5
+	 */
+	TInt GetTextLines();
+	
+	/**
 	 * Closes API connection
 	 */
 	void Close();

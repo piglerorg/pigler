@@ -14,6 +14,11 @@
 
 class QPiglerAPI;
 
+/**
+ * Pigler Notifications API for Qt
+ * 
+ * @version v4
+ */
 class QPiglerAPI : public QObject, private IPiglerTapHandler
 {
 	Q_OBJECT
@@ -47,6 +52,12 @@ public slots:
 	 * @return Current app name
 	 */
 	QString appName();
+	
+	/**
+	 * @see PiglerAPI#GetAPIVersion()
+	 * @since v2
+	 */
+	qint32 getAPIVersion();
 	
 	/**
 	 * @see PiglerAPI#SetNotification(TInt, TBuf<256>)
@@ -131,17 +142,20 @@ public slots:
 	
 	/**
 	 * @see PiglerAPI#GetGlobalNotificationsCount()
-	 * @return
 	 * @since v4
 	 */
 	qint32 getGlobalNotificationsCount();
 	
 	/**
 	 * @see PiglerAPI#StartAnnaServer()
-	 * @return
 	 * @since v4
 	 */
 	qint32 startAnnaServer();
+
+	/**
+	 * @since v5
+	 */
+	bool isSingleLine();
 	
 	/**
 	 * @see PiglerAPI#Close()
