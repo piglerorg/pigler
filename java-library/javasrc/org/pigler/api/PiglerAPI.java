@@ -62,6 +62,7 @@ public final class PiglerAPI {
 	private boolean initialized;
 	private String appName;
 	private boolean isBelle;
+	private int bitmapSize;
 	
 	/**
 	 * Creates API instance
@@ -497,7 +498,7 @@ public final class PiglerAPI {
 	
 	private int setNotificationIcon(int uid, Image icon) {
 		if (icon == null) return 0;
-		int size = _getBitmapSize(eventSourceHandle, apiHandle);
+		int size = bitmapSize != 0 ? bitmapSize : (bitmapSize = _getBitmapSize(eventSourceHandle, apiHandle));
 		if (size == 0) return 0;
 		if (size < 0) size = 68;
 		Image scaledIcon = DirectUtils.createImage(size, size, 0);
