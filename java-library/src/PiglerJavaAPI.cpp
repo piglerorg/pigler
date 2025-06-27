@@ -19,14 +19,14 @@ CPiglerJavaAPI::CPiglerJavaAPI(CPiglerJavaEventSource* aEventSource):
 
 CPiglerJavaAPI::~CPiglerJavaAPI()
 {
-    delete iApi;
-    iApi = NULL;
+	delete iApi;
+	iApi = NULL;
 }
 
 void CPiglerJavaAPI::ConstructL(jobject aPeer)
 {
-    iApi = new PiglerAPI;
-    iApi->SetTapHandler(this);
+	iApi = new PiglerAPI;
+	iApi->SetTapHandler(this);
 	iPeer = aPeer;
 	JNIEnv* jniEnv = JniEnvWrapper::GetValidJniRef();
 	jclass classRef = jniEnv->GetObjectClass(aPeer);
@@ -55,7 +55,7 @@ void CPiglerJavaAPI::NewL(CPiglerJavaEventSource* aEventSource, jobject aPeer, T
 
 LOCAL_C void Dispose(CPiglerJavaAPI* aApi)
 {
-    delete aApi;
+	delete aApi;
 }
 
 // JNI implementation
@@ -73,7 +73,7 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1createAPI(JNIEnv *aEnv, j
 	TInt handle = 0;
 	TRAPD(err, CPiglerJavaAPI::NewL(eventSource, peer, &handle))
 	if(err != KErrNone) {
-        aEnv->DeleteWeakGlobalRef((jweak)peer);
+		aEnv->DeleteWeakGlobalRef((jweak)peer);
 		return err;
 	}
 	return handle;
@@ -195,11 +195,8 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setRemoveNotificationOnTa
 	return res;
 }
 
-LOCAL_C void SetIcon(PiglerAPI* aApi, JNIEnv *aEnv, TInt aUid, jintArray aRgb, TInt* aRes)
+LOCAL_C void SetIcon(PiglerAPI* aApi, TInt aUid, int *rgb, int size, TInt* aRes)
 {
-	int size = aEnv->GetArrayLength(aRgb);
-	jboolean iscopy;
-	int *rgb = aEnv->GetIntArrayElements(aRgb, &iscopy);
 	TPtrC8 bitmap((const TUint8 *) rgb, size * 4);
 	*aRes = aApi->SetNotificationIcon(aUid, bitmap);
 }
@@ -208,8 +205,15 @@ JNIEXPORT jint JNICALL Java_org_pigler_api_PiglerAPI__1setNotificationIcon(JNIEn
 {
 	CPiglerJavaEventSource* eventSource = JavaUnhand<CPiglerJavaEventSource>(aEventSourceHandle);
 	CPiglerJavaAPI* api = JavaUnhand<CPiglerJavaAPI>(aHandle);
+	
+	int size = aEnv->GetArrayLength(aRgb);
+	jboolean iscopy;
+	int *rgb = aEnv->GetIntArrayElements(aRgb, &iscopy);
+	
 	TInt res;
-	eventSource->Execute(&SetIcon, api->iApi, aEnv, (TInt) aUid, aRgb, &res);
+	eventSource->Execute(&SetIcon, api->iApi, (TInt) aUid, rgb, size, &res);
+	
+	aEnv->ReleaseIntArrayElements(aRgb, rgb, 0);
 	return res;
 }
 
@@ -361,6 +365,7 @@ TBuf<64> jstringToTBuf64(JNIEnv* aEnv, jstring aJstring) {
 	HBufC* hbuf = java::util::S60CommonUtils::wstringToDes(java::util::JavaCommonUtils::utf8ToWstring(utf8).c_str());
 	TBuf<64> tbuf;
 	tbuf.Copy(*hbuf);
+	aEnv->ReleaseStringUTFChars(aJstring, utf8);
 	delete hbuf;
 	return tbuf;
 }
@@ -371,6 +376,7 @@ TBuf<256> jstringToTBuf256(JNIEnv* aEnv, jstring aJstring) {
 	HBufC* hbuf = java::util::S60CommonUtils::wstringToDes(java::util::JavaCommonUtils::utf8ToWstring(utf8).c_str());
 	TBuf<256> tbuf;
 	tbuf.Copy(*hbuf);
+	aEnv->ReleaseStringUTFChars(aJstring, utf8);
 	delete hbuf;
 	return tbuf;
 }
