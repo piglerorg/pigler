@@ -12,6 +12,4 @@
 "..\odc\javapiglerapi.odc"-"C:\resource\java\jvm\lib\jrt\javapiglerapi.odc"
 "..\eclipse\javapiglerapi.jar"-"C:\resource\java\jvm\lib\jrt\odc\javapiglerapi.jar"
 ; auto installer
-;"g:\Progs\QtSDK\Symbian\SDKs\Symbian3Qt473\epoc32\data\z\resource\apps\javaextpigler.rsc" - "c:\resource\apps\javaextpigler.rsc"
-;"g:\Progs\QtSDK\Symbian\SDKs\Symbian3Qt473\epoc32\data\z\private\10003a3f\import\apps\javaextpigler_reg.rsc" - "c:\private\10003a3f\import\apps\javaextpigler_reg.rsc"
-;"G:\Progs\QtSDK\Symbian\SDKs\Symbian3Qt473\epoc32\release\armv5\urel\javaextpigler.exe"-"c:\sys\bin\javaextpigler.exe", FR, RI
+"$(EPOCROOT)Epoc32\release\$(PLATFORM)\$(TARGET)\javaextpigler.exe"-"c:\sys\bin\javaextpigler.exe", FR, RI
